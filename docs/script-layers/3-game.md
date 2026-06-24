@@ -223,14 +223,88 @@ The `enums/` directory contains **29 enum definition files** that define the gam
 
 #### Effects (`effects/`)
 
-| Directory | Contents |
-|-----------|----------|
-| `backlit/` | Backlit rendering effects |
-| `destructioneffects/` | Destruction visual effects base |
-| `effectparticle/` | Particle-based effects (bullet impacts, bleeding, vomit, vehicle smoke, etc.) |
-| `effectparticle/bulletimpactbase/` | Per-surface bullet impact effects (concrete, dirt, glass, metal, wood, etc.) |
-| `effectparticle/player/` | Player-specific particle effects (breath vapour) |
-| `effectparticle/vehiclesmoke/` | Vehicle smoke effects (coolant, engine, exhaust) |
+**Root files:**
+
+| File | Purpose |
+|------|---------|
+| `effectparticle.c` | Base particle effect wrapper |
+| `effectsound.c` | Sound effect wrapper (`EffectSound`) |
+
+**Backlit:**
+
+| File | Purpose |
+|------|---------|
+| `backlit/backlit.c` | Backlit rendering effect for character/object lighting |
+
+**Destruction Effects:**
+
+| File | Purpose |
+|------|---------|
+| `destructioneffects/destructioneffectbase.c` | Base class for destruction visual effects |
+
+**Effect Particles (`effectparticle/`):**
+
+| File | Purpose |
+|------|---------|
+| `bleedingsource.c` | Bleeding source particle effect |
+| `bloodsplatter.c` | Blood splatter particle effect |
+| `bulletimpactbase.c` | Base bullet impact particle class |
+| `bulletimpacttest.c` | Bullet impact test particle |
+| `generatorsmoke.c` | Generator/exhaust smoke particle |
+| `landmineexplosion.c` | Land mine explosion particle |
+| `menucarenginesmoke.c` | Main menu car engine smoke |
+| `menuevaporation.c` | Main menu evaporation effect |
+| `swarmingflies.c` | Swarming flies particle (on corpses) |
+| `vehiclesmoke.c` | Vehicle smoke base |
+| `vomit.c` | Vomit particle effect |
+| `vomitblood.c` | Blood vomit particle effect |
+
+**Per-Surface Bullet Impacts (`effectparticle/bulletimpactbase/`):**
+
+| File | Purpose |
+|------|---------|
+| `hit_concrete.c` | Concrete impact particles |
+| `hit_dirt.c` | Dirt impact particles |
+| `hit_error.c` | Error/fallback impact particles |
+| `hit_foliage.c` | Foliage impact particles |
+| `hit_foliage/hit_foliage_conifer.c` | Conifer foliage impact |
+| `hit_foliage/hit_foliage_green.c` | Green foliage impact |
+| `hit_glass.c` | Glass impact particles |
+| `hit_glass_thin.c` | Thin glass impact particles |
+| `hit_grass.c` | Grass impact particles |
+| `hit_gravel.c` | Gravel impact particles |
+| `hit_ice.c` | Ice impact particles |
+| `hit_meatbones.c` | Meat/bone impact particles |
+| `hit_meatbones/hit_meatbones_meleefist.c` | Melee fist on meat/bones |
+| `hit_meatbones/hit_meatbones_meleepipewrench.c` | Melee pipe wrench on meat/bones |
+| `hit_meatbones/hit_meatbones_meleeshovel.c` | Melee shovel on meat/bones |
+| `hit_meatbones/hit_meatbones_meleewrench.c` | Melee wrench on meat/bones |
+| `hit_metal.c` | Metal impact particles |
+| `hit_plaster.c` | Plaster impact particles |
+| `hit_plastic.c` | Plastic impact particles |
+| `hit_rubber.c` | Rubber impact particles |
+| `hit_sand.c` | Sand impact particles |
+| `hit_snow.c` | Snow impact particles |
+| `hit_textile.c` | Textile impact particles |
+| `hit_undefined.c` | Undefined surface impact |
+| `hit_water.c` | Water impact particles |
+| `hit_wood.c` | Wood impact particles |
+
+**Player Effects (`effectparticle/player/`):**
+
+| File | Purpose |
+|------|---------|
+| `effbreathvapourheavy.c` | Heavy breath vapour effect |
+| `effbreathvapourlight.c` | Light breath vapour effect |
+| `effbreathvapourmedium.c` | Medium breath vapour effect |
+
+**Vehicle Smoke (`effectparticle/vehiclesmoke/`):**
+
+| File | Purpose |
+|------|---------|
+| `coolantsteam.c` | Coolant leak steam effect |
+| `enginesmoke.c` | Engine damage smoke effect |
+| `exhaustsmoke.c` | Exhaust smoke effect |
 
 #### Global Functions (`global/`)
 
@@ -242,18 +316,79 @@ The `enums/` directory contains **29 enum definition files** that define the gam
 | `pboapi.c` | PBO file API |
 | `uuid.c` | UUID generation |
 | `world.c` | World global functions |
-| `errormodulehandler/` | Error dialog module handler (BIOS, kick, connect errors) |
+| `errormodulehandler/bioserrormodule.c` | BIOS error dialog module |
+| `errormodulehandler/clientkickedmodule.c` | Client kick dialog module |
+| `errormodulehandler/connecterrorclientmodule.c` | Client connection error dialog |
+| `errormodulehandler/connecterrorscriptmodule.c` | Script connection error dialog |
+| `errormodulehandler/connecterrorservermodule.c` | Server connection error dialog |
+| `errormodulehandler/errorhandlermodule.c` | Base error handler module |
+| `errormodulehandler/errormodulehandler.c` | Error module handler (manages error dialog stack) |
+| `errormodulehandler/errorproperties.c` | Error property definitions |
 
 #### GUI Components (`gui/`)
 
-| Directory | Contents |
-|-----------|----------|
-| `containers/` | Scrollbar, size-to-child container widgets |
-| `credits/` | Credits screen JSON loader |
-| `dlcs/` | DLC info data loader |
-| `effects/` | Widget visual effects (bouncer, hover, radial menu) |
-| `hints/` | Hint panel system |
-| `spacers/` | Layout spacer widgets (horizontal, vertical, auto-height) |
+**Root files:**
+
+| File | Purpose |
+|------|---------|
+| `embeded.c` | Embedded widget handling |
+| `inventorygrid.c` | Inventory grid widget |
+| `tabber.c` | Tabbed container widget |
+| `widgetlayoutname.c` | Widget layout name utilities |
+
+**Containers:**
+
+| File | Purpose |
+|------|---------|
+| `containers/scrollbarcontainer.c` | Scrollbar container widget |
+| `containers/sizetochild.c` | Size-to-child container widget |
+
+**Credits:**
+
+| File | Purpose |
+|------|---------|
+| `credits/creditsloader.c` | Credits screen loader |
+| `credits/jsondatacredits.c` | Credits JSON data model |
+| `credits/jsondatacreditsdepartment.c` | Credits department data |
+| `credits/jsondatacreditssection.c` | Credits section data |
+
+**DLCs:**
+
+| File | Purpose |
+|------|---------|
+| `dlcs/dlcdataloader.c` | DLC data loader |
+| `dlcs/jsondatadlcinfo.c` | DLC info JSON data |
+
+**Widget Effects:**
+
+| File | Purpose |
+|------|---------|
+| `effects/bouncer.c` | Bouncer widget animation |
+| `effects/hovereffect.c` | Hover highlight effect |
+| `effects/mainmenubuttoneffect.c` | Main menu button animation |
+| `effects/radialmenu.c` | Radial menu rendering effect |
+| `effects/radialprogressbar.c` | Radial progress bar effect |
+| `effects/rotator.c` | Rotator widget animation |
+
+**Hints:**
+
+| File | Purpose |
+|------|---------|
+| `hints/hintpage.c` | Hint page data |
+| `hints/uihintpanel.c` | UI hint panel widget |
+
+**Spacers:**
+
+| File | Purpose |
+|------|---------|
+| `spacers/autoheightspacer.c` | Auto-height spacer |
+| `spacers/horizontalspacer.c` | Horizontal spacer |
+| `spacers/horizontalspacerwithfixedaspect.c` | Fixed-aspect horizontal spacer |
+| `spacers/itemscounter.c` | Items counter spacer |
+| `spacers/noticespacer.c` | Notice spacer |
+| `spacers/rightgap.c` | Right gap spacer |
+| `spacers/spacerbase.c` | Base spacer class |
+| `spacers/verticalspacer.c` | Vertical spacer |
 
 #### Particles (`particles/`)
 
@@ -268,15 +403,105 @@ The `enums/` directory contains **29 enum definition files** that define the gam
 
 #### Post-Processing (`ppemanager/`)
 
-| Directory | Contents |
-|-----------|----------|
+**Root files:**
+
+| File | Purpose |
+|------|---------|
 | `ppeconstants.c` | PPE constants |
 | `ppemanager.c` | PPE manager (orchestrates post-processing stack) |
-| `pperequestdata.c` | PPE request data |
-| `pperequesterbank.c` | PPE requester registration |
-| `materials/matclasses/` | Per-effect material classes (bloom, color grading, DOF, god rays, snow, etc.) |
-| `materials/matparameters/` | Per-parameter material wrappers (bool, float, int, color, texture) |
-| `requesters/` | PPE requesters for specific game states (blood loss, fever, underwater, shock, etc.) |
+| `pperequestdata.c` | PPE request data structure |
+| `pperequesterbank.c` | PPE requester registration bank |
+
+**Base material class:**
+
+| File | Purpose |
+|------|---------|
+| `materials/ppematclassesbase.c` | Base material class for PPE effects |
+
+**Material Classes (`materials/matclasses/`):**
+
+| File | Purpose |
+|------|---------|
+| `ppechromaber.c` | Chromatic aberration effect |
+| `ppecolorgrading.c` | Color grading effect |
+| `ppecolors.c` | Color adjustment effect |
+| `ppedepthoffield.c` | Depth of field effect |
+| `ppedistort.c` | Distortion effect |
+| `ppedynamicblur.c` | Dynamic blur effect |
+| `ppefilmgrain.c` | Film grain effect |
+| `ppefxaa.c` | FXAA anti-aliasing |
+| `ppegaussfilter.c` | Gaussian filter effect |
+| `ppeghost.c` | Ghost/artifact effect |
+| `ppeglow.c` | Glow/bloom effect |
+| `ppegodrays.c` | God rays effect |
+| `ppehbao.c` | HBAO ambient occlusion |
+| `ppemedian.c` | Median filter effect |
+| `ppenone.c` | Null/no-op effect |
+| `pperadialblur.c` | Radial blur effect |
+| `pperain.c` | Rain effect |
+| `pperotblur.c` | Rotational blur effect |
+| `ppesmaa.c` | SMAA anti-aliasing |
+| `ppesnowfall.c` | Snowfall effect |
+| `ppessao.c` | SSAO ambient occlusion |
+| `ppesunmask.c` | Sun mask effect |
+| `ppeunderwater.c` | Underwater effect |
+| `ppewetdistort.c` | Wet lens distortion effect |
+
+**Exceptions (platform-specific material overrides):**
+
+| File | Purpose |
+|------|---------|
+| `matclasses/exceptions/ppedof.c` | DOF exception (platform override) |
+| `matclasses/exceptions/ppeexposurenative.c` | Native exposure exception |
+| `matclasses/exceptions/ppeeyeaccomodationnative.c` | Eye accommodation native exception |
+| `matclasses/exceptions/ppelightintensityparamsnative.c` | Light intensity native params exception |
+
+**Material Parameters (`materials/matparameters/`):**
+
+| File | Purpose |
+|------|---------|
+| `ppematclassparameterbool.c` | Boolean parameter wrapper |
+| `ppematclassparametercolor.c` | Color parameter wrapper |
+| `ppematclassparametercommanddata.c` | Command data parameter |
+| `ppematclassparameterfloat.c` | Float parameter wrapper |
+| `ppematclassparameterint.c` | Integer parameter wrapper |
+| `ppematclassparameterresource.c` | Resource parameter wrapper |
+| `ppematclassparametertexture.c` | Texture parameter wrapper |
+| `ppematclassparametervector.c` | Vector parameter wrapper |
+
+**Requesters (game state → PPE effect bridges):**
+
+| File | Purpose |
+|------|---------|
+| `requesters/pperbloodloss.c` | Blood loss visual effect |
+| `requesters/pperburlapsack.c` | Burlap sack head covering effect |
+| `requesters/ppercameraads_opt.c` | Camera ADS optics effect |
+| `requesters/ppercameranv.c` | Night vision camera effect |
+| `requesters/ppercontaminated.c` | Contaminated area effect |
+| `requesters/ppercontrollerdisconnectblur.c` | Controller disconnect blur |
+| `requesters/ppercontrolsblur.c` | Controls overlay blur |
+| `requesters/pperdeathdarkening.c` | Death/darkening effect |
+| `requesters/pperdrowningeffect.c` | Drowning visual effect |
+| `requesters/pperequestplatformsbase.c` | Base platform requester |
+| `requesters/pperfeedbackblur.c` | Feedback effect blur |
+| `requesters/pperfever.c` | Fever visual effect |
+| `requesters/pperflashbangeffects.c` | Flashbang effect |
+| `requesters/pperglasses.c` | Eyewear/glasses effect |
+| `requesters/pperhealthhit.c` | Health hit reaction effect |
+| `requesters/pperhmp_lvl3.c` | HMP level 3 effect |
+| `requesters/pperhmpghosts.c` | HMP ghosting effect |
+| `requesters/pperintrochromabb.c` | Intro chromatic aberration |
+| `requesters/pperinventoryblur.c` | Inventory open blur |
+| `requesters/pperlatencyblur.c` | Network latency blur |
+| `requesters/ppermenueffects.c` | Menu transition effects |
+| `requesters/pperpain.c` | Pain reaction effect |
+| `requesters/pperserverbrowser.c` | Server browser blur |
+| `requesters/ppershockhit.c` | Shock damage hit effect |
+| `requesters/pperspooky.c` | Spooky atmosphere effect |
+| `requesters/ppertunnel.c` | Tunnel vision effect |
+| `requesters/ppertutorial.c` | Tutorial overlay effect |
+| `requesters/pperunconeffects.c` | Unconsciousness effect |
+| `requesters/pperundergroundacco.c` | Underground accommodation effect |
 
 #### Static Utilities (`static/`)
 
@@ -320,24 +545,121 @@ The `enums/` directory contains **29 enum definition files** that define the gam
 
 #### Supplementary Systems
 
-| System | Located At | Purpose |
-|--------|------------|---------|
-| **FSM Framework** | `systems/fsmbase.c`, `systems/hfsmbase.c`, `systems/ofsmbase.c` | Finite, hierarchical, and orthogonal state machines |
-| **Actions** | `systems/actions/` | Action base and input classes |
-| **AI System** | `systems/ai/` | AI target callbacks |
-| **Animal Catching** | `systems/animalcatching/` | Animal trapping mechanics |
-| **Arrow Manager** | `systems/arrowmanager/` | Arrow projectile management |
-| **Dynamic Music** | `systems/dynamicmusicplayer/` | Zone-based dynamic music system |
-| **Inventory** | `systems/inventory/` | FSM-driven inventory system (30+ files) |
-| **Temperature Access** | `systems/temperatureaccess/` | Temperature zone component and manager |
-| **Universal Temperature** | `systems/universaltemperaturesource/` | Generic temperature source system |
-| **Unit Tests** | `systems/tftests/` | Profiler and Invoker tests |
-| **Test Framework** | `systems/testframework.c` | General test framework |
+**FSM Framework:**
+
+| File | Purpose |
+|------|---------|
+| `systems/fsmbase.c` | Finite state machine base |
+| `systems/hfsmbase.c` | Hierarchical finite state machine base |
+| `systems/ofsmbase.c` | Orthogonal finite state machine base |
+| `systems/testframework.c` | General test framework |
+
+**Actions:**
+
+| File | Purpose |
+|------|---------|
+| `systems/actions/actionbase_basic.c` | Basic action base class |
+| `systems/actions/actioninput_basic.c` | Basic action input handling |
+
+**AI System:**
+
+| File | Purpose |
+|------|---------|
+| `systems/ai/aitarget_callbacks.c` | AI target event callbacks |
+
+**Animal Catching:**
+
+| File | Purpose |
+|------|---------|
+| `systems/animalcatching/catchingconstants.c` | Animal catching constants |
+| `systems/animalcatching/catchingcontextbase.c` | Base catching context |
+| `systems/animalcatching/catchingcontextpoissonbase.c` | Poisson-based catching context |
+| `systems/animalcatching/catchingresultbasic.c` | Basic catching result |
+| `systems/animalcatching/catchyieldbank.c` | Yield bank for catching |
+| `systems/animalcatching/catchyielditembase.c` | Base yield item for catching |
+
+**Arrow Manager:**
+
+| File | Purpose |
+|------|---------|
+| `systems/arrowmanager/arrowmanagerbase.c` | Arrow projectile management base |
+
+**Dynamic Music:**
+
+| File | Purpose |
+|------|---------|
+| `systems/dynamicmusicplayer/dynamicmusicplayer.c` | Zone-based dynamic music player |
+| `systems/dynamicmusicplayer/dynamicmusicplayerregistry.c` | Music player registry base |
+| `systems/dynamicmusicplayer/dynamicmusicplayerregistrychernarus.c` | Chernarus music registry |
+| `systems/dynamicmusicplayer/dynamicmusicplayerregistryenoch.c` | Enoch (Livonia) music registry |
+| `systems/dynamicmusicplayer/dynamicmusicplayerregistrysakhal.c` | Sakhal music registry |
+
+**Inventory System (`systems/inventory/`):**
+
+| File | Purpose |
+|------|---------|
+| `inventory.c` | Main inventory logic (~54,600 lines) |
+| `inventorylocation.c` | Inventory location abstraction |
+| `inventoryslots.c` | Slot management |
+| `inventoryinputuserdata.c` | Inventory input user data |
+| `humaninventory.c` | Human-specific inventory |
+| `humaninventorywithfsm.c` | Human inventory with FSM |
+| `buildinginventory.c` | Building inventory |
+| `transportinventory.c` | Vehicle/transport inventory |
+| `weaponinventory.c` | Weapon inventory management |
+| `cargo.c` | Cargo container logic |
+| `junctures.c` | Inventory juncture handling |
+| `debug.c` | Inventory debug utilities |
+| `handfsm.c` | Hand state machine |
+| `handstatebase.c` | Hand state base class |
+| `handstablestate.c` | Hand stable state |
+| `handstartaction.c` | Hand start action |
+| `hand_actions.c` | Hand action definitions |
+| `hand_events.c` | Hand event definitions |
+| `hand_states.c` | Hand state definitions |
+| `hand_guards.c` | Hand guard conditions |
+| `handanimated_guards.c` | Animated hand guard conditions |
+| `handanimatedforceswapping.c` | Animated forced item swapping |
+| `handanimatedswapping.c` | Animated item swapping |
+| `handanimatedmovingtoatt.c` | Animated move to attachment |
+| `handanimatedtakingfromatt.c` | Animated take from attachment |
+| `handreplacingiteminhands.c` | Replace item in hands |
+| `handreplacingitemelsewherewithnewinhands.c` | Replace item elsewhere with new in hands |
+| `replaceitemwithnewlambdabase.c` | Lambda base for item replacement |
+
+**Temperature Access:**
+
+| File | Purpose |
+|------|---------|
+| `systems/temperatureaccess/temperatureaccesscomponent.c` | Temperature zone component |
+| `systems/temperatureaccess/temperatureaccessconstants.c` | Temperature access constants |
+| `systems/temperatureaccess/temperatureaccessmanager.c` | Temperature access manager |
+| `systems/temperatureaccess/temperatureaccesstypes.c` | Temperature access type definitions |
+| `systems/temperatureaccess/temperaturedata.c` | Temperature data |
+
+**Universal Temperature Source:**
+
+| File | Purpose |
+|------|---------|
+| `systems/universaltemperaturesource/universaltemperaturesource.c` | Generic temperature source |
+| `systems/universaltemperaturesource/universaltemperaturesourcelambdabase.c` | Temperature source lambda base |
+
+**Unit Tests:**
+
+| File | Purpose |
+|------|---------|
+| `systems/tftests/enprofilertests.c` | Enscript profiler tests |
+| `systems/tftests/scriptinvokertests.c` | ScriptInvoker unit tests |
+
+**Other Systems:**
+
+| System | Files | Purpose |
+|--------|-------|---------|
 | **Hive** | `hive/hive.c` | DayZ persistence layer (database sync) |
 | **HTTP** | `http/backendapi.c`, `http/jsonapi.c`, `http/jsonapistruct.c`, `http/restapi.c` | HTTP networking: Backend API, JSON API data model, REST API client |
 | **Input API** | `inputapi/uainput.c` | Raw input device abstraction |
-| **Analytics** | `analytics/analyticsmanagerclient.c`, `analyticsmanagerserver.c`, `scriptanalytics.c` | Telemetry and analytics (client/server data collection) |
-| **Services** | `services/` — `achievementsxbox.c`, `biosclientservices.c`, `bioslobbyservice.c`, `biospackageservice.c`, `biosprivacyservice.c`, `biossessionservice.c`, `biossocialservice.c`, `biosusermanager.c`, `contentdlc.c`, `trialservice.c` | Platform services (Xbox achievements, BIOS client/lobby/package/session/social, DLC content, trial licensing) |
+| **Analytics** | `analytics/analyticsmanagerclient.c`, `analyticsmanagerserver.c`, `scriptanalytics.c` | Telemetry and analytics |
+| **Services** | `services/achievementsxbox.c`, `biosclientservices.c`, `bioslobbyservice.c`, `biospackageservice.c`, `biosprivacyservice.c`, `biossessionservice.c`, `biossocialservice.c`, `biosusermanager.c`, `contentdlc.c`, `trialservice.c` | Platform services |
 
 ## Main Systems
 

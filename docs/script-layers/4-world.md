@@ -328,7 +328,226 @@ The `classes/` directory contains the bulk of world gameplay logic, organized as
 | `cacheobject.c` | Recipe cache object |
 | `recipebase.c` | `RecipeBase` — Base class for all crafting recipes |
 
-The `recipes/recipes/` directory contains **216 individual crafting recipe files** covering: attach/detach holsters and pouches, blood tests, chelation, clean/disinfect items, craft armbands, arrows, bait, basebuilding (fence, watchtower), bone hooks/knives, bows, burlap strips, camo nets, cooking stands, courier bags, dry sacks, feathers, fireplaces, fishing rods, fish nets, gas mask filters, ghillie suits, improvised explosives/bags, leather crafting, metal wire, rabbit snares, rags, rope, saline bags, shelters, spears, splints, stone knives, suppressors, tanned leather, territory flags, torches, tripwire, truck wheels, watchtower kits, and many more. These are organized alphabetically and inherit from `RecipeBase`.
+**All Recipe Files (`recipes/recipes/`):**
+
+| File | Purpose |
+|------|---------|
+| `attachholster.c` | Attach holster to vest |
+| `attachholsterpouch.c` | Attach holster pouch |
+| `attachpouch.c` | Attach pouch to carrier |
+| `attachpouchesholster.c` | Attach pouches and holster |
+| `bloodtest.c` | Test blood sample |
+| `chelatewater.c` | Chelate contaminated water |
+| `cleanrags.c` | Clean dirty rags |
+| `cleanweapon.c` | Clean a weapon |
+| `closescientificbriefcase.c` | Close scientific briefcase |
+| `craftarmbandflag.c` | Craft armband from flag |
+| `craftarmbandrag.c` | Craft armband from rag |
+| `craftarmbandraincoat.c` | Craft armband from raincoat |
+| `craftarrow.c` | Craft arrow |
+| `craftarrowbone.c` | Craft bone arrow |
+| `craftbait.c` | Craft fishing bait |
+| `craftbaseballbatbarbed.c` | Craft barbed baseball bat |
+| `craftbaseballbatnailed.c` | Craft nailed baseball bat |
+| `craftbloodbagiv.c` | Craft blood bag IV |
+| `craftbonebait.c` | Craft bone bait |
+| `craftbonehook.c` | Craft bone hook |
+| `craftboneknife.c` | Craft bone knife |
+| `craftbow.c` | Craft bow |
+| `craftburlapstrips.c` | Craft burlap strips |
+| `craftcamonetshelter.c` | Craft camo net shelter |
+| `craftcookingstand.c` | Craft cooking stand |
+| `craftcourierbag.c` | Craft courier bag |
+| `craftdrysackbag.c` | Craft dry sack bag |
+| `craftfeathers.c` | Craft feathers from chicken |
+| `craftfencekit.c` | Craft fence kit |
+| `craftfireplace.c` | Craft fireplace |
+| `craftfishingrod.c` | Craft fishing rod |
+| `craftfishnettrap.c` | Craft fish net trap |
+| `craftgasmask_filter_improvised.c` | Craft improvised gas mask filter |
+| `craftghillieattachment.c` | Craft ghillie attachment |
+| `craftghilliebushrag.c` | Craft ghillie bushrag |
+| `craftghilliehood.c` | Craft ghillie hood |
+| `craftghilliesuit.c` | Craft ghillie suit |
+| `craftghillietop.c` | Craft ghillie top |
+| `craftgorkahelmetcomplete.c` | Complete gorka helmet |
+| `craftgutsrope.c` | Craft rope from guts |
+| `crafthanddrillkit.c` | Craft hand drill kit |
+| `craftimprovisedbag.c` | Craft improvised bag |
+| `craftimprovisedexplosive.c` | Craft improvised explosive |
+| `craftimprovisedleatherbag.c` | Craft improvised leather bag |
+| `craftleathercourierbag.c` | Craft leather courier bag |
+| `craftleathersack.c` | Craft leather sack |
+| `craftlongtorch.c` | Craft long torch |
+| `craftmetalwire.c` | Craft metal wire |
+| `craftrabbitsnare.c` | Craft rabbit snare |
+| `craftrag.c` | Craft rag |
+| `craftragrope.c` | Craft rope from rags |
+| `craftsalinebagiv.c` | Craft saline bag IV |
+| `craftshelterkit.c` | Craft shelter kit |
+| `craftsmallfishtrap.c` | Craft small fish trap |
+| `craftspearbone.c` | Craft bone spear |
+| `craftspearstone.c` | Craft stone spear |
+| `craftsplint.c` | Craft splint |
+| `craftstoneknife.c` | Craft stone knife |
+| `craftsuppressor.c` | Craft firearm suppressor |
+| `crafttannedleather.c` | Craft tanned leather |
+| `craftterritoryflagkit.c` | Craft territory flag kit |
+| `crafttorch.c` | Craft torch |
+| `crafttripwire.c` | Craft tripwire |
+| `crafttruck01doublewheel.c` | Craft truck double wheel |
+| `craftwatchtowerkit.c` | Craft watchtower kit |
+| `craftwitchhoodcoif.c` | Craft witch hood coif |
+| `craftwoodencrate.c` | Craft wooden crate |
+| `craftwoodenhook.c` | Craft wooden hook |
+| `craftwoodenplank.c` | Craft wooden plank |
+| `cutoutpepperseeds.c` | Cut out pepper seeds |
+| `cutoutpumpkinseeds.c` | Cut out pumpkin seeds |
+| `cutoutseeds.c` | Cut out seeds (generic) |
+| `cutouttomatoseeds.c` | Cut out tomato seeds |
+| `cutoutzucchiniseeds.c` | Cut out zucchini seeds |
+| `decraftarmband.c` | Decraft/remove armband |
+| `decraftbow.c` | Decraft bow |
+| `decraftcamonetshelter.c` | Decraft camo net shelter |
+| `decraftcarriercomplete.c` | Decraft complete carrier |
+| `decraftcarrierholster.c` | Decraft carrier holster |
+| `decraftcarrierpouches.c` | Decraft carrier pouches |
+| `decraftcookingstand.c` | Decraft cooking stand |
+| `decraftcourierbag.c` | Decraft courier bag |
+| `decraftdetonator.c` | Decraft detonator |
+| `decraftfishingrod.c` | Decraft fishing rod |
+| `decraftfishnettrap.c` | Decraft fish net trap |
+| `decraftghillieattachment.c` | Decraft ghillie attachment |
+| `decraftghilliebushrag.c` | Decraft ghillie bushrag |
+| `decraftghilliehood.c` | Decraft ghillie hood |
+| `decraftghilliesuit.c` | Decraft ghillie suit |
+| `decraftghillietop.c` | Decraft ghillie top |
+| `decrafthanddrillkit.c` | Decraft hand drill kit |
+| `decraftimprovisedbag.c` | Decraft improvised bag |
+| `decraftimprovisedleatherbag.c` | Decraft improvised leather bag |
+| `decraftleathercourierbag.c` | Decraft leather courier bag |
+| `decraftleathersack.c` | Decraft leather sack |
+| `decraftsnaretrap.c` | Decraft snare trap |
+| `decraftspear.c` | Decraft spear |
+| `decraftsplint.c` | Decraft splint |
+| `decrafttripwire.c` | Decraft tripwire |
+| `decrafttruck01doublewheel.c` | Decraft truck double wheel |
+| `decraftwoodencrate.c` | Decraft wooden crate |
+| `disinfectitem.c` | Disinfect an item |
+| `drainliquid.c` | Drain liquid from container |
+| `extinguishtorch.c` | Extinguish torch |
+| `fillgasmask_filter.c` | Fill gas mask filter |
+| `fillsyringe.c` | Fill syringe |
+| `fuelchainsaw.c` | Fuel chainsaw |
+| `loadmagazine.c` | Load ammunition into magazine |
+| `opencan.c` | Open can |
+| `openscientificbriefcase.c` | Open scientific briefcase |
+| `paintak101.c` | Paint AK-101 |
+| `paintak10130mag.c` | Paint AK-101 30-round magazine |
+| `paintak74.c` | Paint AK-74 |
+| `paintak7430mag.c` | Paint AK-74 30-round magazine |
+| `paintak74hndgrdblack.c` | Paint AK-74 black handguard |
+| `paintak74hndgrdcamo.c` | Paint AK-74 camo handguard |
+| `paintak74woodbttstckblack.c` | Paint AK-74 black wood stock |
+| `paintak74woodbttstckcamo.c` | Paint AK-74 camo wood stock |
+| `paintakfoldingbttstck.c` | Paint AK folding stock |
+| `paintakmdrummag.c` | Paint AKM drum magazine |
+| `paintakmpalm30mag.c` | Paint AKM palm 30-round magazine |
+| `paintakplasticbttstck.c` | Paint AK plastic stock |
+| `paintakrailhndgrd.c` | Paint AK rail handguard |
+| `paintaks74u.c` | Paint AKS-74U |
+| `paintaks74ubttstck.c` | Paint AKS-74U stock |
+| `paintakwoodbttstckblack.c` | Paint AK wood stock black |
+| `paintakwoodbttstckcamo.c` | Paint AK wood stock camo |
+| `paintb95.c` | Paint B-95 rifle |
+| `paintballistichelmet.c` | Paint ballistic helmet |
+| `paintcmag10.c` | Paint 10-round C-mag |
+| `paintcmag20.c` | Paint 20-round C-mag |
+| `paintcmag30.c` | Paint 30-round C-mag |
+| `paintcmag40.c` | Paint 40-round C-mag |
+| `paintcz527.c` | Paint CZ 527 |
+| `paintcz527camoblack.c` | Paint CZ 527 camo black |
+| `paintcz527camogreen.c` | Paint CZ 527 camo green |
+| `paintdarkmotohelmet.c` | Paint dark moto helmet |
+| `paintfirefighteraxe.c` | Paint firefighter axe |
+| `paintghillieattblack.c` | Paint ghillie attachment black |
+| `paintghillieattgreen.c` | Paint ghillie attachment green |
+| `paintghillieattgreenmossy.c` | Paint ghillie attachment green mossy |
+| `paintghilliebushragblack.c` | Paint ghillie bushrag black |
+| `paintghilliebushraggreen.c` | Paint ghillie bushrag green |
+| `paintghilliebushraggreenmossy.c` | Paint ghillie bushrag green mossy |
+| `paintghilliehoodblack.c` | Paint ghillie hood black |
+| `paintghilliehoodgreen.c` | Paint ghillie hood green |
+| `paintghilliehoodgreenmossy.c` | Paint ghillie hood green mossy |
+| `paintghilliesuitblack.c` | Paint ghillie suit black |
+| `paintghilliesuitgreen.c` | Paint ghillie suit green |
+| `paintghilliesuitgreenmossy.c` | Paint ghillie suit green mossy |
+| `paintghillietopblack.c` | Paint ghillie top black |
+| `paintghillietopgreen.c` | Paint ghillie top green |
+| `paintghillietopgreenmossy.c` | Paint ghillie top green mossy |
+| `paintgorkahelmet.c` | Paint Gorka helmet |
+| `paintgorkahelmetcomplete.c` | Paint complete Gorka helmet |
+| `paintm4a1.c` | Paint M4A1 |
+| `paintm4cqbbttstck.c` | Paint M4 CQB stock |
+| `paintm4mpbttstck.c` | Paint M4 MP stock |
+| `paintm4mphndgrd.c` | Paint M4 MP handguard |
+| `paintm4oebttstck.c` | Paint M4 OE stock |
+| `paintm4plastichndgrd.c` | Paint M4 plastic handguard |
+| `paintm4rishndgrd.c` | Paint M4 RIS handguard |
+| `paintmosin.c` | Paint Mosin-Nagant |
+| `paintmosincamoblack.c` | Paint Mosin camo black |
+| `paintmosincamogreen.c` | Paint Mosin camo green |
+| `paintmotohelmet.c` | Paint moto helmet |
+| `paintruger1022.c` | Paint Ruger 10/22 |
+| `paintsawedoffmosin.c` | Paint sawed-off Mosin |
+| `paintsawedoffmosincamoblack.c` | Paint sawed-off Mosin camo black |
+| `paintsawedoffmosincamogreen.c` | Paint sawed-off Mosin camo green |
+| `paintsks.c` | Paint SKS |
+| `paintzsh3pilothelmet.c` | Paint ZSH-3 pilot helmet |
+| `patchitem.c` | Patch/repair item with sewing kit |
+| `peelpotato.c` | Peel potato |
+| `pluginrecipesmanagerbase.c` | Plugin recipe manager base |
+| `pokeholesbarrel.c` | Poke holes in barrel |
+| `pourliquid.c` | Pour liquid between containers |
+| `prepareanimal.c` | Prepare animal for cooking |
+| `preparecarp.c` | Prepare carp |
+| `preparechicken.c` | Prepare chicken |
+| `preparefish.c` | Prepare fish |
+| `preparefox.c` | Prepare fox |
+| `preparemackerel.c` | Prepare mackerel |
+| `preparerabbit.c` | Prepare rabbit |
+| `preparesteelheadtrout.c` | Prepare steelhead trout |
+| `preparewalleyepollock.c` | Prepare walleye pollock |
+| `purifywater.c` | Purify water |
+| `recipetest.c` | Recipe test (debug) |
+| `refueltorch.c` | Refuel torch |
+| `repairelectric.c` | Repair electrical device |
+| `repairepoxy.c` | Repair with epoxy putty |
+| `repaireyepatch.c` | Repair eye patch |
+| `repairplanks.c` | Repair planks |
+| `repairwithpliers.c` | Repair with pliers |
+| `repairwithrags.c` | Repair with rags |
+| `repairwithtape.c` | Repair with duct tape |
+| `sawoffb95.c` | Saw off B-95 barrel |
+| `sawofffamas.c` | Saw off FAMAS barrel |
+| `sawoffizh18.c` | Saw off Izh-18 barrel |
+| `sawoffizh18shotgun.c` | Saw off Izh-18 shotgun barrel |
+| `sawoffmagnum.c` | Saw off Magnum barrel |
+| `sawoffmosin.c` | Saw off Mosin barrel |
+| `sawoffmosinpainted.c` | Saw off painted Mosin barrel |
+| `sawoffshotgunizh43.c` | Saw off Izh-43 shotgun barrel |
+| `sawwoodenlog.c` | Saw wooden log into planks |
+| `sharpenbroom.c` | Sharpen broom into spear |
+| `sharpenlongstick.c` | Sharpen long stick |
+| `sharpenmelee.c` | Sharpen melee weapon |
+| `sharpenstick.c` | Sharpen stick |
+| `splitbroom.c` | Split broom into sticks |
+| `splitfirewood.c` | Split firewood |
+| `splitlongwoodenstick.c` | Split long wooden stick |
+| `splitstones.c` | Split stones into sharp stones |
+| `upgradetorchwithlard.c` | Upgrade torch with lard |
+| `upgradetorchwithliquidfuel.c` | Upgrade torch with liquid fuel |
+| `writeletter.c` | Write a letter on paper |
 
 **User Actions Component (`useractionscomponent/`):**
 
@@ -402,13 +621,422 @@ The `recipes/recipes/` directory contains **216 individual crafting recipe files
 | `actions/actionsequentialbase.c` | Sequential action base class |
 | `actions/actionsingleusebase.c` | Single-use action base class |
 
-The `actions/continuous/` directory contains **~160 continuous action files** covering: activate trap, arm explosive, build oven/part/stone circle, bury body, consume, cook on stick, craft items, dig garden/stash, disarm explosive, drink/eat, fish, fold/toggle basebuilding, force feed, ignite fireplace, load magazine, lock/unlock, mine, mount barbed wire, pack gift, place object, pour liquid, push boat/car, raise flag, refuel torch, repair vehicle/part, restrain self/target, saw planks, shave, skin animal, sort ammo, transfer liquid, tune frequency, turn valve, view optics, wash hands, water garden, and many more.
+**Continuous Actions (`actions/continuous/`):**
 
-The `actions/interact/` directory contains **~60 interact action files** covering: build shelter, close/open barrel/doors/fence, detach items, enter/exit ladder, fold object, get in/out transport, harvest crops, open combination lock, operate panel, pack shelter/tent, pick berry, pickup item, pull body from transport, remove plant, repack tent, set alarm/timer, swap item, take item/arrow, toggle tent, tune radio, turn on/off devices, use underground lever, wash hands, and vehicle interactions (animate seats, car doors, switch lights).
+| File | Purpose |
+|------|---------|
+| `actionactivatetrap.c` | Activate a trap |
+| `actionarmexplosive.c` | Arm an explosive device |
+| `actionattachexplosivestrigger.c` | Attach explosive trigger |
+| `actionbreaklongwoodenstick.c` | Break long wooden stick |
+| `actionbuildoven.c` | Build an oven |
+| `actionbuildpart.c` | Build a construction part |
+| `actionbuildstonecircle.c` | Build a stone circle |
+| `actionburyashes.c` | Bury fireplace ashes |
+| `actionburybody.c` | Bury a body |
+| `actionconsume.c` | Consume food/drink (generic) |
+| `actioncookonstick.c` | Cook food on a stick |
+| `actioncoverheadself.c` | Cover own head |
+| `actioncoverheadtarget.c` | Cover target's head |
+| `actioncraft.c` | Craft an item |
+| `actioncraftarmband.c` | Craft an armband |
+| `actioncraftbolts.c` | Craft bolts |
+| `actioncraftboltsfeather.c` | Craft bolts with feather |
+| `actioncraftboneknife.c` | Craft bone knife |
+| `actioncraftboneknifeenv.c` | Craft bone knife (environment) |
+| `actioncraftimprovisedeyepatch.c` | Craft improvised eyepatch |
+| `actioncraftimprovisedfacecover.c` | Craft improvised face cover |
+| `actioncraftimprovisedfeetcover.c` | Craft improvised feet cover |
+| `actioncraftimprovisedhandscover.c` | Craft improvised hands cover |
+| `actioncraftimprovisedheadcover.c` | Craft improvised head cover |
+| `actioncraftimprovisedlegscover.c` | Craft improvised legs cover |
+| `actioncraftimprovisedtorsocover.c` | Craft improvised torso cover |
+| `actioncraftropebelt.c` | Craft rope belt |
+| `actioncraftstoneknifeenv.c` | Craft stone knife (environment) |
+| `actioncreategreenhousegardenplot.c` | Create greenhouse garden plot |
+| `actiondecraftdrysackbag.c` | Decraft dry sack bag |
+| `actiondecraftropebelt.c` | Decraft rope belt |
+| `actiondecraftwitchhoodcoif.c` | Decraft witch hood coif |
+| `actiondestroycombinationlock.c` | Destroy combination lock |
+| `actiondestroypart.c` | Destroy construction part |
+| `actiondialcombinationlock.c` | Dial combination lock |
+| `actiondialcombinationlockontarget.c` | Dial combo lock on target |
+| `actiondiggardenplot.c` | Dig garden plot |
+| `actiondiginstash.c` | Dig in stash |
+| `actiondigoutstash.c` | Dig out stash |
+| `actiondigworms.c` | Dig for worms |
+| `actiondisarmexplosive.c` | Disarm explosive |
+| `actiondisarmexplosivewithremotedetonator.c` | Disarm explosive with remote detonator |
+| `actiondisarmexplosivewithremotedetonatorunpaired.c` | Disarm explosive (unpaired detonator) |
+| `actiondisarmmine.c` | Disarm mine |
+| `actiondisinfectplant.c` | Disinfect plant |
+| `actiondismantlegardenplot.c` | Dismantle garden plot |
+| `actiondismantleoven.c` | Dismantle oven |
+| `actiondismantlepart.c` | Dismantle construction part |
+| `actiondismantlestonecircle.c` | Dismantle stone circle |
+| `actiondrainliquid.c` | Drain liquid |
+| `actiondrink.c` | Drink from container |
+| `actiondrinkcan.c` | Drink from can |
+| `actiondrinkcookingpot.c` | Drink from cooking pot |
+| `actiondrinkpondcontinuous.c` | Drink from pond |
+| `actiondrinkthroughcontinuous.c` | Drink through (filter/straw) |
+| `actiondrinkwellcontinuous.c` | Drink from well |
+| `actiondummyrelease.c` | Dummy release action |
+| `actioneat.c` | Eat food |
+| `actioneatcan.c` | Eat from can |
+| `actioneatcereal.c` | Eat cereal |
+| `actioneatfruit.c` | Eat fruit |
+| `actioneatmeat.c` | Eat meat |
+| `actioneatsnowcontinuous.c` | Eat snow |
+| `actionemptybottlebase.c` | Empty bottle |
+| `actionemptycookingpot.c` | Empty cooking pot |
+| `actionemptymagazine.c` | Empty magazine |
+| `actionextinguishfireplacebyextinguisher.c` | Extinguish fireplace with extinguisher |
+| `actionextinguishfireplacebyliquid.c` | Extinguish fireplace with liquid |
+| `actionfertilizeslot.c` | Fertilize garden slot |
+| `actionfillbottlebase.c` | Fill bottle |
+| `actionfillbottlesnow.c` | Fill bottle with snow |
+| `actionfillgeneratortank.c` | Fill generator tank |
+| `actionfillobject.c` | Fill object with liquid |
+| `actionfishing.c` | Fish (original) |
+| `actionfishingnew.c` | Fish (new system) |
+| `actionfoldbasebuildingobject.c` | Fold base building object |
+| `actionforceconsume.c` | Force consume item on another |
+| `actionforcedrink.c` | Force drink another |
+| `actionforcefeed.c` | Force feed another |
+| `actionforcefeedcan.c` | Force feed can to another |
+| `actionforcefeedmeat.c` | Force feed meat to another |
+| `actiongagself.c` | Gag self |
+| `actiongagtarget.c` | Gag target |
+| `actionignitefireplacebyair.c` | Ignite fireplace (air) |
+| `actionlightitemonfire.c` | Light item on fire |
+| `actionlightitemonfirewithblowtorch.c` | Light item with blowtorch |
+| `actionloadmagazine.c` | Load magazine |
+| `actionlockattachment.c` | Lock attachment |
+| `actionlockdoors.c` | Lock doors |
+| `actionlowerflag.c` | Lower territory flag |
+| `actionminebush.c` | Mine bush (with tool) |
+| `actionminebushbyhand.c` | Mine bush by hand |
+| `actionminerock.c` | Mine rock |
+| `actionminetree.c` | Mine tree |
+| `actionminetreebark.c` | Mine tree bark |
+| `actionmountbarbedwire.c` | Mount barbed wire |
+| `actionpackgift.c` | Pack gift |
+| `actionplaceobject.c` | Place object from hands |
+| `actionplaceonground.c` | Place item on ground |
+| `actionpourliquid.c` | Pour liquid |
+| `actionpushboat.c` | Push boat |
+| `actionpushcar.c` | Push car |
+| `actionpushobject.c` | Push object |
+| `actionraiseflag.c` | Raise territory flag |
+| `actionraisemegaphone.c` | Raise megaphone |
+| `actionrefueltorch.c` | Refuel torch |
+| `actionrepairboatchassis.c` | Repair boat chassis |
+| `actionrepairboatengine.c` | Repair boat engine |
+| `actionrepaircarchassis.c` | Repair car chassis |
+| `actionrepaircarchassiswithblowtorch.c` | Repair car chassis with blowtorch |
+| `actionrepaircarengine.c` | Repair car engine |
+| `actionrepaircarenginewithblowtorch.c` | Repair car engine with blowtorch |
+| `actionrepaircarpart.c` | Repair car part |
+| `actionrepaircarpartwithblowtorch.c` | Repair car part with blowtorch |
+| `actionrepairitemwithblowtorch.c` | Repair item with blowtorch |
+| `actionrepairpart.c` | Repair construction part |
+| `actionrepairshelter.c` | Repair shelter |
+| `actionrepairtent.c` | Repair tent |
+| `actionrepairtentpart.c` | Repair tent part |
+| `actionrepairvehiclepartbase.c` | Repair vehicle part base |
+| `actionrestrainself.c` | Restrain self |
+| `actionrestraintarget.c` | Restrain target |
+| `actionsawplanks.c` | Saw planks |
+| `actionshave.c` | Shave self |
+| `actionshavetarget.c` | Shave target |
+| `actionskinning.c` | Skin animal |
+| `actionsortammopile.c` | Sort ammo pile |
+| `actionstripcarriervest.c` | Strip carrier vest |
+| `actiontransferliquid.c` | Transfer liquid |
+| `actiontunefrequency.c` | Tune frequency |
+| `actiontuneradiostation.c` | Tune radio station |
+| `actionturnvalve.c` | Turn valve |
+| `actionturnvalveundergroundreservoir.c` | Turn underground reservoir valve |
+| `actionuncoverheadself.c` | Uncover own head |
+| `actionuncoverheadtarget.c` | Uncover target's head |
+| `actionungagself.c` | Ungag self |
+| `actionungagtarget.c` | Ungag target |
+| `actionunlockcontainerdoor.c` | Unlock container door |
+| `actionunlockdoors.c` | Unlock doors |
+| `actionunmountbarbedwire.c` | Unmount barbed wire |
+| `actionunpackbox.c` | Unpack box |
+| `actionunpackgift.c` | Unpack gift |
+| `actionunrestrainself.c` | Unrestrain self |
+| `actionunrestraintarget.c` | Unrestrain target |
+| `actionunrestraintargetempty.c` | Unrestrain target (empty hands) |
+| `actionupgradetorchfromgaspump.c` | Upgrade torch from gas pump |
+| `actionuserangefinder.c` | Use rangefinder |
+| `actionviewbinoculars.c` | View through binoculars |
+| `actionviewcompass.c` | View compass |
+| `actionviewoptics.c` | View through weapon optics |
+| `actionwashhandsitemcontinuous.c` | Wash hands with item |
+| `actionwashhandssnow.c` | Wash hands with snow |
+| `actionwashhandswater.c` | Wash hands with water |
+| `actionwashhandswell.c` | Wash hands at well |
+| `actionwatergardenslot.c` | Water garden slot |
+| `actionwaterplant.c` | Water plant |
+| `actionworldcraft.c` | World craft (environmental crafting) |
+| `actionwringclothes.c` | Wring out wet clothes |
 
-The `actions/singleuse/` directory contains **~80 single-use action files** covering: attach items/seeds/wheels, close, consume single, create fireplace/oven, disinfect plant, drop item, fold bandana/map, force bite/sip, handcuff, install sparkplug, light torch, measure battery, open, pin/unpin, place fireplace, plant seed, plugin to fence, read paper, repair with tool, reset timer, take bite/sip, toggle fishing/NVG/placement, trigger remotely, turn on/off devices, unfold item, wash hands, zoom in/out, and medical actions (bite pills, disinfect, inject, etc.).
+**Continuous actions subdirectories:**
 
-The `actions/weapons/` directory contains firearm-specific actions: attach/detach magazine, load bullet/multi-bullet, mechanic manipulate, unjam.
+| Directory | Contents |
+|-----------|----------|
+| `deployactions/` | `actiondeploybase.c`, `actiondeployhuntingtrap.c`, `actiondeployobject.c` |
+| `medical/` | Bandage, burn sew, check pulse, collect blood, CPR, defibrillate, drink alcohol/disinfectant, eat pills, force feed medical, give blood/saline, measure temperature, sew, splint, test blood (20 files) |
+| `vehicles/` | `actioncarhorn.c`, `actionfillbrakes.c`, `actionfillcoolant.c`, `actionfillfuel.c`, `actionfilloil.c`, `actionstartengine.c`, `actionstartengineboat.c` |
+
+**Interact Actions (`actions/interact/`):**
+
+| File | Purpose |
+|------|---------|
+| `actionbuildshelter.c` | Build shelter |
+| `actionclosebarrel.c` | Close barrel |
+| `actionclosebarrelholes.c` | Close barrel holes |
+| `actionclosedoors.c` | Close doors |
+| `actionclosefence.c` | Close fence |
+| `actiondetach.c` | Detach item |
+| `actiondetachfromtarget.c` | Detach item from target |
+| `actiondetachpowersourcefrompanel.c` | Detach power source from panel |
+| `actionenterladder.c` | Enter ladder |
+| `actionexitladder.c` | Exit ladder |
+| `actionfoldobject.c` | Fold object |
+| `actiongetintransport.c` | Get in transport vehicle |
+| `actiongetouttransport.c` | Get out of transport |
+| `actionhandspartswitch.c` | Switch hands part |
+| `actionharvestcrops.c` | Harvest crops |
+| `actionitest.c` | Interaction test |
+| `actionnextcombinationlockdialontarget.c` | Next combo lock dial |
+| `actionopenbarrel.c` | Open barrel |
+| `actionopenbarrelholes.c` | Open barrel holes |
+| `actionopendoors.c` | Open doors |
+| `actionopenfence.c` | Open fence |
+| `actionoperatepanel.c` | Operate panel |
+| `actionoperatepanelpowerstation.c` | Operate power station panel |
+| `actionpackshelter.c` | Pack shelter |
+| `actionpacktent.c` | Pack tent |
+| `actionpickberry.c` | Pick berry |
+| `actionpickupchicken.c` | Pick up chicken (dead) |
+| `actionpullbodyfromtransport.c` | Pull body from transport |
+| `actionpulloutplug.c` | Pull out plug |
+| `actionremoveplant.c` | Remove plant |
+| `actionremoveseed.c` | Remove seed |
+| `actionrepacktent.c` | Repack tent |
+| `actionrepositionpluggeditem.c` | Reposition plugged item |
+| `actionsetalarmclock.c` | Set alarm clock |
+| `actionsetkitchentimer.c` | Set kitchen timer |
+| `actionswapitemtohand.c` | Swap item to hand |
+| `actiontakearrow.c` | Take arrow |
+| `actiontakearrowtohands.c` | Take arrow to hands |
+| `actiontakefireplacefrombarrel.c` | Take fireplace from barrel |
+| `actiontakefireplaceindoor.c` | Take indoor fireplace |
+| `actiontakehybridattachment.c` | Take hybrid attachment |
+| `actiontakehybridattachmenttohands.c` | Take hybrid attachment to hands |
+| `actiontakeitem.c` | Take item |
+| `actiontakeitemtohands.c` | Take item to hands |
+| `actiontakematerialtohands.c` | Take material to hands |
+| `actiontakeovenindoor.c` | Take indoor oven |
+| `actiontoggletentopen.c` | Toggle tent open/closed |
+| `actiontunefrequencyonground.c` | Tune frequency (on ground) |
+| `actionturnoffpowergenerator.c` | Turn off power generator |
+| `actionturnoffspotlight.c` | Turn off spotlight |
+| `actionturnofftransmitteronground.c` | Turn off transmitter (on ground) |
+| `actionturnoffwhileonground.c` | Turn off device (on ground) |
+| `actionturnonpowergenerator.c` | Turn on power generator |
+| `actionturnonspotlight.c` | Turn on spotlight |
+| `actionturnontransmitteronground.c` | Turn on transmitter (on ground) |
+| `actionturnonwhileonground.c` | Turn on device (on ground) |
+| `actionunplugthisbycord.c` | Unplug device by cord |
+| `actionuseundergroundlever.c` | Use underground lever |
+| `actionuseundergroundpanel.c` | Use underground panel |
+| `actionwashhandswaterone.c` | Wash hands (water, one-handed) |
+| `actionwashhandswellone.c` | Wash hands (well, one-handed) |
+
+**Interact Vehicle Actions (`actions/interact/vehicles/`):**
+
+| File | Purpose |
+|------|---------|
+| `actionanimatecarselection.c` | Animate car selection |
+| `actionanimateseats.c` | Animate seats |
+| `actioncardoors.c` | Car doors |
+| `actioncardoorsoutside.c` | Car doors (outside) |
+| `actionclosecardoors.c` | Close car doors |
+| `actionclosecardoorsoutside.c` | Close car doors (outside) |
+| `actionopencardoors.c` | Open car doors |
+| `actionopencardoorsoutside.c` | Open car doors (outside) |
+| `actionsideplateinteract.c` | Side plate interaction |
+| `actionswitchlights.c` | Switch vehicle lights |
+
+**Single-Use Actions (`actions/singleuse/`):**
+
+| File | Purpose |
+|------|---------|
+| `actionattach.c` | Attach item |
+| `actionattachonproxy.c` | Attach on proxy |
+| `actionattachonselection.c` | Attach on selection |
+| `actionattachontentproxy.c` | Attach on tent proxy |
+| `actionattachontrap.c` | Attach on trap |
+| `actionattachpowersourcetopanel.c` | Attach power source to panel |
+| `actionattachseeds.c` | Attach seeds |
+| `actionattachtoconstruction.c` | Attach to construction |
+| `actionattachwheels.c` | Attach wheels |
+| `actionattachwithswich.c` | Attach with switch |
+| `actionbuildpartswitch.c` | Build part with switch |
+| `actionclapbeartrapwiththisitem.c` | Clap bear trap with item |
+| `actionclose.c` | Close (generic) |
+| `actionconsumesingle.c` | Consume single |
+| `actioncreateindoorfireplace.c` | Create indoor fireplace |
+| `actioncreateindooroven.c` | Create indoor oven |
+| `actiondisinfectplantbit.c` | Disinfect plant (single) |
+| `actiondropitem.c` | Drop item |
+| `actiondropitemsimple.c` | Drop item simple |
+| `actionemptyseedspack.c` | Empty seeds pack |
+| `actionextinquishtorchvideo.c` | Extinguish torch (video) |
+| `actionfoldbandanatohead.c` | Fold bandana to head |
+| `actionfoldbandanatomask.c` | Fold bandana to mask |
+| `actionfoldentitytoslot.c` | Fold entity to slot |
+| `actionfoldmap.c` | Fold map |
+| `actionforceabite.c` | Force a bite |
+| `actionforceabitecan.c` | Force a bite (can) |
+| `actionforceasip.c` | Force a sip |
+| `actionforceconsumesingle.c` | Force consume single |
+| `actionhandcufftarget.c` | Handcuff target |
+| `actioninstallsparkplug.c` | Install spark plug |
+| `actionlighttorchvideo.c` | Light torch (video) |
+| `actionmeasurebattery.c` | Measure battery |
+| `actionnextcombinationlockdial.c` | Next combo lock dial |
+| `actionopen.c` | Open (generic) |
+| `actionpin.c` | Pin (grenade) |
+| `actionplacefireplaceindoor.c` | Place fireplace indoor |
+| `actionplacefireplaceintobarrel.c` | Place fireplace in barrel |
+| `actionplaceovenindoor.c` | Place oven indoor |
+| `actionplantseed.c` | Plant seed |
+| `actionplugin.c` | Plugin item |
+| `actionplugintofence.c` | Plugin to fence |
+| `actionplugtargetintothis.c` | Plug target into this |
+| `actionreadpaper.c` | Read paper |
+| `actionrepairwithtoolfromhands.c` | Repair with tool from hands |
+| `actionresetkitchentimer.c` | Reset kitchen timer |
+| `actiontakeabite.c` | Take a bite |
+| `actiontakeabitecan.c` | Take a bite (can) |
+| `actiontakeasip.c` | Take a sip |
+| `actiontakematerialtohandsswitch.c` | Take material to hands (switch) |
+| `actiontogglefishing.c` | Toggle fishing |
+| `actiontogglenvg.c` | Toggle NVG |
+| `actiontogglenvmode.c` | Toggle NV mode |
+| `actiontoggleplaceobject.c` | Toggle place object |
+| `actiontoggleplaceobjectdigging.c` | Toggle place object (digging) |
+| `actiontriggerremotely.c` | Trigger remotely |
+| `actionturnoffalarmclock.c` | Turn off alarm clock |
+| `actionturnoffheadtorch.c` | Turn off head torch |
+| `actionturnoffhelmetflashlight.c` | Turn off helmet flashlight |
+| `actionturnofftransmitter.c` | Turn off transmitter |
+| `actionturnoffweaponflashlight.c` | Turn off weapon flashlight |
+| `actionturnoffwhileinhands.c` | Turn off (in hands) |
+| `actionturnonalarmclock.c` | Turn on alarm clock |
+| `actionturnonchemlight.c` | Turn on chem light |
+| `actionturnonheadtorch.c` | Turn on head torch |
+| `actionturnonheatpack.c` | Turn on heat pack |
+| `actionturnonhelmetflashlight.c` | Turn on helmet flashlight |
+| `actionturnontransmitter.c` | Turn on transmitter |
+| `actionturnonweaponflashlight.c` | Turn on weapon flashlight |
+| `actionturnonwhileinhands.c` | Turn on (in hands) |
+| `actionunfoldbandana.c` | Unfold bandana |
+| `actionunfoldentity.c` | Unfold entity |
+| `actionunfoldmap.c` | Unfold map |
+| `actionunpin.c` | Unpin (grenade) |
+| `actionwashhandsitem.c` | Wash hands with item |
+| `actionworldcraftcancel.c` | Cancel world craft |
+| `actionworldcraftswitch.c` | Switch world craft mode |
+| `actionworldflagactionswitch.c` | Switch world flag action |
+| `actionworldliquidactionswitch.c` | Switch world liquid action |
+| `actionwritepaper.c` | Write on paper |
+| `actionzoomin.c` | Zoom in |
+| `actionzoomout.c` | Zoom out |
+
+**Single-Use Medical Actions (`actions/singleuse/medical/`):**
+
+| File | Purpose |
+|------|---------|
+| `actionbitecharcoaltablets.c` | Bite charcoal tablets |
+| `actionbitepainkillertablets.c` | Bite painkiller tablets |
+| `actionbitepurificationtablets.c` | Bite purification tablets |
+| `actionbitetetracyclineantibiotics.c` | Bite tetracycline antibiotics |
+| `actionbitevitaminbottle.c` | Bite vitamin bottle |
+| `actiondisinfectself.c` | Disinfect self |
+| `actiondisinfecttarget.c` | Disinfect target |
+| `actioneatpillfrombottle.c` | Eat pill from bottle |
+| `actioneattabletfromwrapper.c` | Eat tablet from wrapper |
+| `actionforcebitecharcoaltablets.c` | Force bite charcoal tablets |
+| `actionforcebitepainkillertablets.c` | Force bite painkiller tablets |
+| `actionforcebitepurificationtablets.c` | Force bite purification tablets |
+| `actionforcebitetetracyclineantibiotics.c` | Force bite tetracycline antibiotics |
+| `actionforcebitevitaminbottle.c` | Force bite vitamin bottle |
+| `actioninjectepinephrineself.c` | Inject epinephrine (self) |
+| `actioninjectepinephrinetarget.c` | Inject epinephrine (target) |
+| `actioninjectmorphineself.c` | Inject morphine (self) |
+| `actioninjectmorphinetarget.c` | Inject morphine (target) |
+| `actioninjectself.c` | Inject self (generic) |
+| `actioninjecttarget.c` | Inject target (generic) |
+
+**Single-Use Vehicle Actions (`actions/singleuse/vehicles/`):**
+
+| File | Purpose |
+|------|---------|
+| `actionstopengine.c` | Stop engine |
+| `actionstopengineboat.c` | Stop boat engine |
+| `actionswitchseats.c` | Switch seats |
+
+**Weapon Actions (`actions/weapons/`):**
+
+| File | Purpose |
+|------|---------|
+| `firearmactionattachmagazine.c` | Attach magazine to firearm |
+| `firearmactionbase.c` | Firearm action base class |
+| `firearmactiondetachmagazine.c` | Detach magazine from firearm |
+| `firearmactionloadbullet.c` | Load single bullet |
+| `firearmactionloadmultibullet.c` | Load multiple bullets |
+| `firearmactionmechanicmanipulate.c` | Mechanical manipulation |
+| `firearmactionunjam.c` | Unjam weapon |
+
+**Item Condition Components (`itemconditioncomponents/`):**
+
+| File | Purpose |
+|------|---------|
+| `ccibase.c` | Item condition component base |
+| `ccidummy.c` | Dummy condition component |
+| `ccinone.c` | No condition check |
+| `ccinonruined.c` | Not ruined condition |
+| `ccinotempty.c` | Not empty condition |
+| `ccinotpresent.c` | Not present condition |
+| `ccinotruinedanddry.c` | Not ruined and dry condition |
+| `ccinotruinedandempty.c` | Not ruined and empty condition |
+| `ccipresent.c` | Present condition |
+
+**Target Condition Components (`targetconditionscomponents/`):**
+
+| File | Purpose |
+|------|---------|
+| `cctbase.c` | Target condition component base |
+| `cctcursor.c` | Cursor target condition |
+| `cctcursornoobject.c` | Cursor no object condition |
+| `cctcursornoruincheck.c` | Cursor no ruin check |
+| `cctcursorparent.c` | Cursor parent condition |
+| `cctdummy.c` | Dummy target condition |
+| `cctman.c` | Man target condition |
+| `cctnone.c` | No target condition |
+| `cctnonruined.c` | Not ruined target condition |
+| `cctobject.c` | Object target condition |
+| `cctself.c` | Self target condition |
+| `cctsurface.c` | Surface target condition |
+| `ccttree.c` | Tree target condition |
+| `cctwatersurface.c` | Water surface target condition |
 
 **Root files:**
 
@@ -727,6 +1355,117 @@ The `entities/` directory contains class implementations for world objects, crea
 | `industrial/land_power_pole_wood_industrial.c` | Wooden power pole industrial |
 | `industrial/land_trailer_industrial.c` | Trailer industrial |
 | `industrial/land_transformer_industrial.c` | Transformer industrial |
+| `industrial/misc/land_misc_through_static.c` | Through static industrial misc |
+
+**Military:**
+
+| File | Purpose |
+|------|---------|
+| `military/a2/land_a2_budova1_military.c` | A2 building military |
+| `military/a2/land_a2_budova4_military.c` | A2 building military |
+| `military/a2/land_a2_bunker_military.c` | A2 bunker military |
+| `military/a2/land_a2_hangar_military.c` | A2 hangar military |
+| `military/a2/land_a2_panelak1_military.c` | A2 panel building military |
+| `military/a2/land_a2_plot_vnitrek_military.c` | A2 interior plot military |
+| `military/a2/land_a2_plot_zed_military.c` | A2 wall military |
+| `military/a2/land_a2_posedestone_military.c` | A2 stone base military |
+| `military/a2/land_a2_stodol_old_open_military.c` | A2 old barn military |
+| `military/a2/land_a2_teplacka_military.c` | A2 heating plant military |
+| `military/a3/land_a3_hangar_military.c` | A3 hangar military |
+| `military/a3/land_a3_kasarna_prujezd_military.c` | A3 barracks passage military |
+| `military/a3/land_a3_pristrelek_military.c` | A3 shelter military |
+| `military/phoenix/land_phoenix_guardhouse.c` | Phoenix guardhouse |
+| `military/phoenix/land_phoenix_hqs.c` | Phoenix headquarters |
+| `military/houses/mil_barracks1.c` | Military barracks 1 |
+| `military/houses/mil_barracks3.c` | Military barracks 3 |
+| `military/houses/mil_barracks4.c` | Military barracks 4 |
+
+**Residential:**
+
+| File | Purpose |
+|------|---------|
+| `residential/houseblocks/land_houseblock_1.c` | House block 1 |
+| `residential/houseblocks/land_houseblock_2.c` | House block 2 |
+| `residential/houseblocks/land_houseblock_3.c` | House block 3 |
+| `residential/houseblocks/land_houseblock_4.c` | House block 4 |
+| `residential/houseblocks/houseblock_1f1.c` | House block 1F1 |
+| `residential/houseblocks/houseblock_1f3.c` | House block 1F3 |
+| `residential/houseblocks/houseblock_1f4.c` | House block 1F4 |
+| `residential/houseblocks/houseblock_2f1.c` | House block 2F1 |
+| `residential/houseblocks/houseblock_2f8.c` | House block 2F8 |
+| `residential/houseblocks/houseblock_2f9.c` | House block 2F9 |
+| `residential/houseblocks/houseblock_3f2.c` | House block 3F2 |
+| `residential/houseblocks/houseblock_5f.c` | House block 5F |
+| `residential/houses/land_house_1b01_pub.c` | House 1B01 pub |
+| `residential/houses/land_house_1w01.c` | House 1W01 |
+| `residential/houses/land_house_1w02.c` | House 1W02 |
+| `residential/houses/land_house_1w03.c` | House 1W03 |
+| `residential/houses/land_house_1w04.c` | House 1W04 |
+| `residential/houses/land_house_1w05.c` | House 1W05 |
+| `residential/houses/land_house_1w06.c` | House 1W06 |
+| `residential/houses/land_house_1w08.c` | House 1W08 |
+| `residential/houses/land_house_1w09.c` | House 1W09 |
+| `residential/houses/land_house_1w10.c` | House 1W10 |
+| `residential/houses/land_house_1w11.c` | House 1W11 |
+| `residential/houses/land_house_1w12.c` | House 1W12 |
+| `residential/houses/land_house_2b01.c` | House 2B01 |
+| `residential/houses/land_house_2w01.c` | House 2W01 |
+| `residential/houses/land_house_2w02.c` | House 2W02 |
+| `residential/houses/land_village_pub.c` | Village pub |
+| `residential/misc/land_misc_greenhouse.c` | Greenhouse |
+| `residential/misc/land_misc_well_pump_blue.c` | Blue well pump |
+| `residential/misc/land_misc_well_pump_yellow.c` | Yellow well pump |
+
+**Specific:**
+
+| File | Purpose |
+|------|---------|
+| `specific/land_church.c` | Church building |
+| `specific/land_water_tower.c` | Water tower |
+| `specific/land_lighthouse.c` | Lighthouse |
+| `specific/land_windmill.c` | Windmill |
+| `specific/land_castle_berghof.c` | Castle berghof |
+| `specific/land_castle_ruins.c` | Castle ruins |
+| `specific/anniversarymusicsource.c` | Anniversary music source |
+| `specific/anniversaryspotlight.c` | Anniversary spotlight |
+| `specific/bonfire.c` | Bonfire |
+| `specific/land_buoy.c` | Buoy |
+| `specific/land_fuelstation_feed.c` | Fuel station feed |
+| `specific/land_waterspring_sakhal.c` | Sakhal water spring |
+| `specific/misc_tirepile_burning.c` | Burning tire pile |
+
+**Underground:**
+
+| File | Purpose |
+|------|---------|
+| `underground/bunker.c` | Underground bunker |
+| `underground/entrance/land_underground_entrance.c` | Underground entrance |
+| `underground/entrance/land_underground_panel.c` | Underground panel |
+| `underground/entrance/land_underground_panel_lever.c` | Underground panel lever |
+| `underground/land_warheadstorage_main.c` | Warhead storage main |
+| `underground/land_warheadstorage_powerstation.c` | Warhead storage power station |
+| `underground/powergeneratorstatic.c` | Static power generator |
+| `underground/stairs/land_underground_stairs_bottom.c` | Underground stairs bottom |
+| `underground/stairs/land_underground_stairs_middle.c` | Underground stairs middle |
+| `underground/stairs/land_underground_stairs_top.c` | Underground stairs top |
+| `underground/stairs/land_underground_stairs_exit.c` | Underground stairs exit |
+| `underground/water/land_underground_waterreservoir.c` | Underground water reservoir |
+
+**Wrecks:**
+
+| File | Purpose |
+|------|---------|
+| `wrecks/land_a3_wreck_heli.c` | A3 helicopter wreck |
+| `wrecks/land_wreck_brigde.c` | Bridge wreck |
+| `wrecks/land_wreck_car.c` | Car wreck |
+| `wrecks/land_wreck_heli.c` | Helicopter wreck |
+| `wrecks/land_wreck_mi8.c` | Mi8 wreck |
+| `wrecks/land_wreck_truck.c` | Truck wreck |
+| `wrecks/land_wreck_truck_door.c` | Truck door wreck |
+| `wrecks/staticobj_roadblock_wood_small.c` | Small wood roadblock |
+| `wrecks/wreck_mi8.c` | Mi8 wreck static |
+| `wrecks/wreck_santassleigh.c` | Santa's sleigh wreck |
+| `wrecks/wreck_uh1y.c` | UH-1Y wreck |
 
 **Military:**
 
@@ -1031,27 +1770,629 @@ The `entities/` directory contains class implementations for world objects, crea
 
 **Item Base Subdirectories:**
 
+**Bark Colors (`bark_colorbase/`):**
+
+| File | Purpose |
+|------|---------|
+| `bark_birch.c` | Birch bark item |
+| `bark_oak.c` | Oak bark item |
+
+**Base Building (`basebuildingbase/`):**
+
+| File | Purpose |
+|------|---------|
+| `fence.c` | Fence construction |
+| `sheltersite.c` | Shelter construction site |
+| `staticflagpole.c` | Static flag pole |
+| `totem.c` | Territory totem |
+| `watchtower.c` | Watchtower construction |
+
+**Blood Containers (`bloodcontainerbase/`):**
+
+| File | Purpose |
+|------|---------|
+| `bloodbagempty.c` | Empty blood bag |
+| `bloodbagfull.c` | Full blood bag |
+| `bloodbagiv.c` | Blood bag IV |
+| `bloodcontainerbase.c` | Blood container base |
+| `bloodsyringe.c` | Blood syringe |
+| `syringe.c` | Syringe |
+
+**Clothing (`clothing/`):**
+
+| File | Purpose |
+|------|---------|
+| `airbornemask.c` | Airborne mask |
+| `alicebag_colorbase.c` | Alice bag (color variants) |
+| `armband_colorbase.c` | Armband (color variants) |
+| `armband_white.c` | White armband |
+| `armypouch_colorbase.c` | Army pouch (color variants) |
+| `assaultbag_colorbase.c` | Assault bag (color variants) |
+| `athleticshoes_colorbase.c` | Athletic shoes (color variants) |
+| `aviatorglasses.c` | Aviator sunglasses |
+| `balaclava3holes_colorbase.c` | Balaclava 3-hole (color variants) |
+| `balaclavamask_colorbase.c` | Balaclava mask (color variants) |
+| `ballerinas_colorbase.c` | Ballerina shoes (color variants) |
+| `bandana_hybrid.c` | Bandana hybrid (hat/mask) |
+| `bandanamask_colorbase.c` | Bandana mask (color variants) |
+| `baseballcap_colorbase.c` | Baseball cap (color variants) |
+| `bdujacket.c` | BDU jacket |
+| `bdupants.c` | BDU pants |
+| `beaniehat_colorbase.c` | Beanie hat (color variants) |
+| `blouse_colorbase.c` | Blouse (color variants) |
+| `bomberjacket_colorbase.c` | Bomber jacket (color variants) |
+| `booniehat_colorbase.c` | Boonie hat (color variants) |
+| `breeches_colorbase.c` | Breeches (color variants) |
+| `budenovkahat_colorbase.c` | Budenovka hat (color variants) |
+| `burlapsackcover.c` | Burlap sack cover |
+| `bushlatpolicejacket.c` | Bushlat police jacket |
+| `canvasbag_colorbase.c` | Canvas bag (color variants) |
+| `canvaspants.c` | Canvas pants |
+| `cargopants_colorbase.c` | Cargo pants (color variants) |
+| `chainmail.c` | Chainmail armor |
+| `chainmail_coif.c` | Chainmail coif |
+| `chainmail_leggings.c` | Chainmail leggings |
+| `chernarussportshirt.c` | Chernarus sport shirt |
+| `chestholster.c` | Chest holster |
+| `chestplate.c` | Chest plate armor |
+| `childbag_colorbase.c` | Child's bag (color variants) |
+| `christmasheadband_colorbase.c` | Christmas headband (color variants) |
+| `civilianbelt.c` | Civilian belt |
+| `combatboots_colorbase.c` | Combat boots (color variants) |
+| `courierbag.c` | Courier bag |
+| `cowboyhat_colorbase.c` | Cowboy hat (color variants) |
+| `coyotebag_colorbase.c` | Coyote bag (color variants) |
+| `crookednose.c` | Crooked nose |
+| `dallasmask.c` | Dallas mask (Payday) |
+| `denimjacket.c` | Denim jacket |
+| `designerglasses.c` | Designer glasses |
+| `downjacket_colorbase.c` | Down jacket (color variants) |
+| `dressshoes_colorbase.c` | Dress shoes (color variants) |
+| `drybag_colorbase.c` | Dry bag (color variants) |
+| `drysackbag_colorbase.c` | Dry sack bag (color variants) |
+| `duffelbagsmall_colorbase.c` | Small duffel bag (color variants) |
+| `eyepatch_improvised.c` | Improvised eyepatch |
+| `facecover_improvised.c` | Improvised face cover |
+| `feetcover_improvised.c` | Improvised feet cover |
+| `firefighterjacket_colorbase.c` | Firefighter jacket (color variants) |
+| `firefighterspants_colorbase.c` | Firefighter pants (color variants) |
+| `flatcap_colorbase.c` | Flat cap (color variants) |
+| `furcourierbag.c` | Fur courier bag |
+| `furimprovisedbag.c` | Fur improvised bag |
+| `gasmask.c` | Gas mask |
+| `gasmask_filter.c` | Gas mask filter |
+| `ghilliebushrag_colorbase.c` | Ghillie bushrag (color variants) |
+| `ghilliehood_colorbase.c` | Ghillie hood (color variants) |
+| `ghilliesuit_colorbase.c` | Ghillie suit (color variants) |
+| `ghillietop_colorbase.c` | Ghillie top (color variants) |
+| `gorkaejacket_colorbase.c` | Gorka E jacket (color variants) |
+| `gorkapants_colorbase.c` | Gorka pants (color variants) |
+| `gp5gasmask.c` | GP-5 gas mask |
+| `greathelm.c` | Great helm |
+| `guyfawkesmask.c` | Guy Fawkes mask |
+| `handscover_improvised.c` | Improvised hands cover |
+| `headbandana_colorbase.c` | Head bandana (color variants) |
+| `headcover_improvised.c` | Improvised head cover |
+| `headdress_colorbase.c` | Headdress (color variants) |
+| `headtorch_black.c` | Black head torch |
+| `headtorch_colorbase.c` | Head torch (color variants) |
+| `headtorch_grey.c` | Grey head torch |
+| `helmetbase.c` | Helmet base class |
+| `highcapacityvest_colorbase.c` | High capacity vest (color variants) |
+| `hikingboots_colorbase.c` | Hiking boots (color variants) |
+| `hikingbootslow_colorbase.c` | Low hiking boots (color variants) |
+| `hikingjacket_colorbase.c` | Hiking jacket (color variants) |
+| `hippack_colorbase.c` | Hip pack (color variants) |
+| `hockeymask.c` | Hockey mask |
+| `hoodie_colorbase.c` | Hoodie (color variants) |
+| `hoxtonmask.c` | Hoxton mask (Payday) |
+| `hunterpants_colorbase.c` | Hunter pants (color variants) |
+| `huntingbag.c` | Hunting bag |
+| `huntingjacket_colorbase.c` | Hunting jacket (color variants) |
+| `huntingvest.c` | Hunting vest |
+| `improvisedbag.c` | Improvised bag |
+| `jeans_colorbase.c` | Jeans (color variants) |
+| `joggingshoes_colorbase.c` | Jogging shoes (color variants) |
+| `jumpsuitjacket_colorbase.c` | Jumpsuit jacket (color variants) |
+| `jumpsuitpants_colorbase.c` | Jumpsuit pants (color variants) |
+| `jungleboots_colorbase.c` | Jungle boots (color variants) |
+| `knifeholster.c` | Knife holster |
+| `knifesheaths.c` | Knife sheaths |
+| `labcoat.c` | Lab coat |
+| `leafcrown.c` | Leaf crown |
+| `leatherbelt_colorbase.c` | Leather belt (color variants) |
+| `leathergloves_colorbase.c` | Leather gloves (color variants) |
+| `leatherhat_colorbase.c` | Leather hat (color variants) |
+| `leatherjacket_colorbase.c` | Leather jacket (color variants) |
+| `leatherjacket_natural.c` | Natural leather jacket |
+| `leathermoccasinsshoes_natural.c` | Natural leather moccasins |
+| `leatherpants_colorbase.c` | Leather pants (color variants) |
+| `leatherpants_natural.c` | Natural leather pants |
+| `leathersack_colorbase.c` | Leather sack (color variants) |
+| `leathersack_natural.c` | Natural leather sack |
+| `leathershirt_colorbase.c` | Leather shirt (color variants) |
+| `leathershoes_colorbase.c` | Leather shoes (color variants) |
+| `leatherstoragevest_colorbase.c` | Leather storage vest (color variants) |
+| `leatherstoragevest_natural.c` | Natural leather storage vest |
+| `legcover_improvised.c` | Improvised leg cover |
+| `m65jacket_colorbase.c` | M-65 jacket (color variants) |
+| `mansuit_colorbase.c` | Man's suit (color variants) |
+| `maskbase.c` | Mask base class |
+| `medicalscrubshat_colorbase.c` | Medical scrubs hat (color variants) |
+| `medicalscrubspants_colorbase.c` | Medical scrubs pants (color variants) |
+| `medicalscrubsshirt_colorbase.c` | Medical scrubs shirt (color variants) |
+| `medievalboots.c` | Medieval boots |
+| `militarybelt.c` | Military belt |
+| `militaryberet_colorbase.c` | Military beret (color variants) |
+| `militaryboots_colorbase.c` | Military boots (color variants) |
+| `mimemask.c` | Mime mask |
+| `minidress_colorbase.c` | Mini dress (color variants) |
+| `morozkohat.c` | Morozko hat |
+| `mountainbag_colorbase.c` | Mountain bag (color variants) |
+| `mouthrag.c` | Mouth rag |
+| `navyuniformjacket.c` | Navy uniform jacket |
+| `navyuniformpants.c` | Navy uniform pants |
+| `nbcbootsbase.c` | NBC boots base |
+| `nbcgloves_colorbase.c` | NBC gloves (color variants) |
+| `nbchood.c` | NBC hood |
+| `nbcjacketbase.c` | NBC jacket base |
+| `nbcpantsbase.c` | NBC pants base |
+| `nioshfacemask.c` | NIOSH face mask |
+| `norsehelm.c` | Norse helm |
+| `nursedress_colorbase.c` | Nurse dress (color variants) |
+| `nvgheadstrap.c` | NVG head strap |
+| `officerhat.c` | Officer hat |
+| `okzkcap_colorbase.c` | OKZK cap (color variants) |
+| `omkjacket_colorbase.c` | OMK jacket (color variants) |
+| `omkpants_colorbase.c` | OMK pants (color variants) |
+| `omnogloves_colorbase.c` | OMNO gloves (color variants) |
+| `paddedgloves_colorbase.c` | Padded gloves (color variants) |
+| `paramedicjacket_colorbase.c` | Paramedic jacket (color variants) |
+| `paramedicpants_colorbase.c` | Paramedic pants (color variants) |
+| `paydaymask_colorbase.c` | Payday mask (color variants) |
+| `petushokhat_colorbase.c` | Petushok hat (color variants) |
+| `pilotkacap.c` | Pilotka cap |
+| `platecarrierholster.c` | Plate carrier holster |
+| `platecarriervest.c` | Plate carrier vest |
+| `policecap.c` | Police cap |
+| `policejacket.c` | Police jacket |
+| `policejacketorel.c` | Police jacket (Orel) |
+| `policepants.c` | Police pants |
+| `policepantsorel.c` | Police pants (Orel) |
+| `policevest.c` | Police vest |
+| `pressvest_colorbase.c` | Press vest (color variants) |
+| `prisonercap.c` | Prisoner cap |
+| `prisonuniformjacket.c` | Prison uniform jacket |
+| `prisonuniformpants.c` | Prison uniform pants |
+| `quiltedjacket_colorbase.c` | Quilted jacket (color variants) |
+| `radarcap_colorbase.c` | Radar cap (color variants) |
+| `raincoat_colorbase.c` | Raincoat (color variants) |
+| `reflexvest.c` | Reflex vest |
+| `ridersjacket_colorbase.c` | Riders jacket (color variants) |
+| `ropebelt.c` | Rope belt |
+| `santasbeard.c` | Santa's beard |
+| `santashat.c` | Santa's hat |
+| `sherpahat_colorbase.c` | Sherpa hat (color variants) |
+| `shirt_colorbase.c` | Shirt (color variants) |
+| `skigloves_colorbase.c` | Ski gloves (color variants) |
+| `skigoggles_colorbase.c` | Ski goggles (color variants) |
+| `skirt_colorbase.c` | Skirt (color variants) |
+| `slackspants_colorbase.c` | Slacks pants (color variants) |
+| `slingbag.c` | Sling bag |
+| `smershbag.c` | Smersh bag |
+| `smershvest.c` | Smersh vest |
+| `sneakers_colorbase.c` | Sneakers (color variants) |
+| `snowstormushanka_colorbase.c` | Snowstorm ushanka (color variants) |
+| `sportglasses_colorbase.c` | Sport glasses (color variants) |
+| `surgicalgloves_colorbase.c` | Surgical gloves (color variants) |
+| `surgicalmask.c` | Surgical mask |
+| `sweater_colorbase.c` | Sweater (color variants) |
+| `tacticalgloves_colorbase.c` | Tactical gloves (color variants) |
+| `tacticalgoggles.c` | Tactical goggles |
+| `tacticalshirt_colorbase.c` | Tactical shirt (color variants) |
+| `taloonbag_colorbase.c` | Taloon bag (color variants) |
+| `tankerhelmet.c` | Tanker helmet |
+| `telnyashkashirt.c` | Telnyashka shirt |
+| `thickframesglasses.c` | Thick frames glasses |
+| `thinframesglasses.c` | Thin frames glasses |
+| `torsocover_improvised.c` | Improvised torso cover |
+| `tortillabag.c` | Tortilla bag |
+| `tracksuitjacket_colorbase.c` | Tracksuit jacket (color variants) |
+| `tracksuitpants_colorbase.c` | Tracksuit pants (color variants) |
+| `tshirt_colorbase.c` | T-shirt (color variants) |
+| `tshirt_dyed.c` | Dyed T-shirt |
+| `tshirt_white.c` | White T-shirt |
+| `ttskoboots.c` | TTSKO boots |
+| `ttskojacket_colorbase.c` | TTSKO jacket (color variants) |
+| `ttskopants.c` | TTSKO pants |
+| `ukassvest_colorbase.c` | UKASS vest (color variants) |
+| `ushanka_colorbase.c` | Ushanka hat (color variants) |
+| `usmcjacket_colorbase.c` | USMC jacket (color variants) |
+| `usmcpants_colorbase.c` | USMC pants (color variants) |
+| `weldingmask.c` | Welding mask |
+| `wellies_colorbase.c` | Wellies boots (color variants) |
+| `wintercoif_colorbase.c` | Winter coif (color variants) |
+| `witchhat.c` | Witch hat |
+| `witchhood.c` | Witch hood |
+| `witchhoodcoif_colorbase.c` | Witch hood coif (color variants) |
+| `wolfmask.c` | Wolf mask |
+| `womansuit_colorbase.c` | Woman's suit (color variants) |
+| `woolcoat_colorbase.c` | Wool coat (color variants) |
+| `woolgloves_colorbase.c` | Wool gloves (color variants) |
+| `woolglovesfingerless_colorbase.c` | Fingerless wool gloves (color variants) |
+| `workingboots_colorbase.c` | Working boots (color variants) |
+| `workinggloves_colorbase.c` | Working gloves (color variants) |
+| `zmijovkacap_colorbase.c` | Zmijovka cap (color variants) |
+
+**Container Base (`container_base/`):**
+
+| File | Purpose |
+|------|---------|
+| `anniversarybox.c` | Anniversary gift box |
+| `en5c_bear_colorbase.c` | EN5C bear container (color variants) |
+| `en5c_waterproofbag_colorbase.c` | EN5C waterproof bag (color variants) |
+
+**Edible Base (`edible_base/`):**
+
+| File | Purpose |
+|------|---------|
+| `edible_base.c` | Edible base class |
+| `agaricusmushroom.c` | Agaricus mushroom |
+| `amanitamushroom.c` | Amanita mushroom (poisonous) |
+| `apple.c` | Apple |
+| `auriculariamushroom.c` | Auricularia mushroom |
+| `bakedbeanscan.c` | Baked beans can (unopened) |
+| `banana.c` | Banana |
+| `bearsteakmeat.c` | Bear steak meat |
+| `bitterlings.c` | Bitterling fish |
+| `boarsteakmeat.c` | Boar steak meat |
+| `boletusmushroom.c` | Boletus mushroom |
+| `bottle_base.c` | Bottle base class |
+| `bottle_base/canistergasoline.c` | Gasoline canister |
+| `bottle_base/canteen.c` | Canteen |
+| `bottle_base/cauldron.c` | Cauldron |
+| `bottle_base/filteringbottle.c` | Filtering bottle |
+| `bottle_base/pot.c` | Cooking pot |
+| `bottle_base/waterbottle.c` | Water bottle |
+| `boxcerealcrunchin.c` | Box of cereal |
+| `candycane_colorbase.c` | Candy cane (color variants) |
+| `caninaberry.c` | Canina berry |
+| `cannabis.c` | Cannabis |
+| `carp.c` | Carp fish |
+| `carpfilletmeat.c` | Carp fillet meat |
+| `charcoaltablets.c` | Charcoal tablets |
+| `chelatingtablets.c` | Chelating tablets |
+| `chicken_colorbase.c` | Chicken (color variants) |
+| `chickenbreastmeat.c` | Chicken breast meat |
+| `cowsteakmeat.c` | Cow steak meat |
+| `craterellusmushroom.c` | Craterellus mushroom |
+| `deersteakmeat.c` | Deer steak meat |
+| `disinfectantspray.c` | Disinfectant spray |
+| `fox.c` | Fox meat |
+| `foxsteakmeat.c` | Fox steak meat |
+| `goatsteakmeat.c` | Goat steak meat |
+| `greenbellpepper.c` | Green bell pepper |
+| `guts.c` | Animal guts |
+| `humansteakmeat.c` | Human steak meat |
+| `kiwi.c` | Kiwi fruit |
+| `lactariusmushroom.c` | Lactarius mushroom |
+| `lard.c` | Lard (animal fat) |
+| `mackerel.c` | Mackerel fish |
+| `mackerelfilletmeat.c` | Mackerel fillet meat |
+| `macrolepiotamushroom.c` | Macrolepiota mushroom |
+| `mouflonsteakmeat.c` | Mouflon steak meat |
+| `orange.c` | Orange |
+| `painkillertablets.c` | Painkiller tablets |
+| `peachescan.c` | Peaches can |
+| `pear.c` | Pear |
+| `pigsteakmeat.c` | Pig steak meat |
+| `pleurotusmushroom.c` | Pleurotus mushroom |
+| `plum.c` | Plum |
+| `potato.c` | Potato |
+| `psilocybemushroom.c` | Psilocybe mushroom (hallucinogenic) |
+| `pumpkin.c` | Pumpkin |
+| `purificationtablets.c` | Purification tablets |
+| `rabbit.c` | Rabbit meat |
+| `rabbitlegmeat.c` | Rabbit leg meat |
+| `redcaviar.c` | Red caviar |
+| `reindeersteakmeat.c` | Reindeer steak meat |
+| `sambucusberry.c` | Sambucus berry |
+| `sardines.c` | Sardines (loose) |
+| `sardinescan.c` | Sardines can |
+| `sheepsteakmeat.c` | Sheep steak meat |
+| `shrimp.c` | Shrimp |
+| `slicedpumpkin.c` | Sliced pumpkin |
+| `smallguts.c` | Small animal guts |
+| `spaghettican.c` | Spaghetti can |
+| `steelheadtrout.c` | Steelhead trout |
+| `steelheadtroutfilletmeat.c` | Steelhead trout fillet |
+| `tacticalbaconcan.c` | Tactical bacon can |
+| `tetracyclineantibiotics.c` | Tetracycline antibiotics |
+| `tomato.c` | Tomato |
+| `tunacan.c` | Tuna can |
+| `vitaminbottle.c` | Vitamin bottle |
+| `walleyepollock.c` | Walleye pollock |
+| `walleyepollockfilletmeat.c` | Walleye pollock fillet |
+| `wolfsteakmeat.c` | Wolf steak meat |
+| `worm.c` | Worm (fishing bait) |
+| `zucchini.c` | Zucchini |
+
+**Fireplace Base (`fireplacebase/`):**
+
+| File | Purpose |
+|------|---------|
+| `fireplace.c` | Fireplace |
+| `fireplacefirebarrel.c` | Fire barrel fireplace |
+| `fireplaceindoor.c` | Indoor fireplace |
+| `land_misc_firebarrel_colorbase.c` | Fire barrel (color variants) |
+| `ovenindoor.c` | Indoor oven |
+| `barrelholes_colorbase/barrelholes_colorbase.c` | Barrel holes base |
+| `barrelholes_colorbase/barrelholes_blue.c` | Blue barrel holes |
+| `barrelholes_colorbase/barrelholes_green.c` | Green barrel holes |
+| `barrelholes_colorbase/barrelholes_grey.c` | Grey barrel holes |
+| `barrelholes_colorbase/barrelholes_red.c` | Red barrel holes |
+| `barrelholes_colorbase/barrelholes_yellow.c` | Yellow barrel holes |
+
+**Gear (`gear/`):**
+
+**Subdirectories:**
+
 | Directory | Contents |
 |-----------|----------|
-| `bark_colorbase/` | `bark_birch.c`, `bark_oak.c` |
-| `basebuildingbase/` | `fence.c`, `sheltersite.c`, `staticflagpole.c`, `totem.c`, `watchtower.c` |
-| `bloodcontainerbase/` | `bloodbagempty.c`, `bloodbagfull.c`, `bloodbagiv.c`, `bloodcontainerbase.c`, `bloodsyringe.c`, `syringe.c` |
-| `clothing/` | `airbornemask.c`, `alicebag_colorbase.c`, `armband_colorbase.c`, `armband_white.c`, `armypouch_colorbase.c`, `assaultbag_colorbase.c`, `athleticshoes_colorbase.c`, `aviatorglasses.c`, `balaclava3holes_colorbase.c`, `balaclavamask_colorbase.c`, `ballerinas_colorbase.c`, `bandana_hybrid.c`, `bandanamask_colorbase.c`, `baseballcap_colorbase.c`, `bdujacket.c`, `bdupants.c`, `beaniehat_colorbase.c` and 200+ additional clothing items |
-| `container_base/` | `barrelholes_colorbase.c`, `barrelhole_base.c`, `barrel_base.c`, `barrel_blue.c`, `barrel_green.c`, `barrel_grey.c`, `barrel_red.c`, `barrel_yellow.c`, `cart.c`, `seachest_base.c`, `woodencrate.c`, `woodencratebase.c` |
-| `edible_base/` | `bottle_base.c` subdirectory; `edible_Base.c`, `bottle_base/bottle_Base.c`, `bottle_base/canteen.c`, `bottle_base/flask.c`, `bottle_base/waterbottle.c` and 65+ additional consumable files |
-| `fireplacebase/` | `fireplace.c`, `fireplaceindoor.c`, `oven.c`, `barrelholes_colorbase/barrelholes_colorbase.c`, `barrelholes_colorbase/barrelholes_blue.c`, `barrelholes_colorbase/barrelholes_green.c`, `barrelholes_colorbase/barrelholes_grey.c`, `barrelholes_colorbase/barrelholes_red.c`, `barrelholes_colorbase/barrelholes_yellow.c` |
-| `gear/` | Tools (`broom.c`, `canopener.c`, `chainsaw.c`, `ducttape.c`, `epoxyputty.c`, `huntingknife.c`, `leathersewingkit.c`, `lockpick.c`, `lugwrench.c`, `measuringtape.c`, `minerpick.c`, `multitool.c`, `saw.c`, `sewingkit.c`, `sharpeningstone.c`, `wrench.c`); Medical (`atropineinjector.c`, `bandana_colorbase.c`, `bloodtestkit.c`, `charcoaltablets.c`, `disinfectantalcohol.c`, `disinfectantspray.c`, `epinephrine.c`, `firstaidkit.c`, `iodinetincture.c`, `morphineinjector.c`, `painkillertablets.c`, `purificationtablets.c`, `salinebag.c`, `salinebagiv.c`, `startkitiv.c`, `surgicalgloves_colorbase.c`, `surgicalmask.c`, `tetracyclineantibiotics.c`, `thermometer.c`, `vitaminbottle.c`); Food (`apple.c`, `bacon.c`, `bakedbeanscan.c`, `brisco_snackpack.c`, `cereal_box.c`, `cereals.c`, `crackers.c`, `dogfoodcan.c`, `dried_banana.c`, `dried_apple.c`, `dried_apricot.c`, `dried_fruitmix.c`, `dried_smokedmeat.c`, `dried_vegetables.c`, `guts.c`, `honey.c`, `jam.c`, `marmalade.c`, `pear_can.c`, `porkcan.c`, `powderedmilk.c`, `rice.c`, `sardinescan.c`, `spaghettican.c`, `tacticalbaconcan.c`, `vegetablesack.c`, `yeast.c`, `zucchini.c`); Drinks (`beercan.c`, `canteen.c`, `cocacola.c`, `coffeecan.c`, `flask.c`, `kombucha.c`, `pepsican.c`, `spiritsbottle.c`, `spritecan.c`, `waterbottle.c`, `winebottle.c`); and additional subdirectories for `cooking/`, `navigation/`, `optics/`, `radio/`, `camping/`, `consumables/` |
-| `inventory_base/` | `backpacks/` (`coyotebag_colorbase.c`, `huntingbag_colorbase.c`, `mountainbag_colorbase.c`, `tortillabag_colorbase.c`, `drybag_colorbase.c`, `duffelbag_colorbase.c`, `canvasbag_colorbase.c`, `slimgeigerbag_colorbase.c`, `slingbag_colorbase.c`, `smershsbag_colorbase.c`, `improvisedbag_colorbase.c`, `leatherbag_colorbase.c`, `childsbag_colorbase.c`, `taloonbag_colorbase.c`, `courierbag.c`, `hippack_colorbase.c`, `partybag_colorbase.c`); `holster/` (`platecarrierholster.c`, `nylonknifesheath.c`, `splitleathercanteenholder.c`); `pouches/` (`platecarrierpouches.c`, `smershholster.c`, `smershbag.c`); `vests/` (`pressvest_colorbase.c`, `platecarrier_smershvest.c`, `platecarriervest.c`, `highcapacityvest_olive.c`, `chestholster.c`, `policevest.c`, `huntingvest.c`); `ammopouches/` (`ammopouch.c`); `belt/` (`militarybelt.c`, `cargobelt.c`, `tacticalbelt.c`, `ropebelt.c`) |
-| `magazine/` | `magazine.c`, `magazine_stanag.c`, and 30+ magazine type files |
-| `seedpackbase/` | `seedpack.c` |
-| `suppressorbase/` | `ak_suppressor.c`, `pistol_suppressor.c` |
-| `switchable_base/` | `headtorch_colorbase.c`, `heli_headdress_colorbase.c`, `navy_headdress_colorbase.c`, `desert_headdress_colorbase.c`, `christmas_headdress_colorbase.c`, `witchhoodcoif_colorbase.c`, `constructionlight.c`, `chemlightbase.c` |
-| `tentbase/` | `tent_base.c`, `tent_small.c`, `tent_leather.c`, `tent_leather_roof.c`, `tent_camo.c` |
-| `transmitterbase/` | `personalradio.c`, `transmitter.c` |
-| `trapbase/` | `trap_base.c`, `beartrap.c`, `rabbitsnaretrap.c`, `smallfishtrap.c`, `fishnettrap.c` |
-| `trapspawnbase/` | `trapspawnbase.c`, `tripodtrap.c` |
-| `vehiclebattery/` | `carbattery.c`, `truckbattery.c` |
-| `weaponattachments/` | `weaponattachments.c` and subdirectory files for bayonets, bipods, grips, handguards, optics, stocks, wraps, and suppressors |
+| `camping/` | `camping.c` |
+| `consumables/` | `consumables.c`, `easteregg.c`, `fishingconsumables.c` |
+| `containers/` | `containers.c` |
+| `crafting/` | `crafting.c` |
+| `cultivation/` | `cultivation.c` |
+
+**Drinks:**
+
+| File | Purpose |
+|------|---------|
+| `drinks/sodacan_colorbase.c` | Soda can (color variants) |
+| `drinks/vodka.c` | Vodka bottle |
+| `drinks/waterpouch_colorbase.c` | Water pouch (color variants) |
+
+**Food:**
+
+| File | Purpose |
+|------|---------|
+| `food/bakedbeanscan_opened.c` | Opened baked beans can |
+| `food/cannedfood.c` | Canned food base |
+| `food/marmalade.c` | Marmalade |
+| `food/mushroombase.c` | Mushroom base class |
+| `food/packagedfood.c` | Packaged food base |
+| `food/peachescan_opened.c` | Opened peaches can |
+| `food/powderedmilk.c` | Powdered milk |
+| `food/rice.c` | Rice |
+| `food/sardinescan_opened.c` | Opened sardines can |
+| `food/spaghettican_opened.c` | Opened spaghetti can |
+| `food/tacticalbaconcan_opened.c` | Opened tactical bacon can |
+| `food/tunacan_opened.c` | Opened tuna can |
+
+**Medical:**
+
+| File | Purpose |
+|------|---------|
+| `medical/anticheminjector.c` | Anti-chem injector |
+| `medical/bloodtestkit.c` | Blood test kit |
+| `medical/cigarettepack_colorbase.c` | Cigarette pack (color variants) |
+| `medical/clearsyringe.c` | Clear syringe |
+| `medical/disinfectantalcohol.c` | Disinfectant alcohol |
+| `medical/epinephrine.c` | Epinephrine auto-injector |
+| `medical/injectionvial.c` | Injection vial |
+| `medical/iodinetincture.c` | Iodine tincture |
+| `medical/morphine.c` | Morphine auto-injector |
+| `medical/salinebag.c` | Saline bag |
+| `medical/salinebagiv.c` | Saline bag IV |
+| `medical/splint.c` | Splint |
+| `medical/startkitiv.c` | IV start kit |
+
+**Navigation:**
+
+| File | Purpose |
+|------|---------|
+| `navigation/gpsreceiver.c` | GPS receiver |
+| `navigation/orienteeringcompass.c` | Orienteering compass |
+
+**Optics:**
+
+| File | Purpose |
+|------|---------|
+| `optics/binoculars.c` | Binoculars |
+
+**Tools:**
+
+| File | Purpose |
+|------|---------|
+| `tools/alarmclock.c` | Alarm clock |
+| `tools/broom.c` | Broom |
+| `tools/broom_birch.c` | Birch broom |
+| `tools/canopener.c` | Can opener |
+| `tools/cassette.c` | Cassette tape |
+| `tools/crowbar.c` | Crowbar |
+| `tools/doortestcamera.c` | Door test camera |
+| `tools/electronicrepairkit.c` | Electronic repair kit |
+| `tools/epoxyputty.c` | Epoxy putty |
+| `tools/farminghoe.c` | Farming hoe |
+| `tools/fireextinguisher.c` | Fire extinguisher |
+| `tools/fireworkslauncher.c` | Fireworks launcher |
+| `tools/fireworkslauncheranniversary.c` | Anniversary fireworks launcher |
+| `tools/fishingrod.c` | Fishing rod |
+| `tools/handcuffkeys.c` | Handcuff keys |
+| `tools/handcuffs.c` | Handcuffs |
+| `tools/handsaw.c` | Handsaw |
+| `tools/hayhook.c` | Hay hook |
+| `tools/iceaxe.c` | Ice axe |
+| `tools/improvisedfishingrod.c` | Improvised fishing rod |
+| `tools/kitchentimer.c` | Kitchen timer |
+| `tools/leathersewingkit.c` | Leather sewing kit |
+| `tools/lockpick.c` | Lockpick |
+| `tools/lugwrench.c` | Lug wrench |
+| `tools/mace.c` | Mace |
+| `tools/meattenderizer.c` | Meat tenderizer |
+| `tools/messtin.c` | Mess tin |
+| `tools/obsoletefishingrod.c` | Obsolete fishing rod |
+| `tools/paddle.c` | Paddle |
+| `tools/pen_black.c` | Black pen |
+| `tools/pen_blue.c` | Blue pen |
+| `tools/pen_colorbase.c` | Pen (color base) |
+| `tools/pen_green.c` | Green pen |
+| `tools/pen_red.c` | Red pen |
+| `tools/sewingkit.c` | Sewing kit |
+| `tools/weaponcleaningkit.c` | Weapon cleaning kit |
+| `tools/whetstone.c` | Whetstone |
+| `tools/wrench.c` | Wrench |
+
+**Inventory Base (`inventory_base/`):**
+
+**Backpacks:**
+
+| File | Purpose |
+|------|---------|
+| `inventory_base/assaultbag_colorbase.c` | Assault bag (color variants) |
+| `inventory_base/canvasbag_colorbase.c` | Canvas bag (color variants) |
+| `inventory_base/childsbag_colorbase.c` | Child's bag (color variants) |
+| `inventory_base/courierbag.c` | Courier bag |
+| `inventory_base/coyotebag_colorbase.c` | Coyote bag (color variants) |
+| `inventory_base/drybag_colorbase.c` | Dry bag (color variants) |
+| `inventory_base/duffelbag_colorbase.c` | Duffel bag (color variants) |
+| `inventory_base/hippack_colorbase.c` | Hip pack (color variants) |
+| `inventory_base/huntingbag.c` | Hunting bag |
+| `inventory_base/improvisedbag_colorbase.c` | Improvised bag (color variants) |
+| `inventory_base/leatherbag_colorbase.c` | Leather bag (color variants) |
+| `inventory_base/mountainbag_colorbase.c` | Mountain bag (color variants) |
+| `inventory_base/partybag_colorbase.c` | Party bag (color variants) |
+| `inventory_base/slingbag_colorbase.c` | Sling bag (color variants) |
+| `inventory_base/slimgeigerbag_colorbase.c` | Slim Geiger bag (color variants) |
+| `inventory_base/smershsbag_colorbase.c` | Smersh bag (color variants) |
+| `inventory_base/taloonbag_colorbase.c` | Taloon bag (color variants) |
+| `inventory_base/tortillabag_colorbase.c` | Tortilla bag (color variants) |
+
+**Weapon Attachments & Parts:**
+
+| File | Purpose |
+|------|---------|
+| `ak74_hndgrd.c` | AK-74 handguard |
+| `ak_bayonet.c` | AK bayonet |
+| `ak_plastichndgrd.c` | AK plastic handguard |
+| `ak_railhndgrd.c` | AK rail handguard |
+| `ak_woodhndgrd.c` | AK wood handguard |
+| `atlasbipod.c` | Atlas bipod |
+| `buisoptic.c` | Back-up iron sight optic |
+| `candle.c` | Candle |
+| `fryingpan.c` | Frying pan |
+| `gardenlime.c` | Garden lime |
+| `grozagl_lowerreceiver.c` | Groza GL lower receiver |
+| `huntingoptic.c` | Hunting scope optic |
+| `m249_hndgrd.c` | M249 handguard |
+| `m249_rishndgrd.c` | M249 RIS handguard |
+| `m4_carryhandleoptic.c` | M4 carry handle optic |
+| `m4_mphndgrd.c` | M4 MP handguard |
+| `m4_plastichndgrd.c` | M4 plastic handguard |
+| `m4_rishndgrd.c` | M4 RIS handguard |
+| `m9a1_bayonet.c` | M9A1 bayonet |
+| `mosin_bayonet.c` | Mosin bayonet |
+| `mosin_compensator.c` | Mosin compensator |
+| `mp5_compensator.c` | MP5 compensator |
+| `mp5_plastichndgrd.c` | MP5 plastic handguard |
+| `mp5_railhndgrd.c` | MP5 rail handguard |
+| `nail.c` | Nail (crafting) |
+| `optics.c` | Optics base class |
+| `plantmaterial.c` | Plant material (crafting) |
+| `pso11optic.c` | PSO-1-1 optic |
+| `pso1optic.c` | PSO-1 optic |
+| `pso6optic.c` | PSO-6 optic |
+| `puscopeoptic.c` | PU scope optic |
+| `red9bttstck.c` | Red 9 stock |
+| `sks_bayonet.c` | SKS bayonet |
+
+**Magazine (`magazine/`):**
+
+| File | Purpose |
+|------|---------|
+| `ammunitionpiles.c` | Ammunition piles |
+| `magazine.c` | Magazine base class |
+| `magazines.c` | Magazine type definitions |
+
+**Seed Packs (`seedpackbase/`):**
+
+| File | Purpose |
+|------|---------|
+| `cannabisseedspack.c` | Cannabis seeds pack |
+| `pepperseedspack.c` | Pepper seeds pack |
+| `pumpkinseedspack.c` | Pumpkin seeds pack |
+| `tomatoseedspack.c` | Tomato seeds pack |
+| `zucchiniseedspack.c` | Zucchini seeds pack |
+
+**Suppressors (`suppressorbase/`):**
+
+| File | Purpose |
+|------|---------|
+| `ak_suppressor.c` | AK suppressor |
+| `groza_barrel_grip.c` | Groza barrel grip |
+| `groza_barrel_short.c` | Groza short barrel |
+| `groza_barrel_suppressor.c` | Groza barrel suppressor |
+| `improvisedsuppressor.c` | Improvised suppressor |
+| `m4_suppressor.c` | M4 suppressor |
+| `makarovpbsuppressor.c` | Makarov PB suppressor |
+| `pistolsuppressor.c` | Pistol suppressor |
+
+**Switchable Items (`switchable_base/`):**
+
+| File | Purpose |
+|------|---------|
+| `chainsaw.c` | Chainsaw |
+| `tlrlight.c` | TLR tactical light |
+| `universallight.c` | Universal light |
+
+**Tents (`tentbase/`):**
+
+| File | Purpose |
+|------|---------|
+| `cartent.c` | Car tent |
+| `largetent.c` | Large tent |
+| `largetentbackpack.c` | Large tent backpack |
+| `mediumtent.c` | Medium tent |
+| `partytent.c` | Party tent |
+| `shelter.c` | Shelter |
+
+**Transmitters (`transmitterbase/`):**
+
+| File | Purpose |
+|------|---------|
+| `baseradio.c` | Base radio |
+| `personalradio.c` | Personal radio |
+
+**Traps (`trapbase/`):**
+
+| File | Purpose |
+|------|---------|
+| `trap_bear.c` | Bear trap |
+| `trap_landmine.c` | Land mine trap |
+| `trap_tripwire.c` | Tripwire trap |
+
+**Trap Spawns (`trapspawnbase/`):**
+
+| File | Purpose |
+|------|---------|
+| `trap_fishnet.c` | Fish net trap spawn |
+| `trap_rabbitsnare.c` | Rabbit snare trap spawn |
+| `trap_smallfish.c` | Small fish trap spawn |
+
+**Vehicle Batteries (`vehiclebattery/`):**
+
+| File | Purpose |
+|------|---------|
+| `aircraftbattery.c` | Aircraft battery |
+| `carbattery.c` | Car battery |
+| `truckbattery.c` | Truck battery |
+
+**Weapon Attachments (`weaponattachments/`):**
+
+| File | Purpose |
+|------|---------|
+| `attachments.c` | Weapon attachments base |
 
 #### Man Base (`manbase/`)
 
@@ -1202,9 +2543,62 @@ Four world-spanning systems with their own update lifecycles:
 | System | Purpose |
 |--------|---------|
 | `animalcatchingsystem/` | Animal trapping mechanics |
-| `bot/` | Script-controlled debug bot player |
+| `bot/` | Script-controlled debug bot player (see below) |
 | `inventory/` | Inventory system (complementing the FSM in 3_game) |
 | `universaltemperaturesource/` | Universal temperature source system |
+
+**Animal Catching System (`animalcatchingsystem/`):**
+
+| File | Purpose |
+|------|---------|
+| `catchingcontexts/poissoncontext.c` | Poisson catching context |
+| `catchingcontexts/regularcatchingcontext.c` | Regular catching context |
+| `catchingresultstructures/catchingresult.c` | Catching result data |
+| `catchingresultstructures/catchingresultbasestruct.c` | Catching result base structure |
+| `yielditems/edibleyield.c` | Edible yield item |
+| `yielditems/yielditem.c` | Base yield item |
+| `yielditems/yielditemcontainer.c` | Yield item container |
+| `catchingconstants.c` | Catching constants |
+| `catchingcontextbase.c` | Catching context base |
+| `catchingcontextpoissonbase.c` | Poisson catching context base |
+| `catchingresultbasic.c` | Basic catching result |
+| `catchyieldbank.c` | Catch yield bank |
+| `catchyielditembase.c` | Catch yield item base |
+
+**Inventory System (`systems/inventory/`) additional root files:**
+
+| File | Purpose |
+|------|---------|
+| `inventory.c` | Inventory FSM root logic |
+| `inventorylocation.c` | Inventory location abstraction |
+| `inventoryslots.c` | Inventory slot management |
+
+**Universal Temperature Source (`systems/universaltemperaturesource/`):**
+
+| File | Purpose |
+|------|---------|
+| `universaltemperaturesource.c` | Universal temperature source |
+| `universaltemperaturesourcelambdabase.c` | Temperature source lambda base |
+
+**Bot System (`bot/`) files:**
+
+| File | Purpose |
+|------|---------|
+| `bot.c` | Bot main class (debug AI player) |
+| `bot_hunt.c` | Bot hunting behavior |
+| `bot_stancerandomizer.c` | Bot stance randomization |
+| `bot_tests.c` | Bot test orchestration |
+| `botactions.c` | Bot action definitions |
+| `botevents.c` | Bot event definitions |
+| `botfsm.c` | Bot FSM (action/event/guard/state) |
+| `botguards.c` | Bot guard conditions |
+| `botstates.c` | Bot FSM states |
+| `bot_timedwait.c` | Bot timed wait behavior |
+| `bot_testattachanddropcycle.c` | Bot attach/drop cycle test |
+| `bot_testitemmovebackandforth.c` | Bot item movement test |
+| `bot_testspamuseractions.c` | Bot spam user actions test |
+| `bot_testspawnandopencan.c` | Bot spawn and open can test |
+| `bot_testspawndeadbury.c` | Bot spawn/dead/bury test |
 
 ## Plugins (`plugins/`)
 
@@ -1246,6 +2640,51 @@ A modular plugin architecture for registering features. Each plugin extends `Plu
 | `pluginsounddebug.c` | Sound system debugging |
 | `plugintransmissionagents.c` | Disease transmission agent management |
 | `pluginvariables.c` | Variable inspection tools |
+
+**Plugin Subdirectories:**
+
+**Developer Tools (`plugindeveloper/`):**
+
+| File | Purpose |
+|------|---------|
+| `developerfreecamera.c` | Free camera for debugging |
+| `developerteleport.c` | Teleport functionality |
+| `edevelopermask.c` | Developer mask enum |
+| `plugincharplacement.c` | Character placement tool |
+| `plugindoorruler.c` | Door/distance measurement |
+| `plugindrawcheckerboard.c` | Checkerboard render debug |
+| `pluginnutritiondumper.c` | Nutrition data dumping |
+| `pluginremoteplayerdebugclient.c` | Remote player debug (client) |
+| `pluginremoteplayerdebugserver.c` | Remote player debug (server) |
+| `plugintargettemperature.c` | Target temperature debug |
+| `pluginuniversaltemperaturesourceclient.c` | Universal temp source debug (client) |
+| `pluginuniversaltemperaturesourceserver.c` | Universal temp source debug (server) |
+
+**Diagnostic Menu (`plugindiagmenu/`):**
+
+| File | Purpose |
+|------|---------|
+| `plugindiagmenu.c` | Diagnostic menu main |
+| `plugindiagmenuclient.c` | Client diagnostic menu |
+| `plugindiagmenumodding.c` | Modding diagnostic menu |
+| `plugindiagmenuserver.c` | Server diagnostic menu |
+| `weaponliftdiag.c` | Weapon lift diagnostic |
+
+**File Handler (`pluginfilehandler/`):**
+
+| File | Purpose |
+|------|---------|
+| `pluginconfighandler.c` | Config file handler base |
+| `pluginconfighandler/pluginconfigdebugprofile.c` | Debug profile config |
+| `pluginconfighandler/pluginconfigdebugprofilefixed.c` | Fixed debug profile config |
+| `pluginconfighandler/pluginconfigemotesprofile.c` | Emotes profile config |
+| `pluginconfighandler/pluginconfigscene.c` | Scene config |
+| `pluginconfighandler/pluginmissionconfig.c` | Mission config |
+| `pluginlocalenscripthistory.c` | Local Enscript history |
+| `pluginlocalhistorybase.c` | Local history base |
+| `pluginlocalprofile.c` | Local profile handler |
+| `pluginlocalprofile/pluginadditionalinfo.c` | Additional info profile |
+| `pluginlocalprofile/pluginlocalprofilescene.c` | Local profile scene |
 
 ## Static Data (`static/`)
 

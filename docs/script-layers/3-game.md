@@ -399,7 +399,9 @@ The `enums/` directory contains **29 enum definition files** that define the gam
 | `particlelist.c` | Particle list management |
 | `particlemanager/particlemanager.c` | Particle system manager |
 | `particlemanager/particlesource.c` | Particle source definition |
-| `tests/` | Particle unit tests |
+| `tests/pmtcreationandcleanup.c` | Particle creation and cleanup test |
+| `tests/pmtf.c` | Particle F (framework) test |
+| `tests/pmtplayback.c` | Particle playback test |
 
 #### Post-Processing (`ppemanager/`)
 

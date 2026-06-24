@@ -19,7 +19,7 @@ Layer 2 provides a **game-engine-agnostic reusable framework**. It defines the `
 | Directory | Contents |
 |-----------|----------|
 | `components/` | Shared component definitions (`gamelibcomponents.c`) |
-| `entities/` | Script-managed entities: render targets, cameras, lights, models, world menu |
+| `entities/` | Script-managed entities: render targets, cameras, lights, models, world menu, and generic entity base (`gamelibentities.c`) |
 | `tests/` | Unit test framework (`testingframework.c`) |
 
 ## Key Details

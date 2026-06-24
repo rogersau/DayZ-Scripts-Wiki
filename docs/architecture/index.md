@@ -51,6 +51,17 @@ A key architectural principle is the **separation of data from logic**:
 
 The scripts implement **how things work**, while the config defines **what things are**.
 
+### Supplementary Files in `scripts/`
+
+The `P:\scripts\` directory also contains a few non-layer files:
+
+- **`config.cpp`** — Minimal `CfgPatches` and `CfgSlots` definitions for the script layer
+- **`profile_fixed.cfg`** — Character console presets (predefined gear sets for debugging)
+- **`staticdefinesdoc.c`** — Doxygen documentation of preprocessor defines (documented in [Layer 1: Core](../script-layers/1-core))
+- **`data/`** — JSON data files consumed by scripts: `credits.json`, `dlcinfo.json`, `hints.json`, `news_feed.txt`, `notifications.json`, `pagedatatutorials.json`, and `internal/script_console_hints.json`
+- **`rap.txt`** — Binarized directory listing for Workbench
+- **`editor/`** — Workbench editor project files
+
 ## Entity Hierarchy
 
 All objects in the DayZ world inherit from a shared class hierarchy rooted in the engine:

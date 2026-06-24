@@ -10,6 +10,7 @@ Layer 1 is the foundation of the entire script stack. It provides the language-l
 |------|----------|
 | `constants.c` | Global integer constants for input devices, input action types, and colors |
 | `defines.c` | Documents preprocessor defines injected from C++ |
+| `staticdefinesdoc.c` | Doxygen documentation listing all preprocessor defines and their build contexts (DEVELOPER, RELEASE, SERVER, WORKBENCH, etc.) |
 | `param.c` | The `Param` typed-parameter serialization hierarchy |
 | `script.c` | Minimal example/reference material for the material editor |
 | `workbenchapi.c` | Full Workbench IDE integration API |

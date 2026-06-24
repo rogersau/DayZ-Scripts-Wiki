@@ -1,28 +1,179 @@
-/* ── Mermaid diagram scroll / sizing ── */
+/* Mermaid diagram scroll / sizing */
 
-/* Add horizontal scroll for diagrams that exceed viewport width */
+:root {
+  --vp-layout-max-width: 1680px;
+}
+
+.VPDoc.has-aside .content-container {
+  max-width: 1040px;
+}
+
+.VPDoc:not(.has-aside) .content-container {
+  max-width: 1180px;
+}
+
+/* Add scroll affordances for diagrams that exceed the readable viewport. */
 .mermaid {
   overflow-x: auto;
-  overflow-y: hidden;
+  overflow-y: visible;
   scrollbar-width: thin;
-  margin: 1.5rem 0;
-  padding: 0.25rem 0;
+  margin: 0 0 2rem;
+  padding: 1rem;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+  background: var(--vp-c-bg-soft);
+}
+
+.mermaid-viewer {
+  margin: 1.5rem 0 2rem;
+}
+
+.mermaid-viewer .mermaid {
+  margin-bottom: 0;
+}
+
+.mermaid[data-mermaid-mode='actual'] {
+  cursor: grab;
+  user-select: none;
+}
+
+.mermaid[data-mermaid-mode='actual'].is-dragging {
+  cursor: grabbing;
+}
+
+.mermaid-viewer__toolbar,
+.mermaid-dialog__chrome {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.375rem;
+  margin-bottom: 0.5rem;
+}
+
+.mermaid-viewer__button {
+  min-height: 2rem;
+  padding: 0 0.75rem;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 6px;
+  background: var(--vp-c-bg-soft);
+  color: var(--vp-c-text-2);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.mermaid-viewer__button:hover,
+.mermaid-viewer__button:focus-visible,
+.mermaid-viewer__button[aria-pressed='true'] {
+  border-color: var(--vp-c-brand-1);
+  color: var(--vp-c-text-1);
+}
+
+.mermaid-viewer__button[aria-pressed='true'] {
+  background: color-mix(in srgb, var(--vp-c-brand-1) 18%, var(--vp-c-bg-soft));
+}
+
+.mermaid-dialog {
+  width: min(96vw, 1800px);
+  height: min(94vh, 1100px);
+  padding: 1rem;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+  background: var(--vp-c-bg);
+  color: var(--vp-c-text-1);
+}
+
+.mermaid-dialog::backdrop {
+  background: rgb(0 0 0 / 72%);
+}
+
+.mermaid-dialog__chrome {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding-bottom: 0.5rem;
+  background: var(--vp-c-bg);
+}
+
+.mermaid-dialog__content {
+  height: calc(100% - 3rem);
+  overflow: auto;
 }
 
 /* Keep the SVG within the scroll container and preserve aspect ratio */
 .mermaid svg {
   max-width: none;
+  min-width: min(100%, 760px);
   height: auto;
+  display: block;
+  margin: 0 auto;
+  overflow: visible;
+}
+
+.mermaid svg foreignObject,
+.mermaid svg .label,
+.mermaid svg .nodeLabel,
+.mermaid svg .nodeLabel p {
+  overflow: visible;
+}
+
+.mermaid svg .nodeLabel p {
+  margin: 0;
+  line-height: 1.35;
+}
+
+.mermaid svg .label,
+.mermaid svg .nodeLabel,
+.mermaid svg .edgeLabel,
+.mermaid svg .cluster-label,
+.mermaid svg .sectionTitle,
+.mermaid svg text {
+  color: #f0f6fc !important;
+  fill: #f0f6fc !important;
+  line-height: 1.35;
+}
+
+.mermaid svg .node rect,
+.mermaid svg .node circle,
+.mermaid svg .node ellipse,
+.mermaid svg .node polygon,
+.mermaid svg .node path {
+  fill: #24282f !important;
+  stroke: #9da7b3 !important;
+  stroke-width: 1.5px !important;
+}
+
+.mermaid svg .cluster rect {
+  fill: #30363d !important;
+  stroke: #9da7b3 !important;
+  stroke-width: 1.5px !important;
+}
+
+.mermaid svg .edgePath path,
+.mermaid svg .flowchart-link {
+  stroke: #c9d1d9 !important;
+  stroke-width: 1.75px !important;
+}
+
+.mermaid svg marker path {
+  fill: #c9d1d9 !important;
+  stroke: #c9d1d9 !important;
+}
+
+.mermaid svg .edgeLabel,
+.mermaid svg .edgeLabel p {
+  background-color: #16181d !important;
 }
 
 /* Tidy up the scroll container on dark/light themes */
 .mermaid::-webkit-scrollbar {
-  height: 6px;
+  height: 8px;
+  width: 8px;
 }
 .mermaid::-webkit-scrollbar-track {
   background: transparent;
 }
 .mermaid::-webkit-scrollbar-thumb {
   background: var(--vp-c-text-3);
-  border-radius: 3px;
+  border-radius: 4px;
 }

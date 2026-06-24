@@ -121,7 +121,61 @@ The `classes/` directory contains the bulk of world gameplay logic, organized as
 | File | Purpose |
 |------|---------|
 | `recoilbase/recoilbase.c` | Weapon recoil base class |
-| `recoilbase/recoils/ak101recoil.c` through `recoilbase/recoils/winchester70recoil.c` | Per-weapon recoil patterns (50+ files: ak101, ak74, akm, aks74u, aug, b95, colt1911, crossbow, cz527, cz550, cz75, deagle, default, derringer, fal, famas, fnx45, glock, izh18, izh18sawedoff, izh18shotgun, izh43, longhorn, m14, m16a2, m4a1, m79, magnum, makarov, mkii, mosin, mosinsawedoff, mp133, mp5k, p1, pm73rak, pp19, r12, repeater, ruger1022, scout, siaga, skorpion, sks, ssg82, sv98, svd, ump45, vss, winchester70) |
+
+**Recoil Patterns (`recoilbase/recoils/`):**
+
+| File | Purpose |
+|------|---------|
+| `ak101recoil.c` | AK-101 recoil pattern |
+| `ak74recoil.c` | AK-74 recoil pattern |
+| `akmrecoil.c` | AKM recoil pattern |
+| `aks74urecoil.c` | AKS-74U recoil pattern |
+| `augrecoil.c` | Steyr AUG recoil pattern |
+| `b95recoil.c` | B-95 recoil pattern |
+| `colt1911recoil.c` | Colt 1911 recoil pattern |
+| `crossbowrecoil.c` | Crossbow recoil |
+| `cz527recoil.c` | CZ 527 recoil pattern |
+| `cz550recoil.c` | CZ 550 recoil pattern |
+| `cz75recoil.c` | CZ-75 recoil pattern |
+| `deaglerecoil.c` | Desert Eagle recoil pattern |
+| `defaultrecoil.c` | Default/fallback recoil pattern |
+| `derringerrecoil.c` | Derringer recoil pattern |
+| `falrecoil.c` | FN FAL recoil pattern |
+| `famasrecoil.c` | FAMAS recoil pattern |
+| `fnx45recoil.c` | FNX-45 recoil pattern |
+| `glockrecoil.c` | Glock 19 recoil pattern |
+| `izh18recoil.c` | Izh-18 recoil pattern |
+| `izh18sawedoffrecoil.c` | Sawed-off Izh-18 recoil |
+| `izh18shotgunrecoil.c` | Izh-18 shotgun recoil |
+| `izh43recoil.c` | Izh-43 recoil pattern |
+| `longhornrecoil.c` | Longhorn revolver recoil |
+| `m14recoil.c` | M14 recoil pattern |
+| `m16a2recoil.c` | M16A2 recoil pattern |
+| `m4a1recoil.c` | M4A1 recoil pattern |
+| `m79recoil.c` | M79 grenade launcher recoil |
+| `magnumrecoil.c` | Magnum revolver recoil |
+| `makarovrecoil.c` | Makarov PM recoil |
+| `mkiirecoil.c` | MKII pistol recoil |
+| `mosinrecoil.c` | Mosin-Nagant recoil |
+| `mosinsawedoffrecoil.c` | Sawed-off Mosin recoil |
+| `mp133recoil.c` | MP-133 recoil pattern |
+| `mp5krecoil.c` | MP5K recoil pattern |
+| `p1recoil.c` | P1 Luger recoil pattern |
+| `pm73rak.c` | PM-73 RAK recoil |
+| `pp19recoil.c` | PP-19 Bizon recoil |
+| `r12recoil.c` | R12 recoil pattern |
+| `repeaterrecoil.c` | Winchester repeater recoil |
+| `ruger1022recoil.c` | Ruger 10/22 recoil |
+| `scoutrecoil.c` | Scout rifle recoil |
+| `siagarecoil.c` | Saiga shotgun recoil |
+| `skorpionrecoil.c` | Skorpion vz.61 recoil |
+| `sksrecoil.c` | SKS recoil pattern |
+| `ssg82recoil.c` | SSG 82 recoil pattern |
+| `sv98recoil.c` | SV-98 recoil pattern |
+| `svdrecoil.c` | SVD recoil pattern |
+| `ump45recoil.c` | UMP-45 recoil pattern |
+| `vssrecoil.c` | VSS Vintorez recoil |
+| `winchester70recoil.c` | Winchester 70 recoil pattern |
 
 **Shock Hit Reaction (`shockhitreaction/`):**
 
@@ -784,12 +838,65 @@ The `classes/` directory contains the bulk of world gameplay logic, organized as
 | `actionworldcraft.c` | World craft (environmental crafting) |
 | `actionwringclothes.c` | Wring out wet clothes |
 
+**Instant Actions (`actions/instant/`):**
+
+| File | Purpose |
+|------|---------|
+| `actiondebug.c` | Debug action (instant) |
+
 **Continuous actions subdirectories:**
 
 | Directory | Contents |
 |-----------|----------|
 | `deployactions/` | `actiondeploybase.c`, `actiondeployhuntingtrap.c`, `actiondeployobject.c` |
-| `medical/` | Bandage, burn sew, check pulse, collect blood, CPR, defibrillate, drink alcohol/disinfectant, eat pills, force feed medical, give blood/saline, measure temperature, sew, splint, test blood (20 files) |
+| `medical/` | Medical continuous actions (listed below) |
+
+**Medical Continuous Actions (`actions/continuous/medical/`):**
+
+| File | Purpose |
+|------|---------|
+| `actionbandagebase.c` | Bandage base action |
+| `actionbandageself.c` | Bandage self |
+| `actionbandagetarget.c` | Bandage target |
+| `actionburnsewself.c` | Burn and sew self |
+| `actionburnsewtarget.c` | Burn and sew target |
+| `actioncheckpulse.c` | Check own pulse |
+| `actioncheckpulsetarget.c` | Check target's pulse |
+| `actioncollectbloodself.c` | Collect own blood |
+| `actioncollectbloodtarget.c` | Collect target's blood |
+| `actioncollectsampleself.c` | Collect own blood sample |
+| `actioncollectsampletarget.c` | Collect target's blood sample |
+| `actioncpr.c` | Perform CPR |
+| `actiondefibrilatebase.c` | Defibrillate base action |
+| `actiondefibrilateself.c` | Defibrillate self |
+| `actiondefibrilatetarget.c` | Defibrillate target |
+| `actiondrinkalcohol.c` | Drink alcohol |
+| `actiondrinkdisinfectant.c` | Drink disinfectant |
+| `actiondrinkdisinfectant2.c` | Drink disinfectant (variant) |
+| `actioneatcharcoaltablets.c` | Eat charcoal tablets |
+| `actioneatpainkillertablets.c` | Eat painkiller tablets |
+| `actioneatpurificationtablets.c` | Eat purification tablets |
+| `actioneattetracyclineantibiotics.c` | Eat tetracycline antibiotics |
+| `actioneatvitaminbottle.c` | Eat vitamin bottle |
+| `actionfeedcharcoaltablets.c` | Feed charcoal tablets to target |
+| `actionfeedpainkillertablets.c` | Feed painkiller tablets to target |
+| `actionfeedpurificationtablets.c` | Feed purification tablets to target |
+| `actionfeedtetracyclineantibiotics.c` | Feed tetracycline antibiotics to target |
+| `actionfeedvitaminbottle.c` | Feed vitamin bottle to target |
+| `actionforcedrinkalcohol.c` | Force drink alcohol on target |
+| `actionforcedrinkdisinfectant.c` | Force drink disinfectant on target |
+| `actiongivebloodself.c` | Give blood to self |
+| `actiongivebloodtarget.c` | Give blood to target |
+| `actiongivesalineself.c` | Give saline to self |
+| `actiongivesalinetarget.c` | Give saline to target |
+| `actionmeasuretemperatureself.c` | Measure own temperature |
+| `actionmeasuretemperaturetarget.c` | Measure target's temperature |
+| `actionsewself.c` | Sew own wounds |
+| `actionsewtarget.c` | Sew target's wounds |
+| `actionsplintself.c` | Apply splint to self |
+| `actionsplinttarget.c` | Apply splint to target |
+| `actiontestbloodself.c` | Test own blood |
+| `actiontestbloodtarget.c` | Test target's blood |
 | `vehicles/` | `actioncarhorn.c`, `actionfillbrakes.c`, `actionfillcoolant.c`, `actionfillfuel.c`, `actionfilloil.c`, `actionstartengine.c`, `actionstartengineboat.c` |
 
 **Interact Actions (`actions/interact/`):**
@@ -1412,6 +1519,7 @@ The `entities/` directory contains class implementations for world objects, crea
 | `residential/houses/land_house_2w01.c` | House 2W01 |
 | `residential/houses/land_house_2w02.c` | House 2W02 |
 | `residential/houses/land_village_pub.c` | Village pub |
+| `residential/houses/land_airfield_small_control.c` | Small airfield control tower |
 | `residential/misc/land_misc_greenhouse.c` | Greenhouse |
 | `residential/misc/land_misc_well_pump_blue.c` | Blue well pump |
 | `residential/misc/land_misc_well_pump_yellow.c` | Yellow well pump |
@@ -1645,6 +1753,7 @@ The `entities/` directory contains class implementations for world objects, crea
 | `fsm/actions.c` | Weapon FSM action definitions |
 | `fsm/events.c` | Weapon FSM event definitions |
 | `fsm/guards.c` | Weapon FSM guard conditions |
+| `fsm/weapon_utils.c` | Weapon FSM utility functions |
 | `fsm/states/bullethide.c` | Bullet hide state |
 | `fsm/states/bulletshow.c` | Bullet show state |
 | `fsm/states/magazinehide.c` | Magazine hide state |
@@ -1668,6 +1777,9 @@ The `entities/` directory contains class implementations for world objects, crea
 | `fsm/states/weaponreplacingmagandchambernext.c` | Replace mag and chamber next |
 | `fsm/states/weaponstablestate.c` | Weapon stable/idle state |
 | `fsm/states/weaponstartaction.c` | Weapon action start state |
+| `fsm/states/weaponstatebase.c` | Weapon state base class |
+| `fsm/states/weaponstatejammed.c` | Weapon jammed state |
+| `fsm/states/weaponunjamming.c` | Weapon unjamming state |
 
 **Launchers:**
 
@@ -1693,6 +1805,7 @@ The `entities/` directory contains class implementations for world objects, crea
 | `pistol/cz75.c` | CZ-75 pistol |
 | `pistol/deagle.c` | Desert Eagle pistol |
 | `pistol/derringer.c` | Derringer pistol |
+| `pistol/flaregun.c` | Flare gun pistol |
 | `pistol/fnx45.c` | FNX-45 pistol |
 | `pistol/glock19.c` | Glock 19 pistol |
 | `pistol/longhorn.c` | Longhorn revolver |
@@ -1701,6 +1814,7 @@ The `entities/` directory contains class implementations for world objects, crea
 | `pistol/mkii.c` | MKII pistol |
 | `pistol/p1luger.c` | P1 Luger pistol |
 | `pistol/pm73rak.c` | PM-73 RAK pistol |
+| `pistol/pmm.c` | PMM pistol |
 
 **Rifles:**
 
@@ -1729,6 +1843,7 @@ The `entities/` directory contains class implementations for world objects, crea
 | `shotgun/izh43.c` | Izh-43 shotgun |
 | `shotgun/mp133.c` | MP-133 shotgun |
 | `shotgun/r12.c` | R12 shotgun |
+| `shotgun/remington12.c` | Remington 12 shotgun |
 | `shotgun/sawedoffizh18shotgun.c` | Sawed-off Izh-18 shotgun variant |
 | `shotgun/sawedoffizh43.c` | Sawed-off Izh-43 |
 
@@ -1736,11 +1851,18 @@ The `entities/` directory contains class implementations for world objects, crea
 
 | File | Purpose |
 |------|---------|
+| `smg/cz61.c` | CZ-61 Skorpion submachine gun |
 | `smg/mp5k.c` | MP5K submachine gun |
 | `smg/pp19.c` | PP-19 Bizon submachine gun |
 | `smg/skorpion.c` | Skorpion vz. 61 submachine gun |
 | `smg/ump45.c` | UMP-45 submachine gun |
 | `smg/vikhr.c` | AS Val "Vikhr" silenced assault rifle |
+
+**Rifles:**
+
+| File | Purpose |
+|------|---------|
+| `rifle/trumpet.c` | Trumpet rifle (improvised) |
 
 #### Garden Base (`gardenbase/`)
 
@@ -1878,6 +2000,16 @@ The `entities/` directory contains class implementations for world objects, crea
 | `headtorch_colorbase.c` | Head torch (color variants) |
 | `headtorch_grey.c` | Grey head torch |
 | `helmetbase.c` | Helmet base class |
+| `helmetbase/ballistichelmet_colorbase.c` | Ballistic helmet (color variants) |
+| `helmetbase/constructionhelmet_colorbase.c` | Construction helmet (color variants) |
+| `helmetbase/darkmotohelmet_colorbase.c` | Dark moto helmet (color variants) |
+| `helmetbase/dirtbikehelmet_colorbase.c` | Dirt bike helmet (color variants) |
+| `helmetbase/firefightershelmet_colorbase.c` | Firefighter helmet (color variants) |
+| `helmetbase/hockeyhelmet_colorbase.c` | Hockey helmet (color variants) |
+| `helmetbase/mich2001helmet.c` | Mich 2001 helmet |
+| `helmetbase/motohelmet_colorbase.c` | Moto helmet (color variants) |
+| `helmetbase/skatehelmet_colorbase.c` | Skate helmet (color variants) |
+| `helmetbase/ssh68helmet.c` | SSH-68 steel helmet |
 | `highcapacityvest_colorbase.c` | High capacity vest (color variants) |
 | `hikingboots_colorbase.c` | Hiking boots (color variants) |
 | `hikingbootslow_colorbase.c` | Low hiking boots (color variants) |
@@ -2553,11 +2685,19 @@ Four world-spanning systems with their own update lifecycles:
 |------|---------|
 | `catchingcontexts/poissoncontext.c` | Poisson catching context |
 | `catchingcontexts/regularcatchingcontext.c` | Regular catching context |
+| `catchingcontexts/catchingcontextfishingbase.c` | Fishing context base |
+| `catchingcontexts/catchingcontextfishingrodaction.c` | Fishing rod action context |
+| `catchingcontexts/catchingcontexttraps.c` | Trap catching context |
 | `catchingresultstructures/catchingresult.c` | Catching result data |
 | `catchingresultstructures/catchingresultbasestruct.c` | Catching result base structure |
+| `catchingresultstructures/carchingresultfishingaction.c` | Fishing action catching result |
+| `catchingresultstructures/carchingresulttrapbase.c` | Trap catching result base |
 | `yielditems/edibleyield.c` | Edible yield item |
 | `yielditems/yielditem.c` | Base yield item |
 | `yielditems/yielditemcontainer.c` | Yield item container |
+| `yielditems/yieldsfish.c` | Fish yield |
+| `yielditems/yieldsfishingjunk.c` | Fishing junk yield |
+| `yielditems/yieldslandanimals.c` | Land animal yield |
 | `catchingconstants.c` | Catching constants |
 | `catchingcontextbase.c` | Catching context base |
 | `catchingcontextpoissonbase.c` | Poisson catching context base |
@@ -2572,6 +2712,9 @@ Four world-spanning systems with their own update lifecycles:
 | `inventory.c` | Inventory FSM root logic |
 | `inventorylocation.c` | Inventory location abstraction |
 | `inventoryslots.c` | Inventory slot management |
+| `attachmentsoutofreach.c` | Attachments out of reach handling |
+| `dayzplayerinventory.c` | DayZ player inventory |
+| `entityplacementcallback.c` | Entity placement callback |
 
 **Universal Temperature Source (`systems/universaltemperaturesource/`):**
 
@@ -2579,6 +2722,8 @@ Four world-spanning systems with their own update lifecycles:
 |------|---------|
 | `universaltemperaturesource.c` | Universal temperature source |
 | `universaltemperaturesourcelambdabase.c` | Temperature source lambda base |
+| `universaltemperaturesourcelambdabaseimpl.c` | Temperature source lambda base implementation |
+| `universaltemperaturesourcelambdafireplace.c` | Fireplace temperature source lambda |
 
 **Bot System (`bot/`) files:**
 

@@ -5,15 +5,40 @@ import { withMermaid } from "vitepress-plugin-mermaid"
 export default withMermaid({
   mermaid: {
     // https://mermaid.js.org/config/setup/modules/mermaid.html
-    theme: 'neutral',
+    theme: 'base',
     themeVariables: {
-      fontSize: '13px'
+      darkMode: true,
+      fontFamily: 'Inter, ui-sans-serif, system-ui, sans-serif',
+      fontSize: '14px',
+      background: '#16181d',
+      mainBkg: '#24282f',
+      secondBkg: '#2d333b',
+      tertiaryBkg: '#1f2329',
+      primaryColor: '#24282f',
+      primaryBorderColor: '#8b949e',
+      primaryTextColor: '#f0f6fc',
+      secondaryColor: '#2d333b',
+      secondaryBorderColor: '#8b949e',
+      secondaryTextColor: '#f0f6fc',
+      tertiaryColor: '#1f2329',
+      tertiaryBorderColor: '#8b949e',
+      tertiaryTextColor: '#f0f6fc',
+      lineColor: '#c9d1d9',
+      textColor: '#f0f6fc',
+      titleColor: '#f0f6fc',
+      edgeLabelBackground: '#16181d',
+      clusterBkg: '#30363d',
+      clusterBorder: '#8b949e',
+      nodeBorder: '#8b949e'
     },
     // https://mermaid.js.org/config/schema-docs/config.html
     flowchart: {
       useMaxWidth: true,
       htmlLabels: true,
-      padding: 12
+      padding: 24,
+      nodeSpacing: 70,
+      rankSpacing: 80,
+      curve: 'basis'
     }
   },
   title: "DayZ Scripts Wiki",

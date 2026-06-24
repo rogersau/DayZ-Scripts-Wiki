@@ -35,9 +35,12 @@ features:
   - title: 📋 Data & Config
     details: The config.cpp definitions for gear, weapons, characters, structures, and worlds.
     link: /data-config/
-  - title: 🔗 Cross-Referenced
-    details: Every page links to related systems so you can trace how components interact.
----
+	  - title: 🔧 Modding
+	    details: Project structure, client/server logic, key APIs, debugging, and safe patterns for DayZ mod development.
+	    link: /modding/
+	  - title: 🔗 Cross-Referenced
+	    details: Every page links to related systems so you can trace how components interact.
+	  ---
 
 ## About This Wiki
 
@@ -46,6 +49,7 @@ This wiki documents the **DayZ game scripts** found in the DayZ game installatio
 - **Enforce Script source code** (`scripts/`) — the 5-layer runtime architecture from core engine bindings to mission/game-mode logic
 - **Configuration data** (`DZ/`, `Core/`) — the config.cpp definitions for all items, weapons, vehicles, characters, structures, and world data
 - **System interactions** — how the various subsystems (inventory, damage, effects, weather, AI, persistence) communicate and depend on each other
+- **Modding guidance** — project structure, client/server logic, APIs, and best practices for DayZ mod development, using real mod examples from `P:\`
 
 ### Source Location
 
@@ -60,6 +64,8 @@ The documented scripts are located at `P:\` in a standard DayZ installation, com
 | `scripts/5_mission/` | Mission lifecycle and UI code |
 | `DZ/` | Static config data for all game objects |
 | `Core/` | Core system resources |
+| `NBH_NamalskSurvival/` | Real mod example: Namalsk Survival by Sumrak |
+| `NBH_NamalskIsland/` | Real mod example: Namalsk Island terrain by Sumrak |
 
 ### How to Use This Wiki
 
@@ -67,3 +73,4 @@ The documented scripts are located at `P:\` in a standard DayZ installation, com
 - **Browse [Script Layers](/script-layers/)** to understand the code organization
 - **Explore [Game Systems](/game-systems/)** for deep dives into specific subsystems
 - **Check [Data Config](/data-config/)** for item and world definitions
+- **See the [Modding Guide](/modding/)** for developing DayZ modifications

@@ -57,6 +57,7 @@ export default withMermaid({
       { text: 'Game Systems', link: '/game-systems/' },
       { text: 'World Gameplay', link: '/world-gameplay/' },
       { text: 'Data Config', link: '/data-config/' },
+      { text: 'Modding', link: '/modding/' },
     ],
 
     sidebar: {
@@ -131,6 +132,19 @@ export default withMermaid({
             { text: 'Structures', link: '/data-config/structures' },
             { text: 'Worlds', link: '/data-config/worlds' },
             { text: 'config.cpp Guide', link: '/data-config/config-cpp-guide' },
+          ]
+        }
+      ],
+      '/modding/': [
+        {
+          text: 'Modding Guide',
+          items: [
+            { text: 'Overview', link: '/modding/' },
+            { text: 'Mod Project Structure', link: '/modding/mod-structure' },
+            { text: 'Client/Server Logic', link: '/modding/client-server-logic' },
+            { text: 'Common APIs', link: '/modding/common-apis' },
+            { text: 'Debugging', link: '/modding/debugging' },
+            { text: 'Safe Modding Patterns', link: '/modding/safe-patterns' },
           ]
         }
       ],

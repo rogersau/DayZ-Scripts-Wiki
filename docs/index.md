@@ -35,12 +35,12 @@ features:
   - title: 📋 Data & Config
     details: The config.cpp definitions for gear, weapons, characters, structures, and worlds.
     link: /data-config/
-	  - title: 🔧 Modding
-	    details: Project structure, client/server logic, key APIs, debugging, and safe patterns for DayZ mod development.
-	    link: /modding/
-	  - title: 🔗 Cross-Referenced
-	    details: Every page links to related systems so you can trace how components interact.
-	  ---
+  - title: 🔧 Modding
+    details: Project structure, client/server logic, key APIs, debugging, and safe patterns for DayZ mod development.
+    link: /modding/
+  - title: 🔗 Cross-Referenced
+    details: Every page links to related systems so you can trace how components interact.
+---
 
 ## About This Wiki
 

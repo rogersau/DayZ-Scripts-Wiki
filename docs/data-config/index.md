@@ -86,6 +86,27 @@ Some categories have per-map variants:
 
 Every `config.cpp` follows a consistent pattern documented in the [config.cpp Guide](./config-cpp-guide).
 
+## Category Reference
+
+Each `DZ/` directory has a corresponding documentation page:
+
+| Directory | Documentation | Description |
+|-----------|---------------|-------------|
+| `AI/` | [AI Config](./ai-config) | AI behaviour trees, noise, damage configs |
+| `animals/` | [Animals](./animals) | Animal species definitions |
+| `anims/` | [Animation Data](./animation-data) | Skeleton and animation XML definitions |
+| `characters/` | [Characters](./characters) | Clothing, backpacks, zombies |
+| `gear/` | [Gear & Items](./gear-items) | All usable items (15 subcategories) |
+| `plants/` | [Plants](./plants) | Trees, bushes, harvesting |
+| `rocks/` | [Rocks](./rocks) | Rock/stone world objects |
+| `sounds/` | [Sound Config](./sounds-config) | Sound shaders, sets, audio pipeline |
+| `structures/` | [Structures](./structures) | Building/structure definitions |
+| `surfaces/` | [Surfaces](./surfaces) | Surface types, physics, clutter |
+| `ui/` | [UI Config](./ui-config) | Video options, languages |
+| `vehicles/` | [Vehicles](./vehicles-data) | Vehicle definitions |
+| `weapons/` | [Weapons](./weapons) | Weapons and ammunition |
+| `worlds/` | [Worlds](./worlds) | Per-world data, navmesh, CE config, terrain, skyboxes |
+
 ## Category Descriptor Files
 
 Each category directory has a `.txt` descriptor with metadata:
@@ -106,4 +127,12 @@ These descriptors map logical modules to physical paths, used by the game's asse
 - [Vehicles](./vehicles-data) — Vehicle definitions
 - [Structures](./structures) — Building definitions
 - [Worlds](./worlds) — Per-world data
+- [Surfaces](./surfaces) — Ground surface physics, clutter, and visibility
+- [Animals](./animals) — Animal species definitions
+- [Plants](./plants) — Trees, bushes, and harvesting
+- [Rocks](./rocks) — Static rock and stone world objects
+- [Animation Data](./animation-data) — Skeleton hierarchy and animation definitions
+- [AI Config](./ai-config) — AI behaviour trees, noise, and damage configs
+- [Sound Config](./sounds-config) — Sound shaders, sound sets, and audio pipeline
+- [UI Config](./ui-config) — Video quality presets and supported languages
 - [config.cpp Guide](./config-cpp-guide) — Config file format reference

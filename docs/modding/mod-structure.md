@@ -2,7 +2,7 @@
 
 A DayZ mod is a self-contained project that the game client and server load at startup. This page documents the standard structure using real mods from `P:\` as reference.
 
-## Anatomía de un Mod
+## Mod Anatomy
 
 ```
 MyMod/

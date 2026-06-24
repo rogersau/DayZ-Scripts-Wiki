@@ -31,6 +31,7 @@ This guide focuses on the **script and config** side — the files found at `P:\
 | [Common APIs](./common-apis) | Key APIs every modder should know |
 | [Debugging](./debugging) | Script console, error handling, and debugging tools |
 | [Safe Modding Patterns](./safe-patterns) | Best practices for compatible, maintainable mods |
+| [Real Mod Examples](./real-mod-examples) | DMOverrides scaffold and NamalskBlizzard built mod |
 
 ## Source of Truth: `P:\`
 

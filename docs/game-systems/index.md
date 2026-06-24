@@ -17,6 +17,7 @@ This section documents the major game systems in DayZ, their architecture, how t
 | [Sound System](./sound-system) | `3_game/sound.c`, `3_game/vonmanager.c`, `DZ/sounds/`, `4_world/classes/soundevents/` | Layers 3-4 + DZ | Audio playback, VON, sound configs, occlusion |
 | [Networking & RPC](./networking) | `3_game/gameplay.c` (ScriptRPC), `3_game/vonmanager.c`, `3_game/playeridentity.c` | Layer 3 | Remote procedure calls, entity replication, voice chat |
 | [Persistence & Hive](./persistence-hive) | `3_game/hive/`, `3_game/hive/hive*.c` | Layer 3 | Database persistence, player/world save/load |
+| [Central Economy](./central-economy) | `3_game/ce/centraleconomy.c`, per-world CE XML configs | Layer 3 + CE config | Loot spawning, economy management, item lifetime tracking |
 
 ## How Systems Interact
 

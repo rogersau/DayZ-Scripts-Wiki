@@ -69,6 +69,7 @@ export default withMermaid({
             { text: 'Layer System', link: '/architecture/layer-system' },
             { text: 'Entity Hierarchy', link: '/architecture/entity-hierarchy' },
             { text: 'Scripts vs Config', link: '/architecture/script-vs-config' },
+            { text: 'Core Resources', link: '/architecture/core-resources' },
           ]
         }
       ],
@@ -101,6 +102,7 @@ export default withMermaid({
             { text: 'Sound System', link: '/game-systems/sound-system' },
             { text: 'Networking & RPC', link: '/game-systems/networking' },
             { text: 'Persistence & Hive', link: '/game-systems/persistence-hive' },
+            { text: 'Central Economy', link: '/game-systems/central-economy' },
           ]
         }
       ],
@@ -131,6 +133,14 @@ export default withMermaid({
             { text: 'Vehicles', link: '/data-config/vehicles-data' },
             { text: 'Structures', link: '/data-config/structures' },
             { text: 'Worlds', link: '/data-config/worlds' },
+            { text: 'Surfaces', link: '/data-config/surfaces' },
+            { text: 'Animals', link: '/data-config/animals' },
+            { text: 'Plants', link: '/data-config/plants' },
+            { text: 'Rocks', link: '/data-config/rocks' },
+            { text: 'Animation Data', link: '/data-config/animation-data' },
+            { text: 'AI Config', link: '/data-config/ai-config' },
+            { text: 'Sound Config', link: '/data-config/sounds-config' },
+            { text: 'UI Config', link: '/data-config/ui-config' },
             { text: 'config.cpp Guide', link: '/data-config/config-cpp-guide' },
           ]
         }
@@ -145,6 +155,7 @@ export default withMermaid({
             { text: 'Common APIs', link: '/modding/common-apis' },
             { text: 'Debugging', link: '/modding/debugging' },
             { text: 'Safe Modding Patterns', link: '/modding/safe-patterns' },
+            { text: 'Real Mod Examples', link: '/modding/real-mod-examples' },
           ]
         }
       ],

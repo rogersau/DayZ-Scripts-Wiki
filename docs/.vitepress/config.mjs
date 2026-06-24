@@ -70,6 +70,7 @@ export default withMermaid({
             { text: 'Entity Hierarchy', link: '/architecture/entity-hierarchy' },
             { text: 'Scripts vs Config', link: '/architecture/script-vs-config' },
             { text: 'Core Resources', link: '/architecture/core-resources' },
+            { text: 'Auxiliary Directories', link: '/architecture/auxiliary-directories' },
           ]
         }
       ],
@@ -119,6 +120,7 @@ export default withMermaid({
             { text: 'Emotes', link: '/world-gameplay/emotes' },
             { text: 'Contaminated Areas', link: '/world-gameplay/contaminated-areas' },
             { text: 'Underground System', link: '/world-gameplay/underground' },
+            { text: 'Food Stage System', link: '/world-gameplay/food-stages' },
           ]
         }
       ],
@@ -140,6 +142,8 @@ export default withMermaid({
             { text: 'Animation Data', link: '/data-config/animation-data' },
             { text: 'AI Config', link: '/data-config/ai-config' },
             { text: 'Sound Config', link: '/data-config/sounds-config' },
+            { text: 'Sound Pipeline', link: '/data-config/sound-hierarchy' },
+            { text: 'Territories', link: '/data-config/territories' },
             { text: 'UI Config', link: '/data-config/ui-config' },
             { text: 'config.cpp Guide', link: '/data-config/config-cpp-guide' },
           ]

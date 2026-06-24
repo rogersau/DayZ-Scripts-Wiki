@@ -113,17 +113,31 @@ Suppressor properties:
 
 ### Lights (`attachments/light/`)
 
-Weapon-mounted lights provide illumination.
+Weapon-mounted lights are `Switchable_Base` subclasses with energy management and hidden selection materials for beam rendering.
+
+```cpp
+class UniversalLight: Switchable_Base
+{
+    weight = 80;
+    itemSize[] = {2,1};
+    inventorySlot[] = { "weaponFlashlight", "helmetFlashlight" };
+    hitpoints = 70;
+    hiddenSelections[] = { "zbytek", "reflector", "glass", "reflector_far" };
+    // EnergyManager for battery consumption
+    // Switchable_Base provides on/off toggling
+};
+```
 
 | Attachment | Slot | Features |
 |------------|------|----------|
-| UniversalLight | weaponLight | Standard weapon flashlight |
-| TLRLight | weaponLight | Tactical light + laser (FNX-45) |
+| UniversalLight | weaponFlashlight, helmetFlashlight | Standard weapon flashlight, also fits helmets |
+| TLRLight | weaponLight | Tactical light + laser combo (FNX-45 specific) |
 
 Light properties:
-- **Light range**: Distance the light reaches (meters)
-- **Battery consumption**: Power drain over time
-- **Toggle mode**: Constant on, momentary, strobe
+- **Beam rendering**: Uses hidden selections ("reflector", "glass", "reflector_far") for dynamic beam effect
+- **Battery consumption**: `EnergyManager` powers the light, drains Battery9V
+- **Toggle mode**: `Switchable_Base` provides on/off via action menu
+- **Durability**: 70 hitpoints with 5 visual states (pristine → destruct)
 
 ### Supports (`attachments/support/`)
 
@@ -470,6 +484,32 @@ From `DZ/weapons/launchers/`:
 ## Recoil Profiles
 
 Each weapon has a unique recoil pattern that defines horizontal and vertical kick over successive shots. From `P:/scripts/4_world/classes/recoilbase/recoils/` (48 profiles):
+
+## Per-Weapon Config Example: M4A1
+
+The M4A1 (`P:/DZ/weapons/firearms/m4/config.cpp`) demonstrates a complete weapon definition:
+
+```cpp
+class M4A1_Base: Rifle_Base
+{
+    weight = 2276;                           // 2.28 kg
+    repairableWithKits[] = {1};
+    initSpeedMultiplier = 0.9;               // 90% of ammo velocity
+    chamberSize = 1;
+    chamberableFrom[] = { "Ammo_556x45", "Ammo_556x45Tracer" };
+    magazines[] = {
+        "Mag_STANAG_30Rnd", "Mag_STANAGCoupled_30Rnd",
+        "Mag_STANAG_60Rnd", "Mag_CMAG_10Rnd", "Mag_CMAG_20Rnd",
+        "Mag_CMAG_30Rnd", "Mag_CMAG_40Rnd"
+    };
+    recoilModifier[] = {1,1,1};
+    swayModifier[] = {2,2,0.75};
+    barrelArmor = 2.5;
+    WeaponLength = 0.78;                     // 78cm
+};
+```
+
+Damage chain: `Bullet_556x45(hit=8)` → `initSpeedMultiplier(0.9)` → `airFriction(-0.00125)` → distance falloff → hit location multipliers → armor reduction. Muzzle velocity: 850 m/s base → 765 m/s effective.
 
 | Pattern | Weapons | Character |
 |---------|---------|-----------|

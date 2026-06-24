@@ -4,23 +4,23 @@ The `DZ/characters/` directory defines all player-wearable items, clothing, back
 
 ## Categories
 
-| Category | Directory | Examples |
-|----------|-----------|----------|
-| Backpacks | `characters/backpacks/` | Backpacks, hiking bags, tactical bags |
-| Belts | `characters/belts/` | Belt attachments, holsters, pouches |
-| Bodies | `characters/bodies/` | Body models, base geometries |
-| Data | `characters/data/` | Shared character configuration |
-| Glasses | `characters/glasses/` | Sunglasses, goggles, NVGs |
-| Gloves | `characters/gloves/` | All hand-wearable items |
-| Headgear | `characters/headgear/` | Hats, helmets, caps, masks |
-| Heads | `characters/heads/` | Head models and hair |
-| Masks | `characters/masks/` | Face masks, bandanas, gas masks |
-| Pants | `characters/pants/` | All leg-wear |
-| Proxies | `characters/proxies/` | Proxy attachments and slots |
-| Shoes | `characters/shoes/` | Footwear |
-| Tops | `characters/tops/` | Shirts, jackets, vests |
-| Vests | `characters/vests/` | Body armor, tactical vests |
-| Zombies | `characters/zombies/` | Infected/zombie models |
+| Category | Directory | Config Size | Examples |
+|----------|-----------|-------------|----------|
+| Backpacks | `characters/backpacks/` | 84 KB | Backpacks, hiking bags, tactical bags |
+| Belts | `characters/belts/` | 19 KB | Belt attachments, holsters, pouches |
+| Bodies | `characters/bodies/` | — | Body models, base geometries (3D assets only) |
+| Data | `characters/data/` | 233 KB | Shared character configuration |
+| Glasses | `characters/glasses/` | 32 KB | Sunglasses, goggles, NVGs |
+| Gloves | `characters/gloves/` | 56 KB | All hand-wearable items |
+| Headgear | `characters/headgear/` | 209 KB | Hats, helmets, caps |
+| Heads | `characters/heads/` | 120 KB | Head models and hair |
+| Masks | `characters/masks/` | 42 KB | Face masks, bandanas, gas masks |
+| Pants | `characters/pants/` | 116 KB | All leg-wear |
+| Proxies | `characters/proxies/` | — | Proxy attachments (3D assets only) |
+| Shoes | `characters/shoes/` | 78 KB | Footwear |
+| Tops | `characters/tops/` | 196 KB | Shirts, jackets |
+| Vests | `characters/vests/` | 48 KB | Body armor, tactical vests |
+| Zombies | `characters/zombies/` | 381 KB | Infected/zombie models |
 
 ## Clothing Config Structure
 

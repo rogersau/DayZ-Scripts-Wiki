@@ -99,7 +99,7 @@ Each `DZ/` directory has a corresponding documentation page:
 | `gear/` | [Gear & Items](./gear-items) | All usable items (15 subcategories) |
 | `plants/` | [Plants](./plants) | Trees, bushes, harvesting |
 | `rocks/` | [Rocks](./rocks) | Rock/stone world objects |
-| `sounds/` | [Sound Config](./sounds-config) | Sound shaders, sets, audio pipeline |
+| `sounds/` | [Sound Config](./sounds-config), [Sound Pipeline](./sound-hierarchy) | Sound shaders, sets, tables, audio pipeline |
 | `structures/` | [Structures](./structures) | Building/structure definitions |
 | `surfaces/` | [Surfaces](./surfaces) | Surface types, physics, clutter |
 | `ui/` | [UI Config](./ui-config) | Video options, languages |

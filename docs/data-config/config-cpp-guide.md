@@ -56,6 +56,42 @@ class ClassName: ParentClass {
 | Color | `name[] = {r,g,b};` | `color[] = {1,0,0};` |
 | String array | `name[] = {"s1","s2"};` | `magazines[] = {"Mag_AKM"};` |
 
+## Damage System Pattern
+
+Every item with durability uses a consistent `DamageSystem` structure for visual degradation:
+
+```cpp
+class DamageSystem
+{
+    class GlobalHealth
+    {
+        class Health
+        {
+            hitpoints = 100;           // Total durability
+            healthLevels[] = {         // Visual states by health %
+                {1,                    // 100% health (pristine)
+                    {"material.rvmat"}
+                },
+                {0.7,                  // 70% health (worn)
+                    {"material_damage.rvmat"}
+                },
+                {0.5,                  // 50% health (damaged)
+                    {"material_damage.rvmat"}
+                },
+                {0.3,                  // 30% health (badly damaged)
+                    {"material_damage.rvmat"}
+                },
+                {0,                     // 0% health (destroyed)
+                    {"material_destruct.rvmat"}
+                }
+            };
+        };
+    };
+};
+```
+
+Real `hitpoints` values from source: AlarmClock=50, KitchenTimer=30, BandageDressing=100, Ammo boxes=100. Each entry in `healthLevels[]` maps a health threshold (1.0→0.0) to visual material overrides. Empty `{}` means no visual change at that threshold.
+
 ## CfgPatches — Addon Registration
 
 Every config directory starts with `CfgPatches` to register the addon:

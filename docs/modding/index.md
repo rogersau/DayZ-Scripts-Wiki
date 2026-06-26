@@ -6,6 +6,7 @@ This section covers everything you need to know to develop DayZ mods. It draws o
 
 Before diving into modding, you should understand the foundational concepts documented elsewhere in this wiki:
 
+- **[Enforce Script Syntax](./enforce-syntax)** — The language itself: types, keywords, OOP, and memory management
 - **[Script Layers](/script-layers/)** — The 5-layer architecture that Enforce Script code is organized into
 - **[Scripts vs Config](/architecture/script-vs-config)** — The critical separation between runtime logic and static data
 - **[Entity Hierarchy](/architecture/entity-hierarchy)** — The class hierarchy all game objects inherit from
@@ -30,6 +31,7 @@ This guide focuses on the **script and config** side — the files found at `P:\
 | [Client/Server Logic](./client-server-logic) | Understanding the server/client split, RPC, and sync |
 | [Common APIs](./common-apis) | Key APIs every modder should know |
 | [Debugging](./debugging) | Script console, error handling, and debugging tools |
+| [Enforce Script Syntax](./enforce-syntax) | Complete language reference — types, keywords, OOP, memory management |
 | [Safe Modding Patterns](./safe-patterns) | Best practices for compatible, maintainable mods |
 | [Real Mod Examples](./real-mod-examples) | DMOverrides scaffold and NamalskBlizzard built mod |
 

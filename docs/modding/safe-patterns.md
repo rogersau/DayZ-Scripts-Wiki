@@ -2,6 +2,8 @@
 
 This page covers best practices for writing DayZ mods that are compatible, maintainable, and safe to use in production servers.
 
+> **Prerequisite:** Make sure you're familiar with the [Enforce Script Language Reference](/modding/enforce-syntax) — types, keywords, OOP, and memory management patterns used throughout this page.
+
 ## Config-Only Modding
 
 The simplest and safest way to add content is through **config-only modding**. Because DayZ's architecture separates data from logic (documented in [Scripts vs Config](/architecture/script-vs-config)), you can add new items, vehicles, and characters without writing any Enforce Script code.

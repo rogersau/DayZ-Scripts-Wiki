@@ -160,6 +160,7 @@ export default withMermaid({
             { text: 'Debugging', link: '/modding/debugging' },
             { text: 'Safe Modding Patterns', link: '/modding/safe-patterns' },
             { text: 'Real Mod Examples', link: '/modding/real-mod-examples' },
+            { text: 'Enforce Script Syntax', link: '/modding/enforce-syntax' },
           ]
         }
       ],

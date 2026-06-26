@@ -2,6 +2,8 @@
 
 The DayZ Enforce Script codebase is organized into five numbered layers. This section provides detailed documentation for each layer.
 
+> **New to Enforce Script?** See the [Enforce Script Language Reference](/modding/enforce-syntax) for the language syntax, types, and keywords used throughout these layers.
+
 ## The Layers at a Glance
 
 ```

@@ -2,6 +2,8 @@
 
 This page documents the most frequently used APIs when developing DayZ mods. All examples are grounded in the actual source at `P:\`.
 
+> **Language primer:** See the [Enforce Script Language Reference](/modding/enforce-syntax) if you need a refresher on syntax, types, or keywords used in the code examples below.
+
 ## GetGame() — The Global Game Singleton
 
 `GetGame()` returns the global `DayZGame` (or `Game` base class) instance, which is the central access point for most engine services.

@@ -1,6 +1,6 @@
 # Architecture Overview
 
-The DayZ script system is organized as a **layered architecture** with five numbered layers, each building on the one below. The scripts are written in **Enforce Script** (`.c` files), Bohemia Interactive's proprietary scripting language that runs on the Enfusion engine.
+The DayZ script system is organized as a **layered architecture** with five numbered layers, each building on the one below. The scripts are written in **Enforce Script** (`.c` files), Bohemia Interactive's proprietary scripting language that runs on the Enfusion engine. See the [Enforce Script Language Reference](/modding/enforce-syntax) for the complete syntax, types, and keywords.
 
 ## The Five-Layer System
 

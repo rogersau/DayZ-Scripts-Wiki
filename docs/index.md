@@ -36,7 +36,7 @@ features:
     details: The config.cpp definitions for gear, weapons, characters, structures, and worlds.
     link: /data-config/
   - title: 🔧 Modding
-    details: Project structure, client/server logic, key APIs, debugging, and safe patterns for DayZ mod development.
+    details: Project structure, client/server logic, key APIs, debugging, safe patterns, and the complete Enforce Script language reference for DayZ mod development.
     link: /modding/
   - title: 🔗 Cross-Referenced
     details: Every page links to related systems so you can trace how components interact.
@@ -46,7 +46,7 @@ features:
 
 This wiki documents the **DayZ game scripts** found in the DayZ game installation. It covers:
 
-- **Enforce Script source code** (`scripts/`) — the 5-layer runtime architecture from core engine bindings to mission/game-mode logic
+- **Enforce Script source code** (`scripts/`) — the 5-layer runtime architecture from core engine bindings to mission/game-mode logic (see [Language Reference](/modding/enforce-syntax) for the complete syntax guide)
 - **Configuration data** (`DZ/`, `Core/`) — the config.cpp definitions for all items, weapons, vehicles, characters, structures, and world data
 - **System interactions** — how the various subsystems (inventory, damage, effects, weather, AI, persistence) communicate and depend on each other
 - **Modding guidance** — project structure, client/server logic, APIs, and best practices for DayZ mod development, using real mod examples from `P:\`

@@ -7,7 +7,7 @@ One of the most important architectural concepts in DayZ is the separation betwe
 | Aspect | Scripts | Config (config.cpp) |
 |--------|---------|---------------------|
 | **Location** | `scripts/` (Layers 1-5) | `DZ/`, `Core/` |
-| **File format** | Enforce Script (`.c`) | Config C++ (`.cpp`) |
+| **File format** | [Enforce Script (`.c`)](/modding/enforce-syntax) | Config C++ (`.cpp`) |
 | **Purpose** | Behavior, simulation, control flow | Object definitions, properties, metadata |
 | **Compilation** | Compiled by Enforce Script compiler | Parsed by config loader at startup |
 | **When it runs** | Runtime (game loop) | Load time (startup) |

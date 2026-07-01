@@ -1109,7 +1109,1055 @@ class Inventory
 
 ---
 
-## 17. Best Practices for AI Agents
+## 17. Preprocessor Directives
+
+The Enforce Script preprocessor works similarly to C/C++ preprocessors, processing directives before compilation.
+
+### 17.1 `#define` and `#undef`
+
+```c
+#define MY_CONSTANT 42
+#define DEBUG_MODE
+
+void Test()
+{
+    int x = MY_CONSTANT;    // replaced with 42 at compile time
+}
+
+#undef MY_CONSTANT          // removes the definition
+```
+
+> Unlike `const` variables, `#define` constants are textual substitutions. They have no type and are not scoped — use `const` for typed, scoped constants when possible.
+
+### 17.2 Conditional Compilation: `#ifdef` / `#ifndef` / `#else` / `#endif`
+
+This is critical for DayZ modding to separate server-only and client-only code:
+
+```c
+#ifdef SERVER
+// This block only compiles on the server
+void SavePlayerData()
+{
+    HiveRequest req = new HiveRequest();
+    req.Write(GetGame().GetPlayer().GetIdentity().GetPlainName());
+    req.Write(GetGame().GetTime());
+}
+#endif
+
+#ifndef SERVER
+// This block compiles on client AND Workbench (without -server flag)
+void ShowClientUI()
+{
+    GetGame().GetUIManager().ShowHUD(true);
+}
+#endif
+```
+
+### 17.3 `#if` with Expressions
+
+```c
+#if VERSION > 100
+// Compiles only for versions above 100
+void NewFeature() { }
+#else
+void LegacyFeature() { }
+#endif
+```
+
+### 17.4 Built-in DayZ Defines
+
+| Define | Present When | Typical Use |
+|--------|-------------|-------------|
+| `SERVER` | Server build (`-server` flag) | Server-only operations (hive, auth, save) |
+| `CLIENT` | Client build | Client-only operations (UI, input, rendering) |
+| `WORKBENCH` | Running in Workbench IDE | Debug code that should not ship |
+| `DAYZ` | Always defined in DayZ | Identifying DayZ vs other Enfusion titles |
+| `PLATFORM_WINDOWS` | Windows build | Platform-specific code |
+
+```c
+// Combine defines for fine-grained control
+#ifdef WORKBENCH
+    // Workbench-only debug helpers
+    void DebugSpawnAnyItem(string type)
+    {
+        EntityAI item = EntityAI.Cast(GetGame().SpawnEntity(type, "0 0 0"));
+        Print("[DEBUG] Spawned: " + type);
+    }
+#endif
+
+// Common pattern: workbench-only cheat bind
+#ifdef WORKBENCH
+    GetGame().GetInputManager().AddActionListener("CheatKey", this, "OnCheatKey");
+#endif
+```
+
+### 17.5 Stringification and Token Pasting (`#` and `##`)
+
+```c
+#define STRINGIFY(x) #x
+#define CONCAT(a, b) a ## b
+
+void Test()
+{
+    Print(STRINGIFY(hello));        // prints "hello"
+
+    int VAR_xy = 100;
+    Print(CONCAT(VAR_, xy));        // reads VAR_xy -> prints "100"
+}
+```
+
+> These operators are rarely used in DayZ scripts but available for advanced metaprogramming.
+
+### 17.6 Preprocessor vs `const` vs `static const`
+
+| Feature | `#define` | `const` | `static const` (in class) |
+|---------|-----------|---------|--------------------------|
+| **Scope** | Global (file-wide) | Per-file or per-class | Per-class |
+| **Type safety** | None (textual replace) | Yes | Yes |
+| **Memory** | None (compile-time) | Allocated if address taken | Allocated per-class |
+| **Used for** | Conditional compilation, guards | Numeric constants, array sizes | Class-level constants |
+| **Overridable in modded** | No | Yes (modded class) | Yes (modded class) |
+
+---
+
+## 18. Type Casting and Type Inspection
+
+Enforce Script provides several mechanisms for safe type conversion and runtime type identification.
+
+### 18.1 Safe Downcasting with `ClassName.Cast()`
+
+The primary casting mechanism is the static `Cast()` method on the target class. It returns `null` on failure instead of crashing:
+
+```c
+void TestCasting()
+{
+    EntityAI entity = GetGame().GetPlayer();    // Returns DayZPlayer as EntityAI
+
+    // Safe downcast — returns null if cast fails
+    DayZPlayer player = DayZPlayer.Cast(entity);
+    if (player)
+    {
+        Print("Successfully cast to DayZPlayer");
+    }
+
+    // Cast to an incompatible type — returns null
+    CarScript car = CarScript.Cast(entity);
+    if (!car)
+    {
+        Print("Entity is not a car — cast returned null");
+    }
+}
+```
+
+> **Always use `Cast()` over direct assignment** when downcasting. Direct assignment of a base-type reference to a derived-type variable compiles but can cause unsafe access.
+
+### 18.2 Unsafe Direct Cast
+
+```c
+// UNSAFE — compiles but may produce invalid pointer
+void UnsafeCast(EntityAI entity)
+{
+    // This compiles but bypasses type checking — avoid this pattern
+    CarScript car = entity;     // NO — implicit downcast, dangerous
+}
+
+// SAFE
+void SafeCast(EntityAI entity)
+{
+    CarScript car = CarScript.Cast(entity);
+    if (car) { /* safe */ }
+}
+```
+
+### 18.3 Type Inheritance Check: `IsInherited()`
+
+Checks whether an object's class inherits from (or is) a specified type:
+
+```c
+void CheckType(EntityAI entity)
+{
+    if (entity.IsInherited(DayZPlayer))
+    {
+        Print("This entity is a player or inherits from DayZPlayer");
+    }
+
+    if (entity.IsInherited(Transport))
+    {
+        Print("This entity is a vehicle (inherits from Transport)");
+    }
+}
+```
+
+### 18.4 `typename` and `InstanceType()`
+
+The `typename` keyword represents a type at runtime. It is essentially a type handle:
+
+```c
+void TypeNameExample()
+{
+    // Compare runtime types
+    EntityAI entity = GetGame().GetPlayer();
+
+    typename entityType = entity.InstanceType();
+    typename targetType = DayZPlayer;
+
+    if (entityType == targetType)
+    {
+        Print("Entity is exactly DayZPlayer (not a subclass)");
+    }
+
+    // TypeName can be used with arrays
+    array<typename> typeList = new array<typename>();
+    typeList.Insert(DayZPlayer);
+    typeList.Insert(Transport);
+    typeList.Insert(InventoryItem);
+}
+
+// typename as function parameter
+void SpawnByTypeName(typename type, vector position)
+{
+    EntityAI entity = EntityAI.Cast(GetGame().SpawnEntity(type, position));
+    if (entity)
+    {
+        Print("Spawned: " + type);
+    }
+}
+
+void Test()
+{
+    SpawnByTypeName(M4A1, "0 2 0");
+    SpawnByTypeName(BandageDressing, "5 2 0");
+}
+```
+
+### 18.5 `GetType()` — String Type Name
+
+Every entity has a `GetType()` method that returns the **config class name** as a string:
+
+```c
+void PrintEntityType(EntityAI entity)
+{
+    string typeName = entity.GetType();     // e.g., "M4A1", "BandageDressing"
+    string className = entity.ClassName();  // e.g., "M4A1", "BandageDressing"
+
+    Print("Config type: " + typeName);
+}
+```
+
+> `GetType()` and `ClassName()` typically return the same value for gameplay entities. `GetType()` reads from the config class, while `ClassName()` is the script class name.
+
+### 18.6 Type Conversion Reference
+
+```c
+void ConversionExamples()
+{
+    // int → float (implicit)
+    int i = 5;
+    float f = i;            // 5.0
+
+    // float → int (implicit, truncates)
+    float pi = 3.14;
+    int ip = pi;            // 3
+
+    // string → int/float (explicit via helper)
+    string s = "42";
+    int si = s.ToInt();     // 42
+
+    string sf = "3.14";
+    float sfv = sf.ToFloat();   // 3.14
+
+    // vector ↔ string
+    vector v = "10 20 30";
+    string vs = v.ToString();       // "10 20 30"
+    vector v2 = "1 2 3".ToVector(); // <1, 2, 3>
+}
+```
+
+---
+
+## 19. Built-in Method Reference
+
+### 19.1 String Methods
+
+Strings are passed by value. Key methods available on every `string`:
+
+| Method | Signature | Description |
+|--------|-----------|-------------|
+| `Length` | `int Length()` | Returns character count |
+| `Get` | `string Get(int pos)` | Character at position |
+| `Set` | `void Set(int pos, string char)` | Set character at position |
+| `IndexOf` | `int IndexOf(string sub)` | First index of substring (-1 if not found) |
+| `LastIndexOf` | `int LastIndexOf(string sub)` | Last index of substring |
+| `Substring` | `string Substring(int start, int count)` | Extract substring |
+| `SubstringLen` | `string SubstringLen(int start)` | From start to end |
+| `ToUpper` | `string ToUpper()` | Uppercase copy |
+| `ToLower` | `string ToLower()` | Lowercase copy |
+| `Trim` | `string Trim()` | Remove leading/trailing whitespace |
+| `ToInt` | `int ToInt()` | Parse as integer |
+| `ToFloat` | `float ToFloat()` | Parse as float |
+| `ToVector` | `vector ToVector()` | Parse as `"x y z"` |
+| `Split` | `TStringArray Split(string delimiter)` | Split into array |
+| `Replace` | `string Replace(string from, string to)` | Replace all occurrences |
+| `Contains` | `bool Contains(string sub)` | Checks if substring exists |
+| `StartsWith` | `bool StartsWith(string prefix)` | Prefix check |
+| `EndsWith` | `bool EndsWith(string suffix)` | Suffix check |
+| `Format` | `string Format(params)` | String formatting (see below) |
+
+```c
+void StringExamples()
+{
+    string text = "Hello World";
+
+    Print(text.Length());           // 11
+    Print(text.IndexOf("World"));   // 6
+    Print(text.Substring(0, 5));    // "Hello"
+    Print(text.ToUpper());          // "HELLO WORLD"
+    Print(text.Contains("World"));  // true
+    Print(text.Replace("World", "DayZ")); // "Hello DayZ"
+
+    // String formatting
+    int hp = 75;
+    string name = "Player1";
+    string formatted = string.Format("%1 has %2 HP", name, hp);
+    Print(formatted);               // "Player1 has 75 HP"
+
+    // Split
+    TStringArray parts = "a,b,c".Split(",");
+    // parts[0] = "a", parts[1] = "b", parts[2] = "c"
+}
+```
+
+> `string.Format()` uses `%1`, `%2`, etc. as positional placeholders — similar to printf but with position-based indexing.
+
+### 19.2 Array Methods (`array<T>`)
+
+| Method | Signature | Description |
+|--------|-----------|-------------|
+| `Count` | `int Count()` | Number of elements |
+| `Get` | `T Get(int index)` | Element at index |
+| `Set` | `void Set(int index, T value)` | Set element at index |
+| `Insert` | `void Insert(T value)` | Append to end |
+| `InsertAt` | `void InsertAt(int index, T value)` | Insert at position |
+| `Remove` | `void Remove(int index)` | Remove at position |
+| `RemoveItem` | `void RemoveItem(T value)` | Remove first matching |
+| `Clear` | `void Clear()` | Remove all elements |
+| `Find` | `int Find(T value)` | First index of value (-1 if not found) |
+| `Reverse` | `void Reverse()` | Reverse order in-place |
+| `Sort` | `void Sort()` | Sort ascending |
+| `Resize` | `void Resize(int size)` | Change array capacity |
+| `IsEmpty` | `bool IsEmpty()` | True if count == 0 |
+
+```c
+void ArrayExamples()
+{
+    autoptr TStringArray names = new TStringArray;
+
+    names.Insert("Charlie");
+    names.Insert("Alice");
+    names.Insert("Bob");
+
+    Print(names.Count());           // 3
+    Print(names.Get(1));            // "Alice"
+
+    names.Sort();                   // ["Alice", "Bob", "Charlie"]
+
+    int idx = names.Find("Bob");
+    Print(idx);                     // 1 (after sort)
+
+    names.RemoveItem("Alice");      // ["Bob", "Charlie"]
+
+    // Index operator also works
+    Print(names[0]);                // "Bob"
+
+    // Static array init shorthand for dynamic arrays
+    array<int> numbers = { 7, 3, 6, 8 };
+}
+```
+
+### 19.3 Vector Operations
+
+Vectors are 3-component float values (`float x, y, z`). Access components by index or name:
+
+```c
+void VectorExamples()
+{
+    vector a = "1 2 3";
+    vector b = "4 5 6";
+
+    // Component access
+    Print(a[0]);            // 1 (x)
+    Print(a[1]);            // 2 (y)
+    Print(a[2]);            // 3 (z)
+
+    // Arithmetic
+    vector sum = a + b;         // <5, 7, 9>
+    vector diff = a - b;        // <-3, -3, -3>
+    vector scaled = a * 2.0;    // <2, 4, 6>
+    vector divided = a / 2.0;   // <0.5, 1, 1.5>
+
+    // Negation
+    vector neg = -a;            // <-1, -2, -3>
+
+    // Length and distance
+    float len = vector.Distance(a, "0 0 0");    // sqrt(14)
+    float len2 = a.Length();                     // Not available — use vector.Distance
+
+    // Normalization
+    vector dir = a.Normalized();
+    Print(dir);                 // unit-length vector
+
+    // Cross product
+    vector cross = a % b;       // cross product operator
+    // a × b = (a.y*b.z - a.z*b.y, a.z*b.x - a.x*b.z, a.x*b.y - a.y*b.x)
+
+    // Comparison
+    if (a == b) { }
+    if (a != b) { }
+
+    // String conversion
+    string sv = a.ToString();       // "1 2 3"
+    vector v2 = "7 8 9".ToVector(); // <7, 8, 9>
+}
+```
+
+### 19.4 Map Methods (`map<K, V>`)
+
+| Method | Signature | Description |
+|--------|-----------|-------------|
+| `Count` | `int Count()` | Number of key-value pairs |
+| `Get` | `V Get(K key)` | Value by key (or default) |
+| `Set` | `V Set(K key, V value)` | Insert or update |
+| `Contains` | `bool Contains(K key)` | Key exists |
+| `Remove` | `void Remove(K key)` | Remove by key |
+| `Clear` | `void Clear()` | Remove all entries |
+| `GetKeyByIndex` | `K GetKeyByIndex(int i)` | Key at index (for iteration) |
+| `GetElementByIndex` | `V GetElementByIndex(int i)` | Value at index |
+
+```c
+void MapExamples()
+{
+    auto inventory = new map<string, int>();
+
+    // Insert or update using operator[]
+    inventory["apple"] = 3;
+    inventory["bandage"] = 5;
+    inventory["apple"] = 2;         // overwrite
+
+    // Check existence
+    if (inventory.Contains("apple"))
+    {
+        Print("Has apples: " + inventory["apple"]);    // 2
+    }
+
+    // Iteration (preferred method)
+    foreach (auto item, auto count : inventory)
+    {
+        Print(item + " x" + count);
+    }
+
+    // Index-based iteration
+    for (int i = 0; i < inventory.Count(); i++)
+    {
+        string key = inventory.GetKeyByIndex(i);
+        int val = inventory.GetElementByIndex(i);
+        Print(key + " = " + val);
+    }
+}
+```
+
+---
+
+## 20. The Param Serialization System
+
+The `Param` system is Enforce Script's mechanism for **typed serialization** — converting data into a binary stream for RPC, persistence, or storage. Params are strongly typed wrappers around values.
+
+### 20.1 Basic Param Types
+
+| Class | Holds | Used For |
+|-------|-------|----------|
+| `Param1<T>` | Single value | Simple RPC arguments |
+| `Param2<T1, T2>` | Two values | Key-value pairs |
+| `Param3<T1, T2, T3>` | Three values | Compound data |
+| `Param4<T1, T2, T3, T4>` | Four values | Extended data |
+| `Param` (base) | Read context | Reading serialized data |
+
+### 20.2 Writing Params
+
+```c
+void WriteExample()
+{
+    // Create a param with typed data
+    Param2<string, int> data = new Param2<string, int>("Player1", 100);
+
+    // Serialize to write context
+    ParamWriter writer = new ParamWriter();
+    data.Write(writer);
+
+    // writer now contains the binary data — can be sent via RPC or saved
+}
+```
+
+### 20.3 Reading Params
+
+```c
+void ReadExample(ParamsReadContext ctx)
+{
+    // Create typed param matching what was written
+    Param2<string, int> data = new Param2<string, int>("", 0);
+
+    // Deserialize
+    if (data.Read(ctx))
+    {
+        string name = data.param1;
+        int score = data.param2;
+        Print(name + " has score " + score);
+    }
+}
+```
+
+### 20.4 Param in RPC Communication
+
+```c
+// SENDING (client)
+void SendPlayerData()
+{
+    Param2<string, vector> data = new Param2<string, vector>(
+        GetGame().GetPlayer().GetIdentity().GetPlainName(),
+        GetGame().GetPlayer().GetPosition()
+    );
+
+    ScriptRPC rpc = new ScriptRPC();
+    rpc.WriteParam(data);               // Write the typed param
+    rpc.Send(null, ERPCs.RPC_MOD_SYNC, true, null);
+}
+
+// RECEIVING (server)
+void OnModSync(ParamsReadContext ctx, PlayerIdentity sender)
+{
+    Param2<string, vector> data = new Param2<string, vector>("", "0 0 0");
+    if (ctx.Read(data))
+    {
+        string playerName = data.param1;
+        vector position = data.param2;
+        // Handle the data...
+    }
+}
+```
+
+### 20.5 Direct Param Read/Write
+
+You can also read and write raw types to a `ParamsReadContext` without typed wrappers:
+
+```c
+// Writing raw data
+ScriptRPC rpc = new ScriptRPC();
+rpc.Write("Player1");           // string
+rpc.Write(100);                 // int
+rpc.Write(3.14);                // float
+rpc.Write("1 2 3".ToVector());  // vector
+rpc.Send(null, ERPCs.RPC_MOD_SYNC, true, null);
+
+// Reading raw data
+void OnModSync(ParamsReadContext ctx, PlayerIdentity sender)
+{
+    string name;
+    int score;
+    float value;
+    vector pos;
+
+    ctx.Read(name);
+    ctx.Read(score);
+    ctx.Read(value);
+    ctx.Read(pos);
+}
+```
+
+---
+
+## 21. Runtime Config Access
+
+Scripts read config data at runtime through the `Game` API, using path-style keys to navigate the config hierarchy.
+
+### 21.1 Config Path Syntax
+
+Config paths use space-separated segments:
+```
+"CfgVehicles M4A1 weight"
+"CfgWeapons BandageDressing displayName"
+"CfgPatches DZ_Scripts requiredAddons"
+```
+
+### 21.2 Reading Config Values
+
+```c
+void ReadConfigExamples()
+{
+    Game game = GetGame();
+
+    // Basic types
+    float weight = game.GetConfigFloat("CfgVehicles M4A1 weight");
+    int maxHealth = game.GetConfigInt("CfgVehicles M4A1 health");
+    string displayName = game.GetConfigString("CfgVehicles M4A1 displayName");
+
+    // Config arrays (e.g., itemSize[])
+    string itemSize = game.GetConfigText("CfgVehicles BandageDressing itemSize");
+    // Returns something like "{1,1}"
+
+    // Check if a config entry exists
+    bool exists = game.ConfigIsExisting("CfgWeapons MyMod_CustomRifle");
+    if (exists)
+    {
+        // Safe to read
+    }
+
+    // Get all child classes under a config path
+    autoptr TStringArray weapons = new TStringArray();
+    game.ConfigGetChildNames("CfgWeapons", weapons);
+    foreach (string weapon : weapons)
+    {
+        Print(weapon);   // Prints all weapon class names
+    }
+}
+```
+
+### 21.3 Config Access Patterns
+
+```c
+// Safe read with fallback
+float GetModValue(string path, float defaultValue)
+{
+    if (GetGame().ConfigIsExisting(path))
+    {
+        return GetGame().GetConfigFloat(path);
+    }
+    return defaultValue;
+}
+
+// Read config for any entity type
+string GetEntityDisplayName(EntityAI entity)
+{
+    return GetGame().GetConfigString(
+        "CfgVehicles " + entity.GetType() + " displayName"
+    );
+}
+
+// Iterate config hierarchy
+void ListConfigHierarchy(string basePath)
+{
+    autoptr TStringArray children = new TStringArray();
+    GetGame().ConfigGetChildNames(basePath, children);
+    foreach (string child : children)
+    {
+        Print(basePath + " > " + child);
+    }
+}
+```
+
+### 21.4 Writing Config (Modifying at Runtime)
+
+> Config data is **read-only at runtime** in DayZ. To modify config values, you must edit `config.cpp` files and restart. The config system provides runtime reads only.
+
+---
+
+## 22. Scheduling and Deferred Execution
+
+DayZ provides several mechanisms for running code after a delay or on a recurring schedule.
+
+### 22.1 CallQueue — Deferred Callbacks
+
+The `CallQueue` system lets you schedule functions to run at specific points in the frame lifecycle:
+
+```c
+void CallQueueExamples()
+{
+    // Execute next frame
+    GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY)
+        .Call(this, "MyCallback");
+
+    // Execute after a delay (in seconds)
+    GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY)
+        .CallLater(this, "MyCallback", 5.0, false);     // once after 5s
+
+    // Execute repeatedly
+    GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY)
+        .CallLater(this, "MyRepeatingCallback", 1.0, true);  // every 1s
+
+    // Remove a pending call
+    GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY)
+        .Remove(this, "MyRepeatingCallback");
+}
+
+void MyCallback()
+{
+    Print("Callback executed!");
+}
+
+void MyRepeatingCallback()
+{
+    Print("Tick...");
+}
+```
+
+### 22.2 Call Categories
+
+| Category | Purpose |
+|----------|---------|
+| `CALL_CATEGORY_GAMEPLAY` | Main gameplay loop (most common) |
+| `CALL_CATEGORY_SYSTEM` | Engine system updates |
+| `CALL_CATEGORY_GUI` | UI-related deferred calls |
+| `CALL_CATEGORY_INPUT` | Input processing |
+
+> The gameplay category is the one to use for almost all mod code. It runs once per frame as part of the main update loop.
+
+### 22.3 Direct `CallLater` on Objects
+
+Many DayZ base classes (like `EntityAI`, `MissionBase`) have a built-in `CallLater` method:
+
+```c
+class MyItem : InventoryItem
+{
+    void OnItemUsed()
+    {
+        // Built-in CallLater on EntityAI-based objects
+        CallLater(this.CheckExpiration, 60.0, false);
+    }
+
+    void CheckExpiration()
+    {
+        Print("Item checked for expiration");
+    }
+}
+```
+
+### 22.4 Timer with Conditional Stop
+
+```c
+class MyTimerExample
+{
+    int m_Ticks;
+
+    void StartTimer()
+    {
+        m_Ticks = 0;
+        GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY)
+            .CallLater(this, "OnTick", 0.5, true);
+    }
+
+    void OnTick()
+    {
+        m_Ticks++;
+        Print("Tick " + m_Ticks);
+
+        if (m_Ticks >= 10)
+        {
+            // Stop the timer
+            GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY)
+                .Remove(this, "OnTick");
+            Print("Timer stopped");
+        }
+    }
+}
+```
+
+> **Note:** When using `CallLater` with `repeating = true`, always ensure you have a way to stop it (via `Remove`). Orphaned repeating callbacks can cause memory leaks and unexpected behavior.
+
+---
+
+## 23. Common Language Patterns
+
+These are recurring patterns found throughout the DayZ Enforce Script codebase that are useful for modders and AI agents to recognize and replicate.
+
+### 23.1 Singleton Accessor Pattern
+
+The most common pattern in DayZ — accessing global singleton instances:
+
+```c
+// Access the game instance (most common singleton)
+Game game = GetGame();
+
+// Access the player
+DayZPlayer player = DayZPlayer.Cast(GetGame().GetPlayer());
+
+// Access the UI manager
+UIManager ui = GetGame().GetUIManager();
+
+// Access the input manager
+InputManager input = GetGame().GetInputManager();
+```
+
+### 23.2 Null-Guard Pattern
+
+Always guard against null when working with object references:
+
+```c
+void SafePlayerAction()
+{
+    DayZPlayer player = DayZPlayer.Cast(GetGame().GetPlayer());
+
+    // One-line guard
+    if (!player) return;
+
+    // Or with an alternative action
+    if (!player)
+    {
+        Error("Cannot act — no player available");
+        return;
+    }
+
+    // Safe to use player here
+    vector pos = player.GetPosition();
+}
+```
+
+### 23.3 Config-Driven Factory Pattern
+
+Creating objects based on runtime type rather than hardcoded classes:
+
+```c
+EntityAI SpawnItemAtPlayer(string itemType)
+{
+    PlayerBase player = PlayerBase.Cast(GetGame().GetPlayer());
+    if (!player)
+    {
+        Error("No player found");
+        return null;
+    }
+
+    // Spawn by config class name — works for any item defined in config
+    EntityAI item = EntityAI.Cast(
+        GetGame().SpawnEntity(itemType, player.GetPosition() + "0 2 0")
+    );
+
+    if (item)
+    {
+        Print("Spawned " + itemType + " at " + player.GetPosition());
+    }
+    else
+    {
+        Error("Failed to spawn: " + itemType + " (check config class name)");
+    }
+
+    return item;
+}
+
+// Usage
+void Test()
+{
+    SpawnItemAtPlayer("M4A1");
+    SpawnItemAtPlayer("Apple");
+    SpawnItemAtPlayer("MyMod_CustomItem");
+}
+```
+
+### 23.4 Event Listener Pattern
+
+Using `ScriptInvoker` for decoupled event handling:
+
+```c
+// Event source
+class MyEventSource
+{
+    ScriptInvoker m_OnPlayerDeath;
+
+    void MyEventSource()
+    {
+        m_OnPlayerDeath = new ScriptInvoker();
+    }
+
+    void TriggerDeathEvent(DayZPlayer player)
+    {
+        // Notify all listeners
+        if (m_OnPlayerDeath)
+        {
+            m_OnPlayerDeath.Invoke(player);
+        }
+    }
+}
+
+// Event listener
+class MyEventListener
+{
+    void Init(MyEventSource source)
+    {
+        // Subscribe to the event
+        source.m_OnPlayerDeath.Insert(this, "OnPlayerDied");
+    }
+
+    void OnPlayerDied(DayZPlayer player)
+    {
+        Print("Player died: " + player.GetIdentity().GetPlainName());
+    }
+
+    void Deinit(MyEventSource source)
+    {
+        // Unsubscribe
+        source.m_OnPlayerDeath.Remove(this, "OnPlayerDied");
+    }
+}
+```
+
+### 23.5 Component Access Pattern
+
+Accessing components on entities:
+
+```c
+void InspectPlayerComponents()
+{
+    DayZPlayer player = DayZPlayer.Cast(GetGame().GetPlayer());
+    if (!player) return;
+
+    // Get inventory component
+    Inventory inventory = player.GetInventory();
+    if (inventory)
+    {
+        // Iterate items in inventory
+        autoptr TStringArray itemNames = new TStringArray();
+        inventory.GetItemsNames(itemNames);
+        foreach (string itemName : itemNames)
+        {
+            Print("Has item: " + itemName);
+        }
+    }
+
+    // Get health component
+    HumanEntityAI human = HumanEntityAI.Cast(player);
+    if (human)
+    {
+        float health = human.GetHealth("GlobalHealth", "Health");
+        float blood = human.GetHealth("GlobalHealth", "Blood");
+        Print("HP: " + health + ", Blood: " + blood);
+    }
+}
+```
+
+### 23.6 Mod Initialization Pattern
+
+How mods typically set themselves up:
+
+```c
+// In 5_mission/mission/mymod_mission.c
+modded class MissionServer
+{
+    override void OnInit()
+    {
+        super.OnInit();
+
+        // Register RPC handlers
+        GetGame().RPCRegisterServer(
+            this, ERPCs.RPC_MYMOD_EVENT, "OnMyModEvent"
+        );
+
+        // Start periodic update
+        GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY)
+            .CallLater(this, "MyModUpdate", 1.0, true);
+
+        Print("MyMod initialized on server");
+    }
+
+    void MyModUpdate()
+    {
+        // Periodic update logic
+    }
+
+    void OnMyModEvent(ParamsReadContext ctx, PlayerIdentity sender)
+    {
+        // Handle RPC
+    }
+};
+
+modded class MissionClient
+{
+    override void OnInit()
+    {
+        super.OnInit();
+
+        // Client-side initialization
+        GetGame().RPCRegisterClient(
+            this, ERPCs.RPC_MYMOD_EVENT, "OnMyModEvent"
+        );
+
+        Print("MyMod initialized on client");
+    }
+
+    void OnMyModEvent(ParamsReadContext ctx)
+    {
+        // Handle client RPC
+    }
+};
+```
+
+### 23.7 State Machine Pattern
+
+Simple state machine for objects with distinct modes:
+
+```c
+enum ItemState
+{
+    IDLE,
+    ACTIVE,
+    COOLDOWN,
+    DEPLETED
+}
+
+class StatefulItem : InventoryItem
+{
+    ItemState m_State;
+    float m_CooldownTimer;
+
+    void StatefulItem()
+    {
+        m_State = ItemState.IDLE;
+    }
+
+    void OnActivate()
+    {
+        switch (m_State)
+        {
+            case ItemState.IDLE:
+                Print("Activating...");
+                m_State = ItemState.ACTIVE;
+                break;
+
+            case ItemState.COOLDOWN:
+                Print("On cooldown, cannot activate");
+                break;
+
+            case ItemState.DEPLETED:
+                Print("Item is depleted");
+                break;
+        }
+    }
+
+    void OnUpdate(float deltaTime)
+    {
+        switch (m_State)
+        {
+            case ItemState.ACTIVE:
+                // Do active behavior
+                m_CooldownTimer += deltaTime;
+                if (m_CooldownTimer >= 5.0)
+                {
+                    m_State = ItemState.COOLDOWN;
+                    m_CooldownTimer = 0;
+                }
+                break;
+
+            case ItemState.COOLDOWN:
+                m_CooldownTimer += deltaTime;
+                if (m_CooldownTimer >= 10.0)
+                {
+                    m_State = ItemState.IDLE;
+                    m_CooldownTimer = 0;
+                }
+                break;
+        }
+    }
+}
+```
+
+---
+
+## 24. Best Practices for AI Agents
 
 When generating or analysing Enforce Script code, follow these guidelines:
 
@@ -1185,7 +2233,7 @@ HiveRequest req = new HiveRequest();
 
 ---
 
-## 18. Quick Reference: Keywords
+## 25. Quick Reference: Keywords
 
 | Keyword | Category | Purpose |
 |---------|----------|---------|
@@ -1213,6 +2261,54 @@ HiveRequest req = new HiveRequest();
 | `typename` | Type | Runtime type identifier |
 | `proto` | Native | C++ function prototype binding |
 | `native` | Native | C++ function call convention |
+| `#define` | Preprocessor | Textual macro definition |
+| `#undef` | Preprocessor | Remove macro definition |
+| `#ifdef` / `#ifndef` | Preprocessor | Conditional compilation check |
+| `#if` | Preprocessor | Expression-based conditional |
+| `#else` / `#endif` | Preprocessor | Alternative / end conditional |
+| `enum` | Declaration | Named integer constant set |
+| `foreach` | Iteration | Collection iteration |
+| `for` | Iteration | Counter-based loop |
+| `while` | Iteration | Condition-based loop |
+| `if` / `else` | Control | Conditional branch |
+| `switch` / `case` | Control | Multi-way branch |
+| `break` | Control | Exit loop or switch case |
+| `default` | Control | Fallback switch case |
+| `true` / `false` | Literal | Boolean values |
+| `Managed` | Base class | Enables ARC and soft links |
+
+---
+
+## 26. Quick Reference: Preprocessor Defines
+
+| Define | Context | Purpose |
+|--------|---------|---------|
+| `SERVER` | Server executable | Guard server-only logic (hive, persistence, auth) |
+| `CLIENT` | Client executable | Guard client-only logic (UI, input, rendering) |
+| `WORKBENCH` | Workbench IDE | Guard debug/testing code that should not ship |
+| `DAYZ` | Always | Identifies DayZ vs other Enfusion titles |
+| `PLATFORM_WINDOWS` | Windows build | Windows-specific code |
+
+---
+
+## 27. Quick Reference: API Accessors
+
+| Expression | Returns | Layer |
+|-----------|---------|-------|
+| `GetGame()` | `Game` / `DayZGame` instance | 2_gamelib |
+| `GetGame().GetPlayer()` | `IEntity` (cast to `DayZPlayer`) | 3_game |
+| `GetGame().GetUIManager()` | `UIManager` | 2_gamelib |
+| `GetGame().GetInputManager()` | `InputManager` | 2_gamelib |
+| `GetGame().GetCallQueue(category)` | `CallQueue` | 2_gamelib |
+| `GetGame().GetWorldEntity()` | `World` | 3_game |
+| `GetGame().GetConfigFloat(path)` | `float` | 2_gamelib |
+| `GetGame().GetConfigInt(path)` | `int` | 2_gamelib |
+| `GetGame().GetConfigString(path)` | `string` | 2_gamelib |
+| `GetGame().ConfigIsExisting(path)` | `bool` | 2_gamelib |
+| `GetGame().ConfigGetChildNames(path, out)` | `void` | 2_gamelib |
+| `GetGame().SpawnEntity(type, pos)` | `IEntity` | 3_game |
+| `GetGame().RPCRegisterServer(obj, rpc, fn)` | `void` | 2_gamelib |
+| `GetGame().RPCRegisterClient(obj, rpc, fn)` | `void` | 2_gamelib |
 
 ---
 

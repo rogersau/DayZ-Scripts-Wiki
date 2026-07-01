@@ -22,7 +22,7 @@ flowchart TD
         PID[PlayerIdentity<br/>ID, Name, SteamID, IP, Ping]
     end
     
-    subgraph Voice["Voice Communication"]
+    subgraph Voice["Voice Communication<br/>(see Voice Communication)]
         VON[VONManager<br/>Proximity / Radio / Megaphone]
     end
     
@@ -295,7 +295,7 @@ flowchart TD
 ## Integration with Other Systems
 
 - **All game state changes**: Inventory, health, position, animation all use RPC for synchronization
-- **VON**: Voice chat uses UDP for low-latency transmission — see [Sound System](./sound-system)
+- **VON**: Voice chat uses UDP for low-latency transmission — see [Voice Communication](./voice-communication) and [Sound System](./sound-system)
 - **Persistence**: Hive system uses server-to-database communication — see [Persistence & Hive](./persistence-hive)
 - **Player system**: Player identity and input handling — see [Player System](./player-system)
 - **Inventory system**: Inventory changes synced across all clients — see [Inventory System](./inventory-system)

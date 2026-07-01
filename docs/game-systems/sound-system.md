@@ -144,7 +144,7 @@ class CfgSoundSets {
 
 ## VON (Voice Over Network)
 
-The VON system (`vonmanager.c`, ~7,800 lines) handles real-time voice communication:
+The VON system (`vonmanager.c`, ~7,800 lines) handles real-time voice communication. See the full [Voice Communication](./voice-communication) page for the complete pipeline, player state integration, and radio equipment details.
 
 ```c
 class VONManager {
@@ -276,4 +276,5 @@ Additional sound management classes in Layer 4:
 - **Weather system**: Wind, rain, thunder ambient sounds affect gameplay — see [Weather & Environment](./weather-environment)
 - **Animation system**: Footstep events trigger surface-specific sound playback — see [Animation System](./animation-system)
 - **Effect system**: Combined particle + sound effects via `EffectSound` — see [Effect System](./effect-system)
+- **Voice Communication**: Full VoIP pipeline, voice channels, player state integration — see [Voice Communication](./voice-communication)
 - **Network**: VON voice data transmission over UDP, sound event synchronization — see [Networking & RPC](./networking)

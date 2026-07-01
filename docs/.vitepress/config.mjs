@@ -98,6 +98,7 @@ export default withMermaid({
             { text: 'Weapons & Firearms', link: '/game-systems/weapons-system' },
             { text: 'Modifiers & Symptoms', link: '/game-systems/modifiers-symptoms-system' },
             { text: 'Damage & Combat', link: '/game-systems/damage-combat' },
+            { text: 'Damage System (Native Pipeline)', link: '/game-systems/damage-system' },
             { text: 'Effect System', link: '/game-systems/effect-system' },
             { text: 'Weather & Environment', link: '/game-systems/weather-environment' },
             { text: 'AI System', link: '/game-systems/ai-system' },
@@ -110,6 +111,7 @@ export default withMermaid({
             { text: 'Central Economy', link: '/game-systems/central-economy' },
             { text: 'Crafting & Cooking', link: '/game-systems/crafting-cooking-system' },
             { text: 'Base Building', link: '/game-systems/base-building-system' },
+            { text: 'Environment', link: '/game-systems/environment-system' },
           ]
         }
       ],

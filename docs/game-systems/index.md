@@ -11,7 +11,8 @@ This section documents the major game systems in DayZ, their architecture, how t
 | [User Actions System](./user-actions-system) | `4_world/classes/useractionscomponent/` | Layer 4 | Context-sensitive interactions: eating, doors, crafting, weapon reloads |
 | [Weapons & Firearms](./weapons-system) | `4_world/entities/firearms/`, `4_world/classes/weapons/weaponmanager.c`, `4_world/systems/inventory/` | Layers 3-4 | Weapon FSM, fire cycle, chambering/reloading, network sync |
 | [Modifiers & Symptoms](./modifiers-symptoms-system) | `4_world/classes/playermodifiers/`, `playersymptoms/`, `playernotifiers/`, `transmissionagents/` | Layer 4 | Per-tick survival sim: metabolism, diseases, immune system, HUD notifiers, symptom animations |
-| [Damage & Combat](./damage-combat) | `3_game/damagesystem.c`, `4_world/classes/damage/*`, `4_world/classes/injuryhandler.c` | Layers 3-4 | Melee, firearms, explosions, injuries, bleeding |
+| [Damage & Combat](./damage-combat) | `3_game/damagesystem.c`, `4_world/classes/damage/*`, `4_world/classes/injuryhandler.c` | Layers 3-4 | Melee, firearms, explosions, injuries, bleeding (conceptual overview) |
+| [Damage System (Native Pipeline)](./damage-system) | `3_game/damagesystem.c`, `object.c`, `playerbase.c`, `dayzplayerimplement.c`, `bleedingsources/`, `shockhandler.c`, `injuryhandler.c`, `areadamage/` | Layers 3-4 | Native damage entry points, EEHitBy callback chain, bleeding lifecycle, shock→unconsciousness, death/KillerData |
 | [Effect System](./effect-system) | `3_game/effect.c`, `3_game/effectmanager.c` | Layer 3 | Particles, sounds, visual effects |
 | [Weather & Environment](./weather-environment) | `3_game/weather.c`, `3_game/worlddata.c`, `3_game/worldlighting.c` | Layer 3 | Rain, fog, wind, temperature, world state |
 | [AI System](./ai-system) | `3_game/ai/`, `3_game/aibehaviour.c`, `3_game/entities/dayzinfected.c`, `3_game/entities/dayzanimal.c` | Layer 3 | Zombies, animals, AI agents, group behavior |
@@ -24,6 +25,7 @@ This section documents the major game systems in DayZ, their architecture, how t
 | [Central Economy](./central-economy) | `3_game/ce/centraleconomy.c`, per-world CE XML configs | Layer 3 + CE config | Loot spawning, economy management, item lifetime tracking |
 | [Crafting & Cooking](./crafting-cooking-system) | `4_world/classes/craftingmanager.c`, `recipes/`, `cooking/`, `foodstage/`, `entities/itembase/edible_base.c`, `fireplacebase.c` | Layer 4 | Recipe plugin system, cooking pipeline, food stage transitions |
 | [Base Building](./base-building-system) | `4_world/entities/itembase/basebuildingbase.c`, `classes/basebuilding/`, `classes/hologram.c`, `kitbase.c` | Layer 4 | Kit deploy, construction parts, hologram placement, dismantle/fold |
+| [Environment System](./environment-system) | `4_world/classes/environment/environment.c`, `heatcomfortanimhandler.c`, `rainprocurement*`, `worlddata.c` | Layers 3-4 | Per-player heat-comfort & wetness simulation, fire proximity, rain procurement |
 
 ## How Systems Interact
 

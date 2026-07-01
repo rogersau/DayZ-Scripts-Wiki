@@ -1,5 +1,7 @@
 # Damage & Combat System
 
+> **Looking for the implementation pipeline?** This page is the high-level conceptual overview (damage types, melee/firearm/explosion at a glance, injury state diagram). For the actual native damage pipeline — entry points (`ProcessDirectDamage`/`CloseCombatDamage`/`ExplosionDamage`), the `EEHitBy` → bleeding-source-spawn → `ShockHandler.CheckValue` → `InjuryAnimationHandler` → `EEKilled`/`KillerData` callback sequence, the bleeding-source lifecycle, and the area-damage system — see [Damage System (Native Pipeline)](./damage-system).
+
 The damage system handles all forms of harm in DayZ: melee combat, firearms, explosions, environmental damage, and the resulting injuries, bleeding, shock, and unconsciousness. Core damage utilities live in `3_game/damagesystem.c` with gameplay classes in `4_world/classes/`.
 
 ## Architecture

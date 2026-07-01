@@ -96,6 +96,7 @@ export default withMermaid({
             { text: 'Inventory System', link: '/game-systems/inventory-system' },
             { text: 'User Actions System', link: '/game-systems/user-actions-system' },
             { text: 'Weapons & Firearms', link: '/game-systems/weapons-system' },
+            { text: 'Modifiers & Symptoms', link: '/game-systems/modifiers-symptoms-system' },
             { text: 'Damage & Combat', link: '/game-systems/damage-combat' },
             { text: 'Effect System', link: '/game-systems/effect-system' },
             { text: 'Weather & Environment', link: '/game-systems/weather-environment' },
@@ -107,6 +108,8 @@ export default withMermaid({
             { text: 'Networking & RPC', link: '/game-systems/networking' },
             { text: 'Persistence & Hive', link: '/game-systems/persistence-hive' },
             { text: 'Central Economy', link: '/game-systems/central-economy' },
+            { text: 'Crafting & Cooking', link: '/game-systems/crafting-cooking-system' },
+            { text: 'Base Building', link: '/game-systems/base-building-system' },
           ]
         }
       ],

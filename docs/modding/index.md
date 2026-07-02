@@ -33,6 +33,7 @@ This guide focuses on the **script and config** side — the files found at `P:\
 | [Debugging](./debugging) | Script console, error handling, and debugging tools |
 | [Enforce Script Syntax](./enforce-syntax) | Complete language reference — types, keywords, OOP, memory management |
 | [Safe Modding Patterns](./safe-patterns) | Best practices for compatible, maintainable mods |
+| [Writing Custom Actions](./action-recipes) | Cookbook of concrete action patterns (`ActionAttach`, `ActionDrink`, `FirearmActionAttachMagazine`, `ActionWorldCraft`) — which base class to pick and how to specialize it |
 | [Real Mod Examples](./real-mod-examples) | DMOverrides scaffold and NamalskBlizzard built mod |
 
 ## Source of Truth: `P:\`

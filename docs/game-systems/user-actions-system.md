@@ -6,6 +6,8 @@ The **User Actions System** is DayZ's unified pipeline for every context-sensiti
 
 > **See also**: [Inventory System](./inventory-system) (hand FSM & junctures), [Networking & RPC](./networking) (`ScriptInputUserData` / `DayZPlayerSyncJunctures`), [Damage & Combat](./damage-combat), [Weapons System](./weapons-system) (weapon actions reuse this pipeline).
 
+> **Writing a custom action?** See [Writing Custom Actions — Patterns & Recipes](/modding/action-recipes) for a cookbook of concrete patterns (`ActionAttach`, `ActionDrink`, `ActionBandage`, `FirearmActionAttachMagazine`, `ActionWorldCraft`) drawn from DayZ's ~390 action files, covering which base class to pick and how to specialize it.
+
 ---
 
 ## Mental Model

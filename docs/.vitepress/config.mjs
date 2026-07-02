@@ -112,6 +112,8 @@ export default withMermaid({
             { text: 'Crafting & Cooking', link: '/game-systems/crafting-cooking-system' },
             { text: 'Base Building', link: '/game-systems/base-building-system' },
             { text: 'Environment', link: '/game-systems/environment-system' },
+            { text: 'Contaminated Areas', link: '/game-systems/contaminated-area-system' },
+            { text: 'Explosion System', link: '/game-systems/explosion-system' },
           ]
         }
       ],
@@ -167,6 +169,7 @@ export default withMermaid({
             { text: 'Common APIs', link: '/modding/common-apis' },
             { text: 'Debugging', link: '/modding/debugging' },
             { text: 'Safe Modding Patterns', link: '/modding/safe-patterns' },
+            { text: 'Writing Custom Actions', link: '/modding/action-recipes' },
             { text: 'Real Mod Examples', link: '/modding/real-mod-examples' },
             { text: 'Enforce Script Syntax', link: '/modding/enforce-syntax' },
           ]

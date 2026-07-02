@@ -26,6 +26,8 @@ This section documents the major game systems in DayZ, their architecture, how t
 | [Crafting & Cooking](./crafting-cooking-system) | `4_world/classes/craftingmanager.c`, `recipes/`, `cooking/`, `foodstage/`, `entities/itembase/edible_base.c`, `fireplacebase.c` | Layer 4 | Recipe plugin system, cooking pipeline, food stage transitions |
 | [Base Building](./base-building-system) | `4_world/entities/itembase/basebuildingbase.c`, `classes/basebuilding/`, `classes/hologram.c`, `kitbase.c` | Layer 4 | Kit deploy, construction parts, hologram placement, dismantle/fold |
 | [Environment System](./environment-system) | `4_world/classes/environment/environment.c`, `heatcomfortanimhandler.c`, `rainprocurement*`, `worlddata.c` | Layers 3-4 | Per-player heat-comfort & wetness simulation, fire proximity, rain procurement |
+| [Contaminated Areas](./contaminated-area-system) | `4_world/classes/contaminatedarea/`, `entities/scriptedentities/triggers/`, `playermodifiers/modifiers/areaexposure.c`, `contamination*.c` | Layer 4 | Gas/heat/geyser triggers, area-exposure→agent→modifier chain, mask protection, decontamination |
+| [Explosion System](./explosion-system) | `3_game/entities/object.c`, `damagesystem.c`, `destructioneffects/destructioneffectbase.c`, `itembase/explosivesbase.c`, `grenade_base.c`, `trapbase/` | Layers 3-4 | `Object.Explode` → `DamageSystem.ExplosionDamage` pipeline, trap/grenade/remote lifecycles, destruction-effect chaining |
 
 ## How Systems Interact
 

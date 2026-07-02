@@ -17,7 +17,7 @@ This section documents the major game systems in DayZ, their architecture, how t
 | [Weather & Environment](./weather-environment) | `3_game/weather.c`, `3_game/worlddata.c`, `3_game/worldlighting.c` | Layer 3 | Rain, fog, wind, temperature, world state |
 | [AI System](./ai-system) | `3_game/ai/`, `3_game/aibehaviour.c`, `3_game/entities/dayzinfected.c`, `3_game/entities/dayzanimal.c` | Layer 3 | Zombies, animals, AI agents, group behavior |
 | [Vehicle System](./vehicle-system) | `3_game/vehicles/transport.c`, `3_game/vehicles/car.c`, `3_game/vehicles/boat.c`, `3_game/vehicles/helicopter.c` | Layer 3 | Car, boat, helicopter simulation |
-| [Animation System](./animation-system) | `3_game/anim/`, `3_game/dayzanimevents.c`, `3_game/dayzanimeventmaps.c` | Layer 3 | Animation commands, events, state machines |
+| [Animation System](./animation-system) | `3_game/human.c`, `3_game/anim/`, `3_game/dayzanimevents.c`, `3_game/dayzanimeventmaps.c` | Layer 3 | Animation commands, events, state machines |
 | [Sound System](./sound-system) | `3_game/sound.c`, `DZ/sounds/`, `4_world/classes/soundevents/` | Layers 3-4 + DZ | Audio playback, sound configs, occlusion |
 | [Voice Communication](./voice-communication) | `3_game/vonmanager.c`, `DZ/gear/radio/` | Layer 3 + DZ | VoIP pipeline, proximity/radio/megaphone, voice state integration |
 | [Networking & RPC](./networking) | `3_game/gameplay.c` (ScriptRPC), `3_game/vonmanager.c`, `3_game/playeridentity.c` | Layer 3 | Remote procedure calls, entity replication, voice chat |
@@ -77,7 +77,7 @@ flowchart TD
 
 5. **AI → Player → Combat**: AI entities (infected, animals) detect players through sensory systems (sight, hearing, smell), enter combat states, and interact with the player via the damage system. AI behavior drives animation selection through animation commands.
 
-6. **Player → Animation → Sound**: Player input flows through `HumanInputController` → `HumanCommandMove`/`HumanCommandMelee` → `HumanAnimInterface` (state machine) → skeletal animation. Animation events at specific frames trigger gameplay callbacks (footstep sounds, weapon fire, melee hit detection).
+6. **Player → Animation → Sound**: Player input is polled via `HumanInputController` (polling API: `GetMovement`, `IsUseButton`, `WeaponADS`, etc.) → animation commands are activated via `Human.StartCommand_Move()` / `Human.StartCommand_Melee(EntityAI)` → `HumanAnimInterface` (state machine) → skeletal animation. Animation events at specific frames trigger gameplay callbacks (footstep sounds, weapon fire, melee hit detection).
 
 7. **All → Networking**: Every game system uses `ScriptRPC` to synchronize state changes across the network — inventory moves, health changes, animation state, vehicle positions, and voice chat all travel through the networking layer.
 
@@ -129,10 +129,13 @@ flowchart LR
 Game-wide constants are defined in `3_game/constants.c` and `3_game/playerconstants.c`. These define thresholds and parameters consumed by all systems — health ranges, metabolic rates, temperature thresholds, movement speeds, and damage multipliers. Constants are evaluated at compile time and cannot change at runtime.
 
 ```c
-// playerconstants.c — shared across all systems
-const float PLAYER_MAX_HEALTH = 10000;
-const float PLAYER_TEMPERATURE_NORMAL = 36.5;
-const float PLAYER_METABOLISM_SPRINT_ENERGY = 0.144;
+// playerconstants.c — shared across all systems (verified)
+class PlayerConstants {
+    static const float SL_HEALTH_CRITICAL = 15;
+    static const float SL_HEALTH_NORMAL = 50;
+    static const float NORMAL_TEMPERATURE_H = 36.5;
+    static const float METABOLIC_SPEED_ENERGY_SPRINT = 0.6;
+};
 ```
 
 ### Config Data (`DZ/`)

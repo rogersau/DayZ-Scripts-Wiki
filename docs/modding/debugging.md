@@ -38,9 +38,10 @@ foreach (EntityAI item : items)
 }
 
 // Spawn an item nearby
-EntityAI myItem = EntityAI.Cast(GetGame().SpawnEntity(
+EntityAI myItem = EntityAI.Cast(GetGame().CreateObjectEx(
     "M4A1",
-    player.GetPosition() + "1.0 0.0 0.0"
+    player.GetPosition() + "1.0 0.0 0.0",
+    ECE_PLACE_ON_SURFACE
 ));
 ```
 
@@ -88,7 +89,7 @@ Stamina:   100/100
 
 To enable: press **NumPad -** (without Shift).
 
-You can also create custom debug monitors by subclassing or extending `DebugMonitor`:
+You can also subclass `DebugMonitor` to add custom rendering:
 
 ```c
 class MyModDebugMonitor : DebugMonitor
@@ -97,8 +98,9 @@ class MyModDebugMonitor : DebugMonitor
     {
         super.Render();
         
-        // Add custom stats
-        DebugMonitor.AddLine("My Mod Value: " + GetMyModValue());
+        // Note: DebugMonitor has no AddLine() method.
+        // Use Print() or DrawText() via the UI system for custom overlays.
+        // The built-in stats shown above are rendered by DebugMonitor internally.
     }
 }
 ```
@@ -142,7 +144,7 @@ DayZ has a comprehensive error handling system in `P:/scripts/3_game/global/erro
 ```c
 ErrorEx("Mod initialization failed", ErrorExSeverity.ERROR);
 ErrorEx("Non-critical config value missing", ErrorExSeverity.WARNING);
-ErrorEx("Fatal: cannot continue", ErrorExSeverity.FATAL);
+// Note: ErrorExSeverity only has WARNING and ERROR — no FATAL severity exists.
 ```
 
 Errors appear in the script console's Output tab and the game's `.rpt` log file.
@@ -202,9 +204,10 @@ rpc.Send(null, ERPCs.RPC_DEBUG_WEATHER, true, null);
 
 ```c
 // In script console, General tab:
-EntityAI item = EntityAI.Cast(GetGame().SpawnEntity(
+EntityAI item = EntityAI.Cast(GetGame().CreateObjectEx(
     "MyMod_MyCustomWeapon",
-    GetGame().GetPlayer().GetPosition() + "0 2 0"  // 2m above ground
+    GetGame().GetPlayer().GetPosition() + "0 2 0",   // 2m above ground
+    ECE_PLACE_ON_SURFACE
 ));
 ```
 
@@ -212,9 +215,7 @@ EntityAI item = EntityAI.Cast(GetGame().SpawnEntity(
 
 ```c
 // Check if your config loaded correctly:
-float weight = GetGame().GetConfigFloat(
-    "CfgWeapons MyMod_MyCustomWeapon weight"
-);
+float weight = ConfigGetFloat("CfgWeapons MyMod_MyCustomWeapon weight");
 Print("Weight: " + weight);
 ```
 

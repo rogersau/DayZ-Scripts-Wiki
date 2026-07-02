@@ -162,7 +162,7 @@ static void ApplyEffects(PlayerBase player) {                  // hotspringtrigg
 }
 ```
 
-Particle: `ParticleList.HOTPSRING_WATERVAPOR`.
+Particle: `ParticleList.HOTSPRING_WATERVAPOR`.
 
 ### GeyserTrigger — `geysertrigger.c`
 
@@ -204,7 +204,7 @@ Each emitter snapped to surface, optionally layered vertically via `SpawnParticl
 
 **Player-local effects** (haze around player, PPE tint) are separate — set via `EffectTrigger.SetLocalEffects(...)` (`effecttrigger.c:35`), then `player.SetContaminatedEffectEx(...)` / `player.RequestTriggerEffect(...)` on client.
 
-Particle IDs (`3_game/particles/particlelist.c`): `CONTAMINATED_AREA_GAS_BIGASS` (303), `_AROUND` (302), `_TINY` (301), `_GROUND/SHELL/DEBUG` (304-306), `HOTPSRING_WATERVAPOR` (347), `GEYSER_*` (348-351), `VOLCANO` (352). PPE default: `"PPERequester_ContaminatedAreaTint"` (`effectarea.c:44`).
+Particle IDs (`3_game/particles/particlelist.c`): `CONTAMINATED_AREA_GAS_BIGASS` (303), `_AROUND` (302), `_TINY` (301), `_GROUND/SHELL/DEBUG` (304-306), `HOTSPRING_WATERVAPOR` (347), `GEYSER_*` (348-351), `VOLCANO` (352). PPE default: `"PPERequester_ContaminatedAreaTint"` (`effectarea.c:44`).
 
 ---
 
@@ -412,7 +412,7 @@ JsonDataPlayerData        { AroundPartName, TinyPartName, PPERequesterType }
 ## Extras
 
 - **`EContaminationTypes`** (`econtaminationtypes.c`) is a bitmask of **item badges** (`ITEM_BADGE_CONTAMINATED/POISONED/NERVE_GAS/DIRTY` = 1/2/4/8) for UI labeling of items — unrelated to the area/agent mechanic
-- **Dynamic music**: `ContaminatedArea_Base.InitZoneClient` (`contaminatedarea.c:17`) registers with the DynamicMusicPlayer as `CONTAMINATED_ZONE`, so ambient music changes inside gas
+- **Dynamic music**: `ContaminatedArea_Base.InitZoneClient` (`contaminatedarea.c:17`) registers with the `DynamicMusicPlayer` for contaminated zone music changes (verify exact constant name — may be `CONTAMINATED_ZONE` or equivalent)
 - **Overlap resolution**: same-type triggers deduped by `TriggerEffectManager`; different-priority triggers resolve via `EffectTrigger.GetEffectsPriority` / `RequestTriggerEffect` (`playerbase.c:636`)
 
 ---

@@ -64,8 +64,6 @@ The documented scripts are located at `P:\` in a standard DayZ installation, com
 | `scripts/5_mission/` | Mission lifecycle and UI code |
 | `DZ/` | Static config data for all game objects |
 | `Core/` | Core system resources |
-| `NBH_NamalskSurvival/` | Real mod example: Namalsk Survival by Sumrak |
-| `NBH_NamalskIsland/` | Real mod example: Namalsk Island terrain by Sumrak |
 
 ### How to Use This Wiki
 

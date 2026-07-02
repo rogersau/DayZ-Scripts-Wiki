@@ -6,7 +6,7 @@ This page documents the most frequently used APIs when developing DayZ mods. All
 
 ## GetGame() — The Global Game Singleton
 
-`GetGame()` returns the global `DayZGame` (or `Game` base class) instance, which is the central access point for most engine services.
+`GetGame()` returns the global `DayZGame` instance, which is the central access point for most engine services.
 
 From `P:/scripts/2_gamelib/gamelib.c`:
 
@@ -23,51 +23,22 @@ class Game
     ScriptModule GameScript;
     
     ScriptModule GetScriptModule() { return GameScript; }
-    
-    // Safe entity instantiation
-    proto native IEntity SpawnEntity(typename typeName);
-    
-    // Spawn from template (with components)
-    proto native IEntity SpawnEntityTemplate(vobject templateResource);
-    
-    // Find entity by name
-    proto native IEntity FindEntity(string name);
-    
-    // Get build version string
-    proto native owned string GetBuildVersion();
-    
-    // World entity when in-game
-    proto native GenericWorldEntity GetWorldEntity();
-    
-    // Input and UI managers
-    proto native InputManager GetInputManager();
-    proto native MenuManager GetMenuManager();
-    
-    // High-resolution tick count
-    proto native int GetTickCount();
-    
-    // Exit game
-    proto native void RequestClose();
-    
-    // Reload game (Workbench only)
-    proto native void RequestReload();
 };
 ```
+
+> **Important:** The `Game` class in `2_gamelib/gamelib.c` has **zero additional members**. All engine-level methods (`SpawnEntity`, `GetWorldEntity`, `GetInputManager`, `GetPlayer`, etc.) live on `CGame` / `DayZGame` in `3_game/global/game.c`. Since `GetGame()` returns the `DayZGame` singleton at runtime, calling `GetGame().SomeMethod()` still works — but the methods are defined on `DayZGame`, not on the base `Game` class shown above.
 
 ### Common GetGame() Usage
 
 ```c
-// Get the local player
-PlayerBase player = PlayerBase.Cast(GetGame().GetPlayer());
+// Get the local player (returns DayZPlayer, not IEntity)
+DayZPlayer player = DayZPlayer.Cast(GetGame().GetPlayer());
 
-// Get current world
-GenericWorldEntity world = GetGame().GetWorldEntity();
+// Get current world entity
+World world = World.Cast(GetGame().GetWorldEntity());
 
 // Get a call queue for scheduling
 ScriptCallQueue queue = GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY);
-
-// Spawn an entity
-IEntity myEntity = GetGame().SpawnEntity(MyCustomItem);
 
 // Get build info
 string version = GetGame().GetBuildVersion();
@@ -83,11 +54,14 @@ The `CallQueue` system allows scheduling functions to run after a delay or repea
 ```c
 ScriptCallQueue queue = GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY);
 
-// Run once after a delay
-queue.CallLater(MyFunction, 5000);           // 5 seconds
+// Run once after a delay (delay in milliseconds — int, NOT float)
+queue.CallLater(MyFunction, 5000);           // 5000 ms = 5 seconds
 
 // Run repeatedly
-queue.CallLater(MyFunction, 1000, true);     // Every 1 second
+queue.CallLater(MyFunction, 1000, true);     // 1000 ms = 1 second
+
+// For string-named functions, use CallLaterByName:
+// CallLaterByName(obj, "functionName", delayMs, ...)
 
 // Remove a scheduled callback
 queue.Remove(MyFunction);
@@ -245,78 +219,48 @@ ErrorEx("Detailed error info",              // Structured error with severity
 |----------|-------------|
 | `WARNING` | Non-critical issue |
 | `ERROR` | Recoverable error |
-| `FATAL` | Unrecoverable — may crash |
+
+> **Note:** `ErrorExSeverity` only defines `WARNING` and `ERROR`. There is no `FATAL` severity level.
 
 ## Config CPP — Runtime Data Access
 
-Mods read config data at runtime using config lookup functions:
+Mods read config data at runtime using standalone config lookup functions:
 
 ```c
 // Get config value by path
-float weight = GetGame().GetConfigFloat("CfgWeapons M4A1 weight");
-string model = GetGame().GetConfigText("CfgVehicles Hatchback_02 model");
+float weight = ConfigGetFloat("CfgWeapons M4A1 weight");
 
-// Check if class exists
-bool exists = GetGame().ConfigIsExisting("CfgMagazines Mag_STANAG_60Rnd");
+string model;
+ConfigGetText("CfgVehicles Hatchback_02 model", model);
 
 // Iterate config children
 void EnumerateWeapons()
 {
-    int count = GetGame().ConfigGetChildrenCount("CfgWeapons");
+    int count = ConfigGetChildrenCount("CfgWeapons");
     for (int i = 0; i < count; i++)
     {
         string className;
-        GetGame().ConfigGetChildName("CfgWeapons", i, className);
+        ConfigGetChildName("CfgWeapons", i, className);
         Print(className);
     }
 }
 ```
 
+> **Note:** These are standalone functions — NOT methods on `GetGame()`. The signatures are `ConfigGetFloat(string path)`, `ConfigGetText(string path, out string value)`, `ConfigGetChildrenCount(string path)`, and `ConfigGetChildName(string path, int index, out string name)`.
+
 ## SpawnEntity — Runtime Entity Creation
 
 ```c
-// Spawn from class name
-IEntity item = GetGame().SpawnEntity(M4A1);
+// GetGame().SpawnEntity(...) requires an InventoryLocation parameter.
+// To spawn entities in the world at a position, use CreateObjectEx instead.
 
-// Spawn at a specific position
-ItemBase myItem = ItemBase.Cast(GetGame().SpawnEntity(
-    M4A1,
-    "1.0 0.0 1.0",          // world position
-    "0 0 0",                 // orientation
-    "0 0 0"                  // velocity
-));
-
-// Spawn vehicle
-Car vehicle = Car.Cast(GetGame().SpawnEntity(
-    Hatchback_02,
-    position, rotation, velocity
-));
+// Spawn an entity in the world at a position:
+EntityAI item = EntityAI.Cast(
+    GetGame().CreateObjectEx("M4A1", "5.0 0.0 5.0", ECE_PLACE_ON_SURFACE)
+);
 ```
 
-## Hive — Persistence API
-
-From `P:/scripts/3_game/hive/hive.c`:
-
-The hive system handles reading/writing persistent data to the database:
-
-```c
-// Create a hive request
-HiveRequest request = new HiveRequest();
-
-// Write player data
-request.WritePlayerData(player);
-
-// Read world data
-request.ReadWorldData();
-
-// Execute (server only)
-request.Execute();
-```
-
-Key hive operations:
-- **Player data**: inventory, health, position, stats
-- **World data**: spawned items, vehicle states, base building
-- **Character data**: equipped gear, appearance
+> **Note:** There is no `SpawnEntity(type, position)` signature that takes a position string directly. `SpawnEntity` requires `InventoryLocation` for inventory-based spawning. Use `CreateObjectEx` for world-position spawning.
 
 ## Timers — Frame-Based and Real-Time
 
@@ -364,12 +308,11 @@ rpc.Send(null, ERPCs.RPC_MY_MOD_EVENT, true, targetIdentity);
 
 | API | Location | Purpose |
 |-----|----------|---------|
-| `GetGame()` | `2_gamelib/gamelib.c` | Central game singleton |
+| `GetGame()` | `2_gamelib/gamelib.c` | Central game singleton (returns `DayZGame`) |
 | `CallQueue` | `2_gamelib/` | Schedule delayed/repeating callbacks |
 | `ScriptRPC` | `3_game/gameplay.c` | Network client↔server messaging |
 | `JsonSerializer` | `3_game/gameplay.c` | JSON ↔ script serialization |
 | `ScriptInvoker` | `2_gamelib/` | In-process pub/sub events |
 | `Print`/`Error`/`ErrorEx` | Engine built-in | Console/error logging |
-| Config functions | `Game` class | Read config.cpp at runtime |
-| `SpawnEntity` | `Game` class | Create entities at runtime |
-| Hive API | `3_game/hive/hive.c` | Database persistence |
+| `ConfigGetFloat` / `ConfigGetText` / etc. | Standalone functions | Read config.cpp at runtime |
+| `CreateObjectEx` | `DayZGame` | Create entities at world position |

@@ -1,6 +1,6 @@
 # Vehicle System
 
-The vehicle system manages all drivable and ridable vehicles in DayZ, including cars, boats, and helicopters. Vehicles extend the `Pawn` class through the `Transport` base and implement full physics simulation for each vehicle type.
+The vehicle system manages all drivable and ridable vehicles in DayZ, including cars, boats, and helicopters. Vehicles extend `EntityAI` through the `Transport` base and implement full physics simulation for each vehicle type.
 
 ## Architecture
 
@@ -41,36 +41,39 @@ flowchart TD
 
 ## Transport Base
 
-The base vehicle class extends `Pawn` and provides shared functionality for all vehicle types:
+The base vehicle class extends `EntityAI` and provides shared functionality for all vehicle types:
 
 ```c
-class Transport : Pawn {
+class Transport : EntityAI {
     // Vehicle state
     float m_Health;
     float m_Fuel;
     float m_Speed;
     float m_RPM;
     
-    // Component states
-    bool m_EngineOn;
-    bool m_LightsOn;
-    bool m_IsLocked;
-    
     // Seats
     int m_SeatCount;
-    bool m_IsSeatOccupied[int];
     
     // Wheels/tracks
     int m_WheelCount;
     float m_WheelHealth[int];
     
-    // Methods
-    void EngineOn();
-    void EngineOff();
-    void LockDoors();
-    void UnlockDoors();
-    float GetSpeed();
-    int GetOccupiedSeatCount();
+    // Engine control
+    void EngineStart();
+    void EngineStop();
+    bool EngineIsOn();
+    
+    // Movement
+    float GetSpeedometer();
+    float GetSteering();
+    void SetSteering(float value);
+    float GetThrottle();
+    void SetThrottle(float value);
+    
+    // Transmission
+    void ShiftUp();
+    void ShiftDown();
+    void ShiftTo(int gear);
 };
 ```
 
@@ -142,11 +145,6 @@ class Car : Transport {
     float m_SteeringAngle;
     float m_SuspensionTravel;
     float m_TireFriction;
-    
-    // Simulation update methods
-    void UpdateWheelPhysics(float delta);
-    void UpdateEngine(float delta);
-    void UpdateTransmission(float delta);
 };
 ```
 
@@ -231,12 +229,8 @@ class Helicopter : Transport {
     
     // Flight state
     float m_Altitude;
-    bool m_IsAutoHover;
+    float m_ForwardSpeed;
     bool m_EngineFlameOut;
-    
-    // Simulation
-    void UpdateRotorPhysics(float delta);
-    void UpdateFlightDynamics(float delta);
 };
 ```
 

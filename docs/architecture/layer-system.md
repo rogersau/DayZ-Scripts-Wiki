@@ -42,21 +42,21 @@ The DayZ Enforce Script code is organized into five numbered layers. This page p
 **Purpose**: Provide a game-engine-agnostic reusable framework that any game project can inherit from.
 
 **Key files**:
-- `gamelib.c` — The `Game` base class with lifecycle hooks: `OnEvent`, `OnAfterInit`, `OnUpdate`, `OnGameStart`, `OnGameEnd`. Defines `g_Game` / `GetGame()` global singleton accessor
+- `gamelib.c` — The `Game` placeholder (zero members at this layer). Engine globals `g_Game` / `GetGame()` are **not** members of `Game` — they are engine-provided accessor functions that return the `DayZGame` instance.
 - `inputmanager.c` — `ActionManager` (register actions/contexts, query values, add listeners) and `InputManager` (reset actions, cursor position, register/unregister sub-managers)
 - `menumanager.c` — `MenuManager` (open, find, close menus and dialogs), `DialogPriority` enum (INFORMATIVE/WARNING/CRITICAL), `DialogResult` enum, `MenuBindAttribute`
 - `tools.c` — `ScriptCallQueue` (deferred/lazy function calls with delay, repeat, removal) and `ScriptInvoker` (callback list management)
 - `settings.c` — Declarative settings system: `Settings` base class with `OnChange`, `OnLoad`, `OnSave`, `OnReset`, lifecycle hooks
 - `entities/` — Script-managed entities: `rendertarget.c`, `scriptcamera.c`, `scriptlight.c`, `scriptmodel.c`, `worldsmenu.c`
 
-**What it provides**: The `Game` base class, input abstraction, menu/dialog system, deferred call queue, declarative settings, and basic script entities. No DayZ-specific code lives here.
+**What it provides**: The `Game` placeholder, input abstraction, menu/dialog system, deferred call queue, declarative settings, and basic script entities. No DayZ-specific code lives here. The actual game lifecycle is in Layer 3's `CGame`/`DayZGame`.
 
 ## Layer 3: Game (`3_game/`)
 
 **Purpose**: Implement DayZ-specific game logic. This is the largest layer.
 
 **Key directories and files**:
-- `dayzgame.c` (~3,900 lines) — `DayZGame` singleton (extends `Game`), game state machine (MAIN_MENU, LOGIN, PLAYING), session management
+- `dayzgame.c` (~3,900 lines) — `DayZGame` singleton (extends `CGame` from `3_game/global/game.c`), game state machine (MAIN_MENU, LOGIN, PLAYING), session management
 - `dayzplayer.c` (~1,400 lines) — `DayZPlayer` (extends `Human`), camera system, weapon raising/aiming model, animation tables
 - `human.c` (~1,700 lines) — `Human` (extends `Man`), `HumanInputController`, movement/melee/death/unconscious commands
 - `gameplay.c` (~1,500 lines) — Serialization (`JsonSerializer`, `ScriptRPC`), geometry classes, world objects like `Plant`, UI widgets
@@ -94,9 +94,8 @@ The DayZ Enforce Script code is organized into five numbered layers. This page p
 **Purpose**: Provide the mission entry point and the entire user interface.
 
 **Key files**:
-- `somemission.c` — `CreateMission(string path)` factory function that returns `MissionServer`, `MissionMainMenu`, `MissionGameplay`, or `MissionDummy` based on context
+- `mission/` — Mission base classes: `missionbase.c` (root), `missiongameplay.c`, `missionmainmenu.c`, `missionserver.c`, `missionbenchmark.c`. The engine instantiates the appropriate subclass directly (no factory function in script).
 - `dayzintroscene.c` / `dayzintroscenepc.c` / `dayzintroscenexbox.c` — Platform-specific intro cutscenes
-- `mission/` — Mission base classes: `missionbase.c`, `missiongameplay.c`, `missionmainmenu.c`, `missionserver.c`, `missionbenchmark.c`
 - `gui/` — 70+ UI files covering all screens and HUD elements:
   - **HUD**: `ingamehud.c`, `crosshairselector.c`, `projectedcrosshair.c`, `objectfollower.c`, `watermark.c`, `stanceindicator.c`
   - **Menus**: `actionmenu.c`, `inventorymenu.c`, `bookmenu.c`, `helpscreen.c`, `inspectmenunew.c`, `mapmenu.c`, `notemenu.c`, `presetsmenu.c`, `startupmenu.c`, `titlescreenmenu.c`, `logoutmenu.c`, `respawndialogue.c`

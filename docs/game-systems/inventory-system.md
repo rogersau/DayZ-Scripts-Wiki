@@ -56,12 +56,17 @@ Every item exists at a location:
 
 ```c
 enum InventoryLocationType {
-    INVENTORY_LOCATION_CARGO,     // In a container's cargo
-    INVENTORY_LOCATION_PROXY,     // Attached to a proxy slot (on-body)
-    INVENTORY_LOCATION_HAND,      // In the player's hand
-    INVENTORY_LOCATION_GROUND,    // On the ground
+    UNKNOWN,
+    GROUND,       // On the ground (world)
+    ATTACHMENT,   // Attached to a slot on an entity
+    CARGO,        // In a container's cargo
+    HANDS,        // In the player's hands
+    PROXYCARGO,   // Proxy cargo (on-body equipment)
+    VEHICLE,      // Vehicle inventory
 };
 ```
+
+> **Correction:** The previous version used fabricated names (`INVENTORY_LOCATION_CARGO`, `INVENTORY_LOCATION_PROXY`, `INVENTORY_LOCATION_HAND`, `INVENTORY_LOCATION_GROUND`). The real enum values are shorter: `CARGO`, `ATTACHMENT`, `HANDS`, `GROUND`, etc.
 
 ### Slot Types
 
@@ -76,7 +81,12 @@ Defined in `DZ/` configs and managed at runtime:
 
 ### Item Storage
 
+`InventoryItem` (extends `EntityAI`) is a real class with many verified members. Item hierarchy: `ItemBase → InventoryItem → EntityAI`.
+
+> **[speculative]** The following convenience methods from the original page have NOT been verified against the source. `InventoryItem` has 405+ members; `GetWeight`, `GetItemSize`, `GetQuantity`, `GetMaxQuantity`, and `IsStackable` may exist on `ItemBase` or elsewhere but are not confirmed here:
+
 ```c
+// [speculative — not verified]
 class InventoryItem : EntityAI {
     int GetWeight();              // Item weight in grams
     vector GetItemSize();         // Item dimensions (x, y)
@@ -141,7 +151,9 @@ stateDiagram-v2
 
 **Transitions are triggered by events:**
 ```c
-enum HandEvent {
+// From hand_events.c — verified enum name
+enum HandEventID {
+    // [speculative values — exact enum members NOT verified]
     EVENT_PICK,
     EVENT_DROP,
     EVENT_USE,
@@ -152,21 +164,21 @@ enum HandEvent {
 };
 ```
 
+> **Correction:** The real enum is `HandEventID` (defined in `hand_events.c`), NOT `HandEvent` as the previous version claimed.
+
 ## Human Inventory Flow
 
 ```mermaid
 sequenceDiagram
     participant Player as Player Input
     participant UI as Inventory UI
-    participant Handler as InventoryActionHandler
     participant HInv as HumanInventory
     participant Loc as InventoryLocation
     participant FSM as Hand FSM
     participant Net as Network
     
     Player->>UI: Use key / Inventory interaction
-    UI->>Handler: Action request
-    Handler->>HInv: Process action
+    UI->>HInv: Action request
     HInv->>Loc: Resolve inventory location
     Loc->>FSM: Request state transition
     FSM-->>HInv: Transition approved
@@ -203,17 +215,9 @@ Abstraction layer for where items can be:
 
 ## Inventory Action Handler (`4_world/classes/`)
 
-The Layer 4 inventory action handler processes user interaction with inventory:
+> **⚠️ Correction:** There is NO verified `InventoryActionHandler` class with `HandleAction`, `CanCombine`, or `ProcessCrafting` methods. These were fabricated in the previous version.
 
-```c
-class InventoryActionHandler {
-    void HandleAction(EntityAI item, EntityAI target);
-    bool CanCombine(EntityAI item1, EntityAI item2);
-    void ProcessCrafting(EntityAI item1, EntityAI item2);
-};
-```
-
-This bridges the core inventory system with world-level gameplay actions. See [Layer 4: World](/script-layers/4-world) for the complete action hierarchy.
+The Layer 4 inventory action handling bridges the core inventory system with world-level gameplay actions. The actual action handler classes and their APIs have **not been verified** — they likely involve the [User Actions System](./user-actions-system) rather than a single `InventoryActionHandler` class. See [Layer 4: World](/script-layers/4-world) for the action hierarchy.
 
 ## Related Config Files
 

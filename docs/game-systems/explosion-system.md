@@ -9,7 +9,7 @@ All actual damage application, radius, distance falloff, and entity selection ha
 - `P:/scripts/3_game/damagesystem.c` — `DamageSystem.ExplosionDamage` (`:25`, `proto native`)
 - `P:/scripts/3_game/effects/destructioneffects/destructioneffectbase.c` — `DealExplosionDamage` (`:50`), chaining hook
 - `P:/scripts/4_world/classes/destructioneffects/destructioneffects.c` — concrete destruction-effect subclasses
-- `P:/scripts/4_world/entities/itembase/explosivesbase.c` — `ExplosivesBase` (`EEKilled` → `InitiateExplosion`)
+- `P:/scripts/4_world/entities/explosivesbase.c` — `ExplosivesBase` (`EEKilled` → `InitiateExplosion`)
 - `P:/scripts/4_world/entities/itembase/grenade_base.c` — `Grenade_Base` (pin/fuse/detonate)
 - `P:/scripts/4_world/entities/itembase/trapbase/` — `trap_landmine.c`, `trap_bear.c`, `trap_tripwire.c`
 - `P:/scripts/4_world/classes/explosions/flashbangeffect.c` — `FlashbangEffect`
@@ -142,7 +142,7 @@ Client side of `OnHealthLevelChanged` (`:78-107`) plays `m_ParticleOneTime` via 
 
 ## Explosives & Grenades
 
-### `ExplosivesBase` (`explosivesbase.c`)
+### `ExplosivesBase` (`entities/explosivesbase.c`)
 
 Base for all explosives. `EEKilled` (`:100`) → `InitiateExplosion()` + `UnpairRemote()`. Subclasses override `InitiateExplosion`.
 
@@ -337,7 +337,7 @@ Created by `CreateLight()` (`explosivesbase.c:175`) via `ScriptedLightBase.Creat
 │   ├── destructioneffects/
 │   │   └── destructioneffects.c               Concrete subclasses (GasCanister, FuelStation, …)
 │   └── areadamage/                            (separate system — see Damage System)
-├── entities/itembase/
+├── entities/
 │   ├── explosivesbase.c                       ExplosivesBase (EEKilled → InitiateExplosion)
 │   ├── grenade_base.c                         Grenade_Base (pin/fuse/detonate)
 │   ├── explosivesbase/

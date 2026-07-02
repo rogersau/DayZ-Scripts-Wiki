@@ -232,7 +232,7 @@ Drives **shivering/sweating symptoms** based on heat comfort.
 
 Marked `//WIP` (`:6`). Not a runtime light-toggle system — it's a **target-selection helper** for light-handling actions (e.g. helmet lights). Maintains `m_ValidLightItems` of `ActionTargetLighSource` (a subclass of `ActionTarget` with a `m_Remove` flag, `:1`). `AddLightSource`/`RemoveLightSource`/`GetLightSourceList`/`SelectLightSourceTarget`. Actual flashlight state lives on the items themselves.
 
-### `ObjectTemperatureStateData` (`objecttemperaturestatedata.c`)
+### `ObjectTemperatureState` (`objecttemperaturestatedata.c`)
 
 `EObjectTemperatureState` enum (`:1`): `HOT_LVL_FOUR` → `NEUTRAL` → `COLD_LVL_FOUR` (9 states). `GetStateData(int temperature)` (`:20`) buckets a numeric temperature into a state with a color + localized name (`"#inv_inspect_hot_lvl_four"`). This is the **display/inspect layer** for item temperature — used to show "Hot"/"Scalding"/"Cold" labels. The actual item temperatures are computed by `Environment.ProcessItemsTemperature()` (`environment.c:1312`) → `item.SetTemperatureEx()` targeting `ITEM_TEMPERATURE_NEUTRAL_ZONE_MIDDLE`.
 
@@ -320,7 +320,7 @@ classes/
 ├── rainprocurementcomponent.c   RainProcurementComponentBase (+ Barrel subclass)
 ├── rainprocurementhandler.c     RainProcurementHandler (mission-owned, batched)
 ├── rainprocurementmanager.c     DEPRECATED — old timer-based approach
-├── objecttemperaturestatedata.c EObjectTemperatureState enum + display bucketing
+├── objecttemperaturestatedata.c EObjectTemperatureState enum + ObjectTemperatureState class
 └── heatcomfortanimhandler.c     HeatComfortAnimHandler (shiver/sweat symptom trigger)
 ```
 

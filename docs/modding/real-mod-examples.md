@@ -1,40 +1,39 @@
 # Real Mod Examples
 
-This page documents real mod projects found at `P:\`, showing how the patterns from [Mod Project Structure](./mod-structure) are applied in practice.
+This page documents real mod patterns and structures used in DayZ modding. The examples below illustrate common mod architectures — they are **illustrative patterns** based on real mod conventions, not verbatim extractions from any specific P:\ drive directory.
 
-## DMOverrides — Mod Project Scaffold
+> **Note:** The `P:/` paths referenced in other wiki pages point to the DayZ source installation. The specific directories `P:/DMOverrides/`, `P:/NBH_Mod/`, `P:/NBH_NamalskSurvival/`, and `P:/NBH_NamalskIsland/` are **not guaranteed to exist** on your installation. Treat these as reference patterns only.
 
-`P:/DMOverrides/` is a DayZ mod project scaffold with Workbench IDE configuration, empty script modules ready for development, and a local test server setup.
+## Mod Project Scaffold (Generic)
+
+A typical DayZ mod scaffold provides empty script modules ready for development, a Workbench IDE configuration, and a local test server setup.
 
 ### Directory Structure
 
 ```
-DMOverrides/
+MyMod/
 ├── Scripts/
 │   ├── config.cpp              — Mod registration
 │   ├── Inputs.xml              — Input action bindings
 │   ├── stringtable.csv         — Localization table
-│   ├── 1_Core/DMOverrides/     — Core layer scripts (empty)
-│   ├── 3_Game/DMOverrides/     — Game layer scripts (empty)
-│   ├── 4_World/DMOverrides/    — World layer scripts (empty)
-│   └── 5_Mission/DMOverrides/  — Mission layer scripts (empty)
+│   ├── 1_Core/MyMod/           — Core layer scripts (empty)
+│   ├── 3_Game/MyMod/           — Game layer scripts (empty)
+│   ├── 4_World/MyMod/          — World layer scripts (empty)
+│   └── 5_Mission/MyMod/        — Mission layer scripts (empty)
 └── Workbench/
     ├── dayz.gproj              — Workbench project file
     ├── project.cfg             — Mod loader config
     ├── server.cfg              — Local test server config
     ├── exclude.lst             — File exclusion list
-    └── ToolAddons/
-        └── ResourceManager/    — Workbench tool addons (empty)
+    └── ToolAddons/             — Workbench tool addons (empty)
 ```
 
 ### Mod Registration (config.cpp)
 
-From `P:/DMOverrides/Scripts/config.cpp`:
-
 ```cpp
 class CfgPatches
 {
-    class MT_Scripts
+    class MyMod_Scripts
     {
         units[] = {};
         weapons[] = {};
@@ -45,7 +44,7 @@ class CfgPatches
 
 class CfgMods
 {
-    class DMOverrides
+    class MyMod
     {
         type = "mod";
         
@@ -54,7 +53,7 @@ class CfgMods
             class 1_Core
             {
                 // Core engine module
-                // Path: DMOverrides/Scripts/1_Core
+                // Path: MyMod/Scripts/1_Core
             };
             class 3_Game
             {
@@ -80,8 +79,6 @@ Key points:
 
 ### Input Bindings (Inputs.xml)
 
-From `P:/DMOverrides/Scripts/Inputs.xml`:
-
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
@@ -92,11 +89,7 @@ From `P:/DMOverrides/Scripts/Inputs.xml`:
 </root>
 ```
 
-This is a skeleton file where mod-specific input actions would be defined.
-
 ### Localization (stringtable.csv)
-
-From `P:/DMOverrides/Scripts/stringtable.csv`:
 
 ```csv
 Original,English,Czech,German,Russian,Polish,Spanish,French,Italian,Japanese,Chinese,ChineseSimp,Portuguese
@@ -106,57 +99,39 @@ The header row defines the supported language columns, ready for translation ent
 
 ### Workbench Project (dayz.gproj)
 
-From `P:/DMOverrides/Workbench/dayz.gproj`:
-
 ```ini
 [Project]
-ID=DMOverrides
-Title=DMOverrides
+ID=MyMod
+Title=MyMod
 Platform=PC
 WorkDrive=P:/
 
 [ScriptModules]
-Core=DMOverrides/Scripts/1_Core;DabsFramework/Scripts/1_Core
-Game=DMOverrides/Scripts/3_Game;DabsFramework/Scripts/3_Game
-World=DMOverrides/Scripts/4_World;DabsFramework/Scripts/4_World
-Mission=DMOverrides/Scripts/5_Mission;DabsFramework/Scripts/5_Mission
-
-[Imagesets]
-DabsFramework/gui/icons/brands.imageset
-DabsFramework/gui/icons/thin.imageset
-DabsFramework/gui/icons/light.imageset
-DabsFramework/gui/icons/regular.imageset
-DabsFramework/gui/icons/solid.imageset
-
-[WidgetStyles]
-DabsFramework/gui/looknfeel/prefabs.styles
+Core=MyMod/Scripts/1_Core
+Game=MyMod/Scripts/3_Game
+World=MyMod/Scripts/4_World
+Mission=MyMod/Scripts/5_Mission
 
 [WorkbenchModules]
-DabsFramework/Workbench/ToolAddons
-DMOverrides/Workbench/ToolAddons
+MyMod/Workbench/ToolAddons
 ```
 
 Key configuration:
-- **Platform=PC** — PC-only targets (with stubs for XBOX_ONE, PS4, LINUX)
+- **Platform=PC** — PC-only targets
 - **WorkDrive=P:/** — Points to the DayZ installation for script references
-- **ScriptModules** — Multiple search paths per layer (mod first, then framework)
-- **Imagesets/WidgetStyles** — UI framework references (Dabs Framework)
+- **ScriptModules** — Search paths per layer
 
 ### Mod Loader Config (project.cfg)
 
-From `P:/DMOverrides/Workbench/project.cfg`:
-
 ```ini
-Mods=@Dabs Framework
+Mods=
 ServerMods=
 Prefixes=
 ```
 
-This tells the Workbench mod loader to load `@Dabs Framework` when testing. `ServerMods` and `Prefixes` are empty.
+This tells the Workbench loader which mods to load when testing.
 
 ### Test Server Config (server.cfg)
-
-From `P:/DMOverrides/Workbench/server.cfg`:
 
 ```ini
 hostname = "Test Development Server"
@@ -181,85 +156,96 @@ Important server settings for mod development:
 - `verifySignatures = 0` — Allows unsigned PBOs during development
 - `allowFilePatching = 1` — Allows Workbench file patching (hot-reload scripts)
 - `serverTimeAcceleration = 0.1` — Slow time for testing
-- Single mission `dayzOffline.chernarusplus` — Offline Chernarus for local testing
 
-## Namalsk Blizzard Hearing — Built Mod Example
+## Small Single-Feature Mod (Generic)
 
-`P:/NBH_Mod/` (symlinked to `@NamalskBlizzardHearing`) is a finished, build-ready mod that modifies how players hear blizzards on the Namalsk map.
+A finished, build-ready mod that modifies a specific gameplay mechanic. This pattern is common for small, focused mods.
 
 ### Directory Structure
 
 ```
-@NamalskBlizzardHearing/
+@MySmallMod/
 ├── Addons/
-│   └── NamalskBlizzard.pbo     — Packaged mod content
+│   └── MySmallMod.pbo           — Packaged mod content
 ├── mod.cpp                      — Mod manifest
-├── meta.cpp                     — Workshop metadata
-├── README.md                    — Documentation
-└── .gitignore                   — Build artifacts excluded
+├── meta.cpp                     — Workshop metadata (auto-generated)
+├── Keys/                        — Public signing keys
+│   └── mykey.bikey
+└── README.md
 ```
 
 ### mod.cpp
 
 ```cpp
-name = "Namalsk Blizzard Hearing";
-// ... standard mod.cpp fields
+name = "My Small Mod";
+picture = "mySmallMod/gui/imagesets/logo_co.edds";
+logoSmall = "mySmallMod/gui/imagesets/logo_small_co.edds";
+logo = "mySmallMod/gui/imagesets/logo_co.edds";
+logoOver = "mySmallMod/gui/imagesets/logo_hover_co.edds";
+action = "https://example.com/";
+tooltip = "My Small Mod";
+overview = "A small focused mod for DayZ";
+author = "AuthorName";
+hidePicture = 0;
 ```
 
 ### PBO Contents
 
-`NamalskBlizzard.pbo` is a small PBO (5,442 bytes) containing:
+A typical small PBO contains:
 
 | File | Purpose |
 |------|---------|
-| `config.cpp` | `CfgPatches NamalskBlizzardHearing` with `requiredAddons[] = {"DZ_Data"}` |
+| `config.cpp` | `CfgPatches` entry with dependencies |
 | `mod.cpp` | Mod metadata (embedded in PBO for self-containment) |
-| `README.md` | Mod documentation |
-| `scripts/4_World/NamalskBlizzardHearing/BlizzardNoise.c` | Main script implementation |
-| `.gitignore` | `*.pbo`, `*.bisign`, `*.biprivatekey`, `*.bikey`, `build/`, `dist/` |
+| `scripts/4_World/MyMod/MyFeature.c` | Main script implementation |
 
 ### Script Structure
 
-The mod has a single script file in the `4_World` layer:
+Scripts are placed in the appropriate layer:
 
 ```
-NamalskBlizzard.pbo/
+MySmallMod.pbo/
 ├── config.cpp
 ├── scripts/
 │   └── 4_World/
-│       └── NamalskBlizzardHearing/
-│           └── BlizzardNoise.c
+│       └── MyMod/
+│           └── MyFeature.c
 ```
 
-The `BlizzardNoise.c` file implements a hearing modifier system:
+Example script structure for a hearing modifier mod:
 
 ```c
-// Pseudocode structure based on mod analysis
-class BlizzardNoise
+// Pseudocode structure — adapt to your feature
+class MyMod_FeatureManager
 {
-    // Modifies player hearing during blizzard events
-    static bool NBH_GetActiveBlizzard()
+    static bool IsFeatureActive()
     {
-        // Checks NamEventManager for active "Blizzard" event
-        // Returns true if blizzard is active
+        // Check game state for feature activation
+        return true;
     }
 };
 
-class BlizzardNoiseMission
+class MyMod_MissionExtension
 {
-    float m_normalMultiplier;     // Hearing range multiplier
+    float m_modifierValue;
     
-    void CalculateHearing()
+    void CalculateEffect()
     {
-        // Reduces hearing range during active blizzard
-        // Applies muffling effect to audio
+        // Apply the mod's effect to gameplay
     }
 };
 ```
 
 ### PBO Build Process
 
-The `.gitignore` reveals the mod's build pipeline:
+The build workflow:
+1. Develop scripts in a source directory
+2. Build PBOs with a PBO tool (e.g., DayZ PBO Maker, MakePbo)
+3. Sign PBOs with a private key (generates `.bisign`)
+4. Copy `.bikey` to the mod's `Keys/` folder
+5. Distribute the `@` folder
+
+Gitignore pattern for build artifacts:
 
 ```
 *.pbo          — Built PBO artifacts
@@ -270,28 +256,21 @@ build/         — Build output directory
 dist/          — Distribution directory
 ```
 
-The build workflow:
-1. Develop scripts in a source directory
-2. Build PBOs with a PBO tool (e.g., DayZ PBO Maker, MakePbo)
-3. Sign PBOs with a private key (generates `.bisign`)
-4. Copy `.bikey` to the mod's `Keys/` folder
-5. Distribute the `@` folder
+## Scaffold vs Built Mod — Key Differences
 
-### Key Differences: Scaffold vs Built Mod
-
-| Aspect | DMOverrides (Scaffold) | NamalskBlizzard (Built) |
-|--------|----------------------|------------------------|
+| Aspect | Scaffold | Built Mod |
+|--------|----------|-----------|
 | State | Development template | Finished, released mod |
-| Scripts | Empty directories | `4_World/BlizzardNoise.c` |
-| Config | CfgMods registration | CfgPatches only |
+| Scripts | Empty directories | Populated script files |
+| Config | CfgMods registration | CfgPatches (in PBO) |
 | Workbench | Full `.gproj` project | No Workbench files |
-| PBOs | None | `NamalskBlizzard.pbo` |
-| Keys | None | Has `.bikey` in parent |
-| Server config | `server.cfg` + `project.cfg` | None (uses game defaults) |
+| PBOs | None | Packaged `.pbo` files |
+| Keys | None | Has `.bikey` for signing |
+| Server config | `server.cfg` + `project.cfg` | Uses game defaults |
 
 ## Key Takeaways for Mod Developers
 
-### From DMOverrides
+### From the Scaffold Pattern
 
 1. **Start with a scaffold**: Create empty script modules for each layer before writing code
 2. **Set up Workbench early**: The `.gproj` project file links scripts, imagesets, and widgets
@@ -299,12 +278,12 @@ The build workflow:
 4. **Use CfgMods**: Register your mod properly so the game recognizes its script modules
 5. **Plan for localization**: Include the `stringtable.csv` from the start
 
-### From NamalskBlizzard
+### From the Small Mod Pattern
 
-1. **Single-responsibility PBOs**: The mod is small and focused — one feature, one PBO
-2. **Layer-appropriate placement**: Script lives in `4_World` because it modifies world gameplay
-3. **Namespace your classes**: The `NBH_` prefix prevents symbol conflicts
-4. **Use game event system**: Integrate with `NamEventManager` rather than building custom event handling
+1. **Single-responsibility PBOs**: Keep mods small and focused — one feature, one PBO
+2. **Layer-appropriate placement**: Place scripts in the correct layer (4_World for gameplay, 5_Mission for mission overrides)
+3. **Namespace your classes**: Use a unique prefix to prevent symbol conflicts
+4. **Use existing event systems**: Integrate with game events rather than building custom systems
 5. **Gitignore build artifacts**: Exclude PBOs and keys from version control
 
 ## Related Documentation

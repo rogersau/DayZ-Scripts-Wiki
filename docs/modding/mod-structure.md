@@ -23,37 +23,18 @@ MyMod/
 
 Every mod **must** have a `mod.cpp` in its root directory. It defines the metadata displayed in the DayZ launcher and workshop.
 
-### Real Example: Namalsk Survival
-
-From `P:/NBH_NamalskSurvival/mod.cpp`:
+### Generic Example: mod.cpp
 
 ```cpp
-name = "$STR_nam_mod_surv_name";
-picture = "nst/ns_dayz/gui/imagesets/namalsk_logo_survival_hover_co.edds";
-logoSmall = "nst/ns_dayz/gui/imagesets/namalsk_logo_survival_co.edds";
-logo = "nst/ns_dayz/gui/imagesets/namalsk_logo_survival_co.edds";
-logoOver = "nst/ns_dayz/gui/imagesets/namalsk_logo_survival_hover_co.edds";
-action = "http://namalsk.nightstalkers.cz/";
-tooltip = "$STR_nam_mod_surv_name";
-overview = "$STR_nam_mod_surv_overview";
-author = "Sumrak";
-hidePicture = 0;
-```
-
-### Real Example: Namalsk Island
-
-From `P:/NBH_NamalskIsland/mod.cpp`:
-
-```cpp
-name = "$STR_nam_mod_terrain_name";
-picture = "nst/namalsk/data/menu/namalsk_logo_island_co.edds";
-logoSmall = "nst/namalsk/data/menu/namalsk_logo_island_co.edds";
-logo = "nst/namalsk/data/menu/namalsk_logo_island_co.edds";
-logoOver = "nst/namalsk/data/menu/namalsk_logo_island_hover_co.edds";
-action = "http://namalsk.nightstalkers.cz/";
-tooltip = "$STR_nam_mod_terrain_name";
-overview = "$STR_nam_mod_terrain_overview";
-author = "Sumrak";
+name = "My Mod Name";
+picture = "myMod/data/gui/imagesets/logo_co.edds";
+logoSmall = "myMod/data/gui/imagesets/logo_small_co.edds";
+logo = "myMod/data/gui/imagesets/logo_co.edds";
+logoOver = "myMod/data/gui/imagesets/logo_hover_co.edds";
+action = "https://example.com/";
+tooltip = "My Mod Tooltip";
+overview = "My Mod Overview Description";
+author = "AuthorName";
 hidePicture = 0;
 ```
 
@@ -88,26 +69,13 @@ class STR_nam_mod_surv_name
 
 `meta.cpp` stores Steam Workshop identifiers. It is **auto-generated** when you upload via the DayZ Workshop tool.
 
-### Real Example: Namalsk Survival
-
-From `P:/NBH_NamalskSurvival/meta.cpp`:
+### Generic Example: meta.cpp
 
 ```cpp
 protocol = 1;
-publishedid = 2289461232;
-name = "Namalsk Survival";
-timestamp = 5250691660718176603;
-```
-
-### Real Example: Namalsk Island
-
-From `P:/NBH_NamalskIsland/meta.cpp`:
-
-```cpp
-protocol = 1;
-publishedid = 2289456201;
-name = "Namalsk Island";
-timestamp = 5250446985546921235;
+publishedid = 1234567890;
+name = "My Mod Name";
+timestamp = 5250000000000000000;
 ```
 
 ### meta.cpp Fields
@@ -123,33 +91,32 @@ timestamp = 5250446985546921235;
 
 The `Addons/` folder contains one or more `.pbo` files. Each PBO bundles related assets — scripts, configs, models, textures, sounds.
 
-### Real PBO Names from Namalsk
+### Common PBO Patterns
 
-**Namalsk Survival** (`P:/NBH_NamalskSurvival/Addons/`):
-
-| PBO | Purpose |
-|-----|---------|
-| `ns_dayz.pbo` | Main gameplay scripts and configs for the survival mod |
-| `ns_music.pbo` | Music and audio assets |
-
-**Namalsk Island** (`P:/NBH_NamalskIsland/Addons/`):
+**Small gameplay mod:**
 
 | PBO | Purpose |
 |-----|---------|
-| `namalsk_data.pbo` | Map data, world config, item placements |
-| `namalsk_scripts.pbo` | Map-specific scripts |
-| `namalsk_terrain.pbo` | Terrain meshes, heightmaps, satellite imagery |
-| `namalsk_navmesh.pbo` | AI navigation mesh |
-| `ns.pbo`, `ns2.pbo`, `ns3.pbo` | Map models and assets |
-| `ns_plants.pbo` | Map-specific vegetation |
-| `ns_sounds.pbo` | Map-specific sounds |
+| `mymod_scripts.pbo` | Main gameplay scripts and configs |
+
+**Large terrain/map mod:**
+
+| PBO | Purpose |
+|-----|---------|
+| `mymap_data.pbo` | Map data, world config, item placements |
+| `mymap_scripts.pbo` | Map-specific scripts |
+| `mymap_terrain.pbo` | Terrain meshes, heightmaps, satellite imagery |
+| `mymap_navmesh.pbo` | AI navigation mesh |
+| `mymap_models.pbo` | Map models and assets |
+| `mymap_plants.pbo` | Map-specific vegetation |
+| `mymap_sounds.pbo` | Map-specific sounds |
 
 ### PBO Contents
 
 Each PBO contains a `config.cpp` at minimum (for the addon registry) plus any associated assets:
 
 ```
-namalsk_scripts.pbo/
+mymod_scripts.pbo/
 ├── config.cpp              — CfgPatches entry
 ├── scripts/
 │   ├── 4_world/
@@ -174,13 +141,13 @@ The `Keys/` folder stores the `.bikey` public key file corresponding to a `.bisi
 - **Server-side enforcement**: servers can require signed PBOs to prevent tampering
 - **Verification**: clients verify PBO signatures against the server's allowed keys
 
-Real example: `P:/NBH_NamalskSurvival/Keys/sumrak.bikey`
+Example: `MyMod/Keys/mykey.bikey`
 
 ## Extras/ — Server-Side Configurations
 
 The `Extras/` folder stores additional server configurations that ship with a mod. Players can copy these to their server config as needed.
 
-Real example from `P:/NBH_NamalskSurvival/Extras/`:
+Example structure:
 ```
 Extras/
 ├── Hardcore/

@@ -213,6 +213,8 @@ SyncPlayerList playerList = new SyncPlayerList();
 ClientData.SyncEvent_OnPlayerListUpdate.Invoke(playerList);
 ```
 
+> **Note:** The pattern above shows invoking `SyncEvent_OnPlayerListUpdate` with a locally created `SyncPlayerList`. In practice, the actual sync pattern in DayZ may differ — the server typically sends a serialized player list via RPC, and `ClientData` deserializes it on the client side before firing this event. Invoking with a locally constructed list may not replicate the actual sync behavior.
+
 ## ScriptInvoker Pattern
 
 `ScriptInvoker` provides event-based communication within the same process (client or server). From `P:/scripts/3_game/client/clientdata.c`:
@@ -243,7 +245,9 @@ Code outside `#ifdef SERVER` / `#ifndef SERVER` blocks runs on **both** client a
 
 ```c
 // game.c — runs everywhere
-class Game
+// Note: The Game class in 2_gamelib/gamelib.c has zero members.
+// These methods are on CGame / DayZGame in 3_game/global/game.c
+class CGame
 {
     proto native IEntity SpawnEntity(typename typeName);
     proto native IEntity SpawnEntityTemplate(vobject templateResource);

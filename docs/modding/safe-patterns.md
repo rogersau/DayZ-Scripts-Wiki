@@ -138,9 +138,8 @@ Preprocessor defines are powerful but easy to misuse:
 // This will crash on client builds!
 void SaveWorldData()
 {
-    // Hive operations only work on server
-    HiveRequest req = new HiveRequest();
-    req.Execute();    // CRASH on client
+    // Server persistence operations only work on server
+    // CRASH on client if unguarded
 }
 
 // DANGER: Mixing up #ifdef and #ifndef
@@ -159,9 +158,8 @@ void SaveWorldData()
 #ifdef SERVER
 void SaveWorldData()
 {
-    // Hive operations — only compiled on server
-    HiveRequest req = new HiveRequest();
-    req.Execute();
+    // Server persistence — only compiled on server
+    // ... persistence logic
 }
 #endif
 
@@ -182,13 +180,13 @@ void SomeMethod()
 class MyModManager
 {
 #ifdef SERVER
-    ref HiveRequest m_Hive;
+    ref SomeServerOnlyData m_ServerData;
 #endif
     
     void Init()
     {
 #ifdef SERVER
-        m_Hive = new HiveRequest();
+        m_ServerData = new SomeServerOnlyData();
 #endif
     }
 };
@@ -237,7 +235,7 @@ When a mod is removed, any objects or scripts referencing it will error. Mitigat
 // Use fallback values for mod-provided config entries
 float GetMyModValue()
 {
-    float val = GetGame().GetConfigFloat("CfgMyMod Settings someValue");
+    float val = ConfigGetFloat("CfgMyMod Settings someValue");
     if (val == 0)
         return DEFAULT_VALUE;  // Fallback if mod is missing
     return val;

@@ -35,29 +35,30 @@ IEntity [C++ engine]
             |   |   |   |   Animated character with physics, owner/move state
             |   |   |   |
             |   |   |   +-- Person (entities/man.c)
-            |   |   |   |   |
-            |   |   |   |   +-- Man (entities/man.c)
-            |   |   |   |       Base humanoid
-            |   |   |   |       |
-            |   |   |   |       +-- Human (human.c)
-            |   |   |   |           Humanoid with input controller, movement commands,
-            |   |   |   |           melee combat, death, unconscious state
-            |   |   |   |           |
-            |   |   |   |           +-- DayZPlayer (dayzplayer.c)
-            |   |   |   |               Player avatar: camera system, weapon raising,
-            |   |   |   |               aiming model, animation tables
+            |   |   |       Humanoid base (unused — separate from the Man branch)
+            |   |   |
+            |   |   +-- Man (entities/man.c)
+            |   |   |   |   Base humanoid (direct child of EntityAI)
             |   |   |   |
-            |   |   |   +-- Transport (vehicles/transport.c)
-            |   |   |       Base vehicle class
-            |   |   |       |
-            |   |   |       +-- Car (vehicles/car.c)
-            |   |   |       |   Wheeled ground vehicles
-            |   |   |       |
-            |   |   |       +-- Boat (vehicles/boat.c)
-            |   |   |       |   Water vehicles
-            |   |   |       |
-            |   |   |       +-- Helicopter (vehicles/helicopter.c)
-            |   |   |           Rotary-wing aircraft
+            |   |   |   +-- Human (human.c)
+            |   |   |   |   Humanoid with input controller, movement commands,
+            |   |   |   |   melee combat, death, unconscious state
+            |   |   |   |
+            |   |   |   +-- DayZPlayer (dayzplayer.c)
+            |   |   |       Player avatar: camera system, weapon raising,
+            |   |   |       aiming model, animation tables
+            |   |   |
+            |   |   +-- Transport (vehicles/transport.c)
+            |   |   |   Base vehicle class
+            |   |   |   |
+            |   |   |   +-- Car (vehicles/car.c)
+            |   |   |   |   Wheeled ground vehicles
+            |   |   |   |
+            |   |   |   +-- Boat (vehicles/boat.c)
+            |   |   |   |   Water vehicles
+            |   |   |   |
+            |   |   |   +-- Helicopter (vehicles/helicopter.c)
+            |   |   |       Rotary-wing aircraft
             |   |   |
             |   |   +-- Building (entities/building.c)
             |   |   |   Static building structures
@@ -82,19 +83,18 @@ IEntity [C++ engine]
 
 ### Player Chain
 ```
-Object → ObjectTyped → Entity → EntityAI → Pawn → Person → Man → Human → DayZPlayer
+Object → ObjectTyped → Entity → EntityAI → Man → Human → DayZPlayer
 ```
 
 Each step adds functionality:
 - **EntityAI**: Damage zones, inventory slots
-- **Pawn**: Physics, animated movement, owner state
-- **Person/Man**: Humanoid structure
+- **Man**: Humanoid base
 - **Human**: Input controller, movement commands, melee, death, unconscious
 - **DayZPlayer**: Camera system (1st/3rd person), weapon handling, aiming
 
 ### Vehicle Chain
 ```
-Object → ObjectTyped → Entity → EntityAI → Pawn → Transport → Car/Boat/Helicopter
+Object → ObjectTyped → Entity → EntityAI → Transport → Car/Boat/Helicopter
 ```
 
 ### Creature Chain

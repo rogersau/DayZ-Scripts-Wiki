@@ -328,7 +328,7 @@ The `classes/` directory contains the bulk of world gameplay logic, organized as
 | `playersymptoms/smptanimmeta.c` | Symptom animation metadata |
 | `playersymptoms/statebase.c` | `StateBase` — Symptom state base class |
 | `playersymptoms/statecb.c` | `StateCB` — Symptom callback |
-| `playersymptoms/statemanager.c` | `StateManager` — Manages active symptoms |
+| `playersymptoms/statemanager.c` | `SymptomManager` — Manages active symptoms |
 
 **Primary Symptom States:**
 
@@ -1161,7 +1161,7 @@ The `classes/` directory contains the bulk of world gameplay logic, organized as
 
 | File | Purpose |
 |------|---------|
-| `contaminatedarea.c` | `ContaminatedArea` — Base contaminated zone |
+| `contaminatedarea.c` | `ContaminatedArea_Base` / `ContaminatedArea_Static` / `ContaminatedArea_Dynamic` — Contaminated zone classes |
 | `contaminatedarea_dynamic.c` | Dynamic contaminated area |
 | `contaminatedarea_dynamicbase.c` | Dynamic contaminated area base |
 | `contaminatedarea_local.c` | Local client contaminated area |
@@ -1401,7 +1401,7 @@ The `entities/` directory contains class implementations for world objects, crea
 | `dayzanimalimplement.c` | `DayZAnimalImplement` — Animal entity implementation |
 | `dayzinfectedimplement.c` | `DayZInfectedImplement` — Infected/zombie entity implementation |
 | `itembase.c` | `ItemBase` — Root carryable item entity class |
-| `manbase.c` | `ManBase` — Root humanoid entity class |
+| `manbase.c` | `ManBase` — High-level player base class (`ManBase → DayZPlayerImplement → DayZPlayer → Human → Man → EntityAI`) |
 | `explosivesbase.c` | `ExplosivesBase` — Explosive device base entity |
 | `gardenbase.c` | `GardenBase` — Garden plot and plant entity |
 | `rockbase.c` | `RockBase` — Mineable rock resource entity |

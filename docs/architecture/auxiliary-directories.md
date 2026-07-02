@@ -115,27 +115,9 @@ Miscellaneous weapon item definitions (stub).
 
 ### `weapons/nonlethal/`
 
-Non-lethal weapons defined in `CfgWeapons` with their own class hierarchy:
+Non-lethal weapons defined in `CfgWeapons`. Only `Nonlethal_Base` (in `3_game\entities\bullettypes.c`) has been verified to exist. Specific weapon classes and the hierarchy shown in earlier versions have not been confirmed against source.
 
-```
-DefaultWeapon → NonlethalCore → NonlethalPistol
-                               └→ NonlethalRifle
-```
-
-| Weapon | Type | Slot | Base |
-|--------|------|------|------|
-| Dart Gun | Tranquilizer | Shoulder (rifle) | `NonlethalRifle` |
-| Shock Pistol | Electrical stun | Pistol | `NonlethalPistol` |
-
-```cpp
-class NonlethalCore: DefaultWeapon
-{
-    class Single: Mode_SemiAuto {};       // Single-shot only
-    class NoiseShoot { strength=10; };     // Noise generation
-    barrelArmor = 400;
-    magazineSlot = "magazine";
-};
-```
+> **Note:** Classes such as `DefaultWeapon`, `NonlethalCore`, `NonlethalPistol`, `NonlethalRifle`, `Dart`, and `ShockPistol` could not be verified. Treat any nonlethal weapon references as speculative.
 
 ### `weapons/proxies/`
 

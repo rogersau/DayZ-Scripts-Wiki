@@ -22,110 +22,77 @@ Player Stats
 
 ## Stat Thresholds (from `playerconstants.c`)
 
+All thresholds are `static const float` members inside `class PlayerConstants`:
+
 ### Health
 
 ```c
-const float PLAYER_HEALTH_CRITICAL = 1000;
-const float PLAYER_HEALTH_LOW = 3000;
-const float PLAYER_HEALTH_NORMAL = 5000;
-const float PLAYER_HEALTH_HIGH = 7000;
-const float PLAYER_MAX_HEALTH = 10000;
+static const float SL_HEALTH_CRITICAL = 15;
+static const float SL_HEALTH_LOW = 30;
+static const float SL_HEALTH_HIGH = 80;
 ```
 
 ### Blood
 
 ```c
-const float PLAYER_BLOOD_CRITICAL = 1000;
-const float PLAYER_BLOOD_LOW = 3000;
-const float PLAYER_BLOOD_NORMAL = 5000;
-const float PLAYER_BLOOD_HIGH = 7000;
-const float PLAYER_MAX_BLOOD = 10000;
+static const float SL_BLOOD_CRITICAL = 3000;
+static const float SL_BLOOD_LOW = 3500;
+static const float SL_BLOOD_NORMAL = 4000;
+static const float SL_BLOOD_HIGH = 4500;
 ```
 
 ### Energy
 
 ```c
-const float PLAYER_ENERGY_CRITICAL = 0;
-const float PLAYER_ENERGY_LOW = 1000;
-const float PLAYER_ENERGY_NORMAL = 2000;
-const float PLAYER_ENERGY_HIGH = 3000;
-const float PLAYER_MAX_ENERGY = 4000;
+static const float SL_ENERGY_LOW = 300;
+static const float SL_ENERGY_NORMAL = 800;
+static const float SL_ENERGY_HIGH = 3500;
+static const float SL_ENERGY_MAX = 5000;
 ```
 
 ### Water
 
 ```c
-const float PLAYER_WATER_CRITICAL = 0;
-const float PLAYER_WATER_LOW = 1000;
-const float PLAYER_WATER_NORMAL = 2000;
-const float PLAYER_WATER_HIGH = 3000;
-const float PLAYER_MAX_WATER = 4000;
+static const float SL_WATER_LOW = 300;
+static const float SL_WATER_NORMAL = 800;
+static const float SL_WATER_HIGH = 3500;
+static const float SL_WATER_MAX = 5000;
 ```
 
 ### Temperature
 
 ```c
-const float PLAYER_TEMPERATURE_HOT = 42.0;
-const float PLAYER_TEMPERATURE_HIGH = 38.0;
-const float PLAYER_TEMPERATURE_NORMAL = 36.5;
-const float PLAYER_TEMPERATURE_COLD = 35.0;
-const float PLAYER_TEMPERATURE_FREEZING = 30.0;
+static const float NORMAL_TEMPERATURE_L = 36.0;
+static const float NORMAL_TEMPERATURE_H = 36.5;
+static const float HIGH_TEMPERATURE_L = 38.5;
 ```
 
-## Metabolic Rates
-
-Energy and water are consumed at different rates based on activity:
-
-```c
-// Energy loss per second
-const float PLAYER_METABOLISM_IDLE_ENERGY = 0.018;
-const float PLAYER_METABOLISM_WALK_ENERGY = 0.036;
-const float PLAYER_METABOLISM_JOG_ENERGY = 0.072;
-const float PLAYER_METABOLISM_SPRINT_ENERGY = 0.144;
-
-// Water loss per second
-const float PLAYER_METABOLISM_IDLE_WATER = 0.036;
-const float PLAYER_METABOLISM_WALK_WATER = 0.054;
-const float PLAYER_METABOLISM_JOG_WATER = 0.072;
-const float PLAYER_METABOLISM_SPRINT_WATER = 0.108;
-```
+> **Note:** Only the above constants are verified in `PlayerConstants`. Other temperature thresholds (HIGH_TEMPERATURE_H, freezing, etc.) may exist but are not confirmed and should be treated as speculative.
 
 ## Stomach System (`playerstomach.c`)
 
-The stomach system manages digestion:
+The stomach system manages digestion. It stores consumed items as a list of `StomachItem` objects:
 
 ```c
 class PlayerStomach {
-    float m_StomachContent;       // Current stomach contents
-    float m_DigestionRate;        // How fast food digests
-    float m_EnergyAbsorption;     // Energy absorbed per unit
-    float m_WaterAbsorption;      // Water absorbed per unit
-    
-    // Food properties (from config)
-    float GetEnergyValue();
-    float GetWaterValue();
-    float GetNutritionalValue();
+    ref array<ref StomachItem> m_StomachContents;
+    // ...digestion processing...
 };
 ```
 
+Each `StomachItem` tracks the individual food/drink item being digested, its remaining nutritional values, and its digestion progress.
+
 **Digestion process**:
-1. Player eats/drinks → stomach content increases
-2. Over time, food digests → energy and water are absorbed
+1. Player eats/drinks → a `StomachItem` is added to `m_StomachContents`
+2. Over time, items digest → energy and water are absorbed
 3. Different foods have different absorption rates
 4. Overeating causes vomiting
 
 ## Modifiers (`playermodifiers/`)
 
-Modifiers are temporary effects that alter player stats:
+Modifiers are temporary effects that alter player stats. The modifier system uses classes in the `playermodifiers/` directory.
 
-```c
-class PlayerModifier {
-    float m_Duration;           // How long the modifier lasts
-    float m_Strength;           // Effect strength
-    bool m_IsPositive;          // Buff or debuff
-    string m_Source;            // What caused this modifier
-};
-```
+> **Note:** The exact `PlayerModifier` class API (fields like `m_Duration`, `m_Strength`, `m_IsPositive`, `m_Source`) is not verified and should be treated as speculative. Refer to the actual source in `4_world/classes/playermodifiers/` for the authoritative API.
 
 ### Modifier Types
 
@@ -138,18 +105,9 @@ class PlayerModifier {
 
 ## Notifiers (`playernotifiers/`)
 
-Notifiers provide UI feedback for stat changes:
+Notifiers provide UI feedback for stat changes. The notifier system uses classes in the `playernotifiers/` directory.
 
-```c
-class PlayerNotifier {
-    void OnHealthChange(float oldHealth, float newHealth);
-    void OnBloodChange(float oldBlood, float newBlood);
-    void OnEnergyChange(float oldEnergy, float newEnergy);
-    void OnWaterChange(float oldWater, float newWater);
-    void OnTemperatureChange(float oldTemp, float newTemp);
-    void OnStomachChange(float oldContent, float newContent);
-};
-```
+> **Note:** The `PlayerNotifier` class shown below is not verified in the actual source code and should be treated as speculative. Refer to the actual source in `4_world/classes/playernotifiers/` for the authoritative API.
 
 ## Symptoms (`playersymptoms/`)
 

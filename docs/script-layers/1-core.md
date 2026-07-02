@@ -10,7 +10,7 @@ Layer 1 is the foundation of the entire script stack. It provides the language-l
 |------|----------|
 | `constants.c` | Global integer constants for input devices, input action types, and colors |
 | `defines.c` | Documents preprocessor defines injected from C++ |
-| `staticdefinesdoc.c` | Doxygen documentation listing all preprocessor defines and their build contexts (DEVELOPER, RELEASE, SERVER, WORKBENCH, etc.) |
+| `staticdefinesdoc.c` | `StaticDefines` enum — Doxygen documentation listing all preprocessor defines and their build contexts (DEVELOPER, RELEASE, SERVER, WORKBENCH, etc.) |
 | `param.c` | The `Param` typed-parameter serialization hierarchy |
 | `script.c` | Minimal example/reference material for the material editor |
 | `workbenchapi.c` | Full Workbench IDE integration API |
@@ -45,27 +45,10 @@ The `proto/` directory contains **native engine function prototypes** — the br
 
 ### Constants (`constants.c`)
 
-Defines `const int` globals used throughout the entire codebase:
+Defines game-level enums used throughout the codebase (chat channels, voice levels, hit direction indicators, object intersection flags, etc.). This file contains **no** global `const int` color or input-device constants — those either do not exist or live elsewhere:
 
-**Input Device IDs**:
-```c
-const int INPUT_DEVICE_KEYBOARD = 0;
-const int INPUT_DEVICE_MOUSE = 1;
-const int INPUT_DEVICE_STICK = 2;
-const int INPUT_DEVICE_XINPUT = 3;
-const int INPUT_DEVICE_GAMEPAD = 4;
-```
-
-**Input Action Types**:
-```c
-const int INPUT_STATE = 0;
-const int INPUT_DOWN_EVENT = 1;
-const int INPUT_UP_EVENT = 2;
-const int INPUT_HOLD = 3;
-const int INPUT_COMBO = 4;
-```
-
-**Color Constants**: WHITE, RED, GREEN, BLUE, YELLOW, and their `*_A` alpha variants.
+- **Color constants** (e.g., `WHITE`, `RED`, `GREEN`) are in the `Colors` class at `3_game/colors.c`.
+- **Input device IDs** are handled by the engine via `InputManager`/`ActionManager` (Layer 2), not as script-level constants.
 
 ### Param System (`param.c`)
 

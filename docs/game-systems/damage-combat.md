@@ -69,37 +69,46 @@ enum DamageType {
 
 ## DamageSystem (`3_game/damagesystem.c`)
 
-A static utility class providing damage application:
+A static utility class providing native damage entry points. These are **verified** signatures (from `damagesystem.c`):
 
 ```c
 class DamageSystem {
-    // Apply melee damage
-    static void CloseCombatDamage(
-        EntityAI victim, 
-        EntityAI attacker, 
-        float damage, 
-        string component
+    // Melee damage — by component index
+    static proto native void CloseCombatDamage(
+        EntityAI source,
+        Object target,
+        int targetComponentIndex,
+        string ammo,
+        vector worldPos,
+        int flags = ALL_TRANSFER
     );
-    
-    // Apply explosion damage
-    static void ExplosionDamage(
-        EntityAI victim, 
-        vector position, 
-        float radius, 
-        float damage
+
+    // Melee damage — by component name
+    static proto native void CloseCombatDamageName(
+        EntityAI source,
+        Object target,
+        string targetComponentName,
+        string ammo,
+        vector worldPos,
+        int flags = ALL_TRANSFER
     );
-    
-    // Get damage zone mapping
-    static ref map<string, int> GetDamageZoneMap();
-    
-    // Query total damage on a zone
-    static float TotalDamageResult(
-        EntityAI entity, 
-        string zone, 
-        int healthType
+
+    // Explosion damage
+    static proto native void ExplosionDamage(
+        EntityAI source,
+        Object directHitObject,
+        string ammo,
+        vector worldPos,
+        int damageType
     );
 };
 ```
+
+**Note:** `TotalDamageResult` is a native object returned by the engine after a hit (not a method on `DamageSystem`). It exposes `GetDamage(zone, healthType)` and `GetHighestDamage(healthType)`.
+
+**Firearm bullets** do NOT go through `DamageSystem` — the native projectile applies `FIRE_ARM` damage directly on impact via the engine bullet-vs-component raycast, then fires the `EEHitBy` callback.
+
+For the full native pipeline — `EEHitBy` → bleeding-source-spawn → `ShockHandler.CheckValue` → `EEKilled`/`KillerData` callback sequence — see [Damage System (Native Pipeline)](./damage-system).
 
 ## Damage Zones
 
@@ -130,7 +139,7 @@ Zone damage is calculated as: `finalDamage = baseDamage × zoneMultiplier × (1 
 Melee weapons include fists, knives, bats, axes, and other hand-to-hand weapons.
 
 **Key files:**
-- `HumanCommandMelee` / `HumanCommandMelee2` — Animation commands for melee attacks
+- `HumanCommandMelee` / `HumanCommandMelee2` — Animation command classes for melee attacks (created via `Human.StartCommand_Melee(target)` / `Human.StartCommand_Melee2(target, hitType, comboValue, hitPos)`)
 - `4_world/classes/meleetargeting.c` — Hit detection and targeting
 - `DZ/weapons/melee/config.cpp` — Melee weapon definitions
 
@@ -181,16 +190,7 @@ flowchart LR
 
 ### Explosions
 
-```c
-class ExplosionDamage {
-    static void ApplyExplosion(
-        vector position, 
-        float radius, 
-        float damage, 
-        string ammoType
-    );
-};
-```
+Explosion damage is applied via `DamageSystem.ExplosionDamage(source, directHitObject, ammo, worldPos, damageType)`. There is **no** separate `ExplosionDamage` class — this was fabricated in a previous version.
 
 Explosions have complex area-of-effect behavior:
 

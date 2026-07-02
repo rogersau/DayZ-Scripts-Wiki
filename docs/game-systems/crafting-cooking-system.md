@@ -124,11 +124,11 @@ override void Do(ItemBase ingredients[], PlayerBase player,
 
 This shows the pattern: **config-style fields are set in `Init()`, but anything beyond simple spawn/destroy is done in `Do()`**.
 
-### Recipe registration — `PluginRecipesManagerBase.RegisterRecipies()` (`pluginrecipesmanagerbase.c:14`)
+### Recipe registration — `PluginRecipesManagerBase.RegisterRecipies()` (`recipes/recipes/pluginrecipesmanagerbase.c:8`)
 
 A hardcoded list of `RegisterRecipe(new CraftXxx)` calls (~110 active recipes; many `paint*` commented out). The `Ingredient` enum (`:1`): `FIRST=1, SECOND=2, BOTH=3`.
 
-### Server-side manager — `PluginRecipesManager` (`pluginbase/pluginrecipesmanager.c`)
+### Server-side manager — `PluginRecipesManager` (`plugins/pluginbase/pluginrecipesmanager.c`)
 
 Storage: `ref array<ref RecipeBase> m_RecipeList` (`:42`, indexed by ID), `MAX_NUMBER_OF_RECIPES` (`:19`), `MAX_CONCURENT_RECIPES = 128` (`:20`).
 
@@ -429,7 +429,7 @@ classes/
 │   └── recipes/                 ~170 concrete recipe plugins
 │        ├── craftfireplace.c crafttorch.c craftbandana.c …
 │        ├── decraft*.c  sawoff*.c  paint*.c  prepare*.c
-│        └── pluginbase/pluginrecipesmanager.c   Server manager
+│        └── pluginbase/pluginrecipesmanager.c   Server manager (4_world/plugins/pluginbase/)
 ├── cooking/
 │   ├── cooking.c                Cooking class + CookingMethodType enum
 │   ├── fireconsumable.c         FireConsumable (item + energy)

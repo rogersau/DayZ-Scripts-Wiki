@@ -29,30 +29,15 @@ Base Building (classes/basebuilding/)
 
 ### 1. Kit Placement
 
-Base building starts with a **kit** (a crafted item in inventory):
+Base building starts with a **kit** (a crafted item in inventory). Kits are placed in the world to begin construction.
 
-```c
-class ConstructionKit : InventoryItem {
-    // Place the kit to start construction
-    bool PlaceKit(vector position, vector orientation);
-    
-    // Resulting construction type
-    string m_ConstructionType;  // "Fence", "Watchtower", "Gate", etc.
-    int m_MaxBuildStage;        // Total stages (typically 3)
-};
-```
+> **Note:** The `ConstructionKit` class with `PlaceKit()`, `m_ConstructionType`, `m_MaxBuildStage` is **not verified** in the actual source. The exact kit placement API should be confirmed against the source in `classes/basebuilding/`.
 
 ### 2. Building Stages
 
-Construction proceeds through stages:
+Construction proceeds through stages (typically 3 stages from kit placement to completed structure).
 
-```c
-enum BuildStage {
-    STAGE_1_MATERIALS,    // Kit placed, raw materials visible
-    STAGE_2_WALLS,        // Basic structure built
-    STAGE_3_COMPLETE      // Fully constructed
-};
-```
+> **Note:** The `BuildStage` enum (`STAGE_1_MATERIALS`, `STAGE_2_WALLS`, `STAGE_3_COMPLETE`) is **not verified** in the actual source. Stage progression is handled by the actual base building classes — consult the source for exact stage definitions.
 
 Each stage requires:
 - **Materials**: Wood planks, nails, tools
@@ -61,63 +46,26 @@ Each stage requires:
 
 ### 3. Stage Progression
 
-```c
-class BaseBuildingBase {
-    int m_CurrentStage;           // Current build stage (0-3)
-    float m_ConstructionProgress;  // Progress toward next stage
-    float m_Health;                // Current health
-    float m_MaxHealth;             // Maximum health
-    
-    // Stage requirements
-    array<string> m_RequiredItems[int];  // Items needed per stage
-    int m_RequiredTool;                   // Tool needed to build
-    
-    // Methods
-    bool CanUpgradeStage(EntityAI player);
-    void UpgradeStage(EntityAI player);
-    void Damage(float amount);
-    void Repair(float amount);
-};
-```
+> **Note:** The `BaseBuildingBase` class with members like `m_CurrentStage`, `m_ConstructionProgress`, `CanUpgradeStage()`, `UpgradeStage()`, `Damage()`, `Repair()`, `m_RequiredItems`, `m_RequiredTool` is **not verified** in the actual source. The real base building class hierarchy should be consulted in the source for the authoritative API.
 
 ## Structure Types
 
-| Structure | Stages | Purpose |
-|-----------|--------|---------|
-| **Fence** | 3 | Perimeter walls |
-| **Gate** | 3 | Entry point with door |
-| **Watchtower** | 3 | Elevated vantage point |
-| **Shelter** | 3 | Basic roofed structure |
-| **Storage** | 3 | Secure container cache |
-| **Hunting Stand** | 3 | Elevated hunting platform |
+> **Note:** The specific stage counts below are **not verified** against the actual source. These are gameplay-observed descriptions.
+
+| Structure | Purpose |
+|-----------|---------|
+| **Fence** | Perimeter walls |
+| **Gate** | Entry point with door |
+| **Watchtower** | Elevated vantage point |
+| **Shelter** | Basic roofed structure |
+| **Storage** | Secure container cache |
+| **Hunting Stand** | Elevated hunting platform |
 
 ## Structure Health & Decay
 
-```c
-class BaseBuildingBase {
-    // Health system
-    float m_Health;
-    float m_MaxHealth;
-    
-    // Decay system
-    float m_DecayRate;            // Health lost per day
-    float m_LastMaintenanceTime;  // Last repair timestamp
-    float m_MaintenancePeriod;    // Days before decay starts
-    
-    // Damage types
-    void OnBulletHit(float damage);
-    void OnExplosionHit(float damage);
-    void OnMeleeHit(float damage);
-    void OnToolDamage(float damage, string toolType);
-    
-    // Decay check
-    void UpdateDecay(float delta) {
-        if (time - m_LastMaintenanceTime > m_MaintenancePeriod) {
-            m_Health -= m_DecayRate * delta;
-        }
-    }
-};
-```
+Base structures have health and decay mechanics.
+
+> **Note:** The `BaseBuildingBase` decay-related members (`m_DecayRate`, `m_LastMaintenanceTime`, `m_MaintenancePeriod`, `OnBulletHit()`, `OnExplosionHit()`, `OnMeleeHit()`, `OnToolDamage()`, `UpdateDecay()`) are **not verified** in the actual source. Consult the actual base building source for the real health/decay API.
 
 ## Security
 
@@ -125,15 +73,12 @@ class BaseBuildingBase {
 
 ```c
 class CombinationLock {
-    string m_Code;                  // Player-set code
-    bool m_IsLocked;               // Lock state
-    
-    void SetCode(string code);
-    bool TryCode(string code);
-    void Lock();
-    void Unlock();
+    // Verified API
+    void SetBaseLockValues(/* ... */);   // Configure lock values on the base building
 };
 ```
+
+> **Note:** Methods like `SetCode()`, `TryCode()`, `Lock()`, `Unlock()` and fields like `m_Code`, `m_IsLocked` are **not verified** in the actual source. The only confirmed method on `CombinationLock` is `SetBaseLockValues()`.
 
 ### Access Control
 

@@ -27,93 +27,55 @@ Crafting System
 
 ```c
 class CraftingManager {
-    // Check if a recipe is valid
-    bool CanCraft(array<EntityAI> ingredients);
+    // Recipe selection
+    void SetRecipeID(int id);
+    int GetRecipeID();
     
-    // Execute crafting
-    EntityAI Craft(array<EntityAI> ingredients);
+    // Craft type queries
+    bool IsInventoryCraft();     // Crafting from inventory screen
+    bool IsWorldCraft();         // Crafting in-world (e.g., fireplace)
     
-    // Get available recipes
-    array<CraftingRecipe> GetAvailableRecipes(EntityAI player);
-    
-    // Get recipe by ID
-    CraftingRecipe FindRecipe(string recipeName);
+    // Recipe count
+    int GetRecipesCount();
 };
 ```
+
+> **Note:** Methods like `CanCraft`, `Craft`, `GetAvailableRecipes`, `FindRecipe` are **not verified** in the actual source. Use the real API above.
 
 ## Recipe Definitions
 
-Recipes define what ingredients produce what result:
+The real recipe base class is `RecipeBase`, not `CraftingRecipe`:
 
 ```c
-class CraftingRecipe {
-    string m_DisplayName;
-    string m_Description;
+class RecipeBase {
+    // Check if recipe can be executed
+    bool CanDo(/* ... */);
     
-    // Ingredients required
-    array<Ingredient> m_Ingredients;
-    // Ingredient: { string itemClass, int quantity, bool consumed }
+    // Execute the recipe
+    void Do(/* ... */);
     
-    // Result produced
-    array<Result> m_Results;
-    // Result: { string itemClass, int quantity, float quality }
+    // Initialize recipe data
+    void Init();
     
-    // Requirements
-    float m_RequiredSkill;       // Minimum crafting skill
-    bool m_RequiresWorkbench;    // Needs a workbench
-    float m_CraftTime;           // Time to craft in seconds
-    
-    // Tools needed (if not consumed)
-    array<string> m_RequiredTools;
+    // ... ingredient/result data from config ...
 };
 ```
 
-### Recipe Example
+Recipes are typically defined in config data (`DZ/gear/crafting/`) and instantiated from those definitions rather than coded as individual classes.
 
-```c
-// Improvised fishing rod recipe
-class ImprovisedFishingRodRecipe : CraftingRecipe {
-    void ImprovisedFishingRodRecipe() {
-        m_DisplayName = "Improvised Fishing Rod";
-        m_Ingredients = {
-            { "LongWoodenStick", 1, true },
-            { "Rope", 1, true }
-        };
-        m_Results = {
-            { "ImprovisedFishingRod", 1, 1.0 }
-        };
-        m_CraftTime = 5.0;
-        m_RequiresWorkbench = false;
-    }
-};
-```
+> **Note:** The `CraftingRecipe` class with `m_DisplayName`, `m_Ingredients`, `m_Results`, `m_CraftTime`, `m_RequiredTools` fields is **not verified**. The real base class is `RecipeBase`.
 
 ## Cooking System
 
-The cooking system (`classes/cooking/`) manages food preparation:
+The cooking system is handled by the `Cooking` class in `classes/cooking/cooking.c`:
 
 ```c
-class CookingManager {
-    // Check if food can be cooked
-    bool CanCook(EntityAI food, EntityAI heatSource);
-    
-    // Start cooking
-    void StartCooking(EntityAI food, EntityAI heatSource);
-    
-    // Get cooking progress
-    float GetCookingProgress(EntityAI food);
-    
-    // Get cook state
-    CookState GetCookState(EntityAI food);
+class Cooking {
+    // ... cooking logic ...
 };
+```
 
-enum CookState {
-    RAW,                // Uncooked
-    BAKED,              // Baked (optimal)
-    BOILED,             // Boiled (optimal)
-    BURNT,              // Overcooked (reduced nutrition)
-    ROTTEN              // Spoiled (inedible)
-};
+> **Note:** The `CookingManager` class, `CookState` enum (`RAW`, `BAKED`, `BOILED`, `BURNT`, `ROTTEN`), and `CookedFood` class with `m_NutritionalValue`, `m_WaterContent`, `m_TasteQuality`, `m_IsSafe` are **not verified** in the actual source. The real cooking class is simply `Cooking` in `classes/cooking/cooking.c`.
 ```
 
 ### Heat Sources
@@ -126,21 +88,14 @@ Food can be cooked over:
 
 ### Cooking Quality
 
-```c
-class CookedFood {
-    float m_NutritionalValue;     // Energy retained
-    float m_WaterContent;         // Water retained
-    float m_TasteQuality;         // Taste bonus
-    bool m_IsSafe;                // Safe from disease
-};
-```
-
 Food quality depends on:
 - **Cooking time**: Perfect timing yields optimal nutrition
 - **Cooking method**: Different methods suit different foods
 - **Cookware**: Pot, pan, or direct heat
 - **Soft skill**: Cooking skill improves results
 - **Heat level**: Right temperature matters
+
+> **Note:** The `CookedFood` class with `m_NutritionalValue`, `m_WaterContent`, `m_TasteQuality`, `m_IsSafe` fields is **not verified** in the source.
 
 ## Categories of Craftable Items
 

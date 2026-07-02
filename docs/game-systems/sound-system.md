@@ -6,7 +6,7 @@ The sound system manages audio playback, spatial audio, voice communication, and
 
 ```mermaid
 flowchart TD
-    subgraph Manager["Sound Manager (3_game/sound.c)"]
+    subgraph Manager["Sound Playback (SEffectManager)"]
         PLAY[Sound Playback]
         OBJ[Sound Object Management]
         PARAM[Audio Parameters]
@@ -48,59 +48,11 @@ flowchart TD
     VON --> Occlusion
 ```
 
-## Sound Manager
+## Sound Playback
 
-The core sound playback interface, providing methods for playing sounds in the world:
+The primary script interface for sound playback is `SEffectManager`. It handles playing sounds at positions or on entities in the world. Sound playback parameters are configured via the `CfgSoundShaders` / `CfgSoundSets` / `CfgSound3DProcessors` pipeline.
 
-```c
-class SoundManager {
-    // Play a sound at a position in the world
-    SoundObject PlaySound(string soundName, vector position);
-    
-    // Play a sound attached to an entity (follows it)
-    SoundObject PlaySoundOnEntity(string soundName, EntityAI entity);
-    
-    // Play a looping ambient sound within a radius
-    AmbientObject PlayAmbient(string soundName, vector position, float radius);
-    
-    // Stop sounds
-    void StopSound(SoundObject sound);
-    void StopAllSounds();
-    
-    // Audio parameters (master volume channels)
-    void SetMasterVolume(float volume);
-    void SetSFXVolume(float volume);
-    void SetMusicVolume(float volume);
-    void SetVoiceVolume(float volume);
-};
-```
-
-## Sound Objects
-
-```c
-class SoundObject {
-    // Playback control
-    void Play();
-    void Stop();
-    void Pause();
-    void Resume();
-    
-    // Parameters
-    void SetVolume(float volume);
-    void SetPitch(float pitch);
-    void SetPosition(vector position);
-    void SetLoop(bool loop);
-    
-    // 3D audio — spatialization
-    void SetRolloff(float minDist, float maxDist);
-    void SetOcclusion(float occlusion);
-    
-    // State queries
-    bool IsPlaying();
-    float GetDuration();
-    float GetTime();
-};
-```
+Sound events defined in `4_world/classes/soundevents/` provide a higher-level interface for gameplay sound triggers.
 
 ## Sound Config Data
 
@@ -146,36 +98,7 @@ class CfgSoundSets {
 
 The VON system (`vonmanager.c`, ~7,800 lines) handles real-time voice communication. See the full [Voice Communication](./voice-communication) page for the complete pipeline, player state integration, and radio equipment details.
 
-```c
-class VONManager {
-    // Start/stop voice transmission
-    void StartTransmitting();
-    void StopTransmitting();
-    bool IsTransmitting();
-    
-    // Radio communication
-    void SetRadioFrequency(float frequency);
-    bool IsRadioTransmitting();
-    
-    // Voice effects
-    void SetVoiceEffect(VoiceEffectType effect);
-    // VoiceEffectType: NORMAL, RADIO, DISTORTED, DISTANT
-    
-    // Volume/proximity
-    float GetVoiceVolume();     // Based on distance to listener
-    void SetVoiceCone(float angle, float radius);
-};
-```
-
-### Voice Channels
-
-```c
-enum VoiceChannel {
-    PROXIMITY,      // Local chat — hears based on distance and voice cone
-    RADIO,          // Radio communication — party/frequency based, reduced quality
-    MEGAPHONE       // Amplified voice — vehicle PA systems, megaphone item
-};
-```
+The script-side `VONManager` class provides a thin static wrapper; the real work happens in `VONManagerBase`. Core functionality includes start/stop transmission, radio frequency tuning, and voice effect management.
 
 | Channel | Range | Quality | Use Case |
 |---------|-------|---------|----------|
@@ -187,26 +110,13 @@ enum VoiceChannel {
 
 Sounds in DayZ use a multi-factor occlusion model for realistic audio propagation:
 
-```c
-class SoundOcclusion {
-    // Calculate occlusion between source and listener
-    static float GetOcclusion(vector source, vector listener);
-    
-    // Material-based sound absorption
-    static float GetMaterialAbsorption(string materialType);
-    
-    // Environment reverb
-    static float GetEnvironmentReverb(string environmentType);
-};
-```
-
 ### Occlusion Factors
 
 | Factor | Effect | Implementation |
 |--------|--------|----------------|
-| **Distance** | Volume drops over distance via configurable rolloff curve | `SetRolloff(minDist, maxDist)` |
-| **Obstructions** | Walls, buildings, terrain block/interfere with sound | Raycast-based occlusion check |
-| **Materials** | Different materials transmit sound differently (concrete vs wood vs dirt) | `GetMaterialAbsorption()` per surface type |
+| **Distance** | Volume drops over distance via configurable rolloff curve | Config-driven rolloff via `CfgSound3DProcessors` |
+| **Obstructions** | Walls, buildings, terrain block/interfere with sound | Raycast-based occlusion check (engine-level) |
+| **Materials** | Different materials transmit sound differently (concrete vs wood vs dirt) | Per surface type in config |
 | **Weather** | Wind direction carries sound further downwind; rain adds noise floor | Wind vector × distance, rain intensity |
 | **Surfaces** | Sound reflection/echo from different surfaces (indoor reverb, outdoor open) | Environment reverb type |
 
@@ -219,8 +129,8 @@ float CalculateAudibility(vector source, vector listener) {
     float dist = vector.Distance(source, listener);
     baseVolume *= GetRolloffFactor(dist, minDist, maxDist);
     
-    // Occlusion from obstacles
-    float occlusion = SoundOcclusion.GetOcclusion(source, listener);
+    // Occlusion from obstacles (engine-level)
+    float occlusion = GetOcclusionFactor(source, listener);
     baseVolume *= (1.0 - occlusion);
     
     // Weather modifier
@@ -232,7 +142,7 @@ float CalculateAudibility(vector source, vector listener) {
 
 ## Sound Events (`4_world/classes/soundevents/`)
 
-Script-defined sound events in Layer 4 provide a higher-level interface to the sound system:
+Script-defined sound events in Layer 4 provide a higher-level interface to the sound system. The base `SoundEvent` class is defined in `1_core/proto/proto.c`.
 
 ```c
 class SoundEvent {
@@ -260,12 +170,12 @@ Additional sound management classes in Layer 4:
 
 | Handler | Purpose |
 |---------|---------|
-| `freezingsoundhandler.c` | Shivering and cold-related sounds |
-| `hungersoundhandler.c` | Stomach growling sounds |
-| `injurysoundhandler.c` | Pain and injury vocalizations |
-| `itemsoundhandler.c` | Item interaction sounds (picking up, dropping, equip) |
-| `playersoundmanager.c` | Central player sound management |
-| `thirstsoundhandler.c` | Dehydration-related sounds |
+| `FreezingSoundHandlerBase` / `FreezingSoundHandlerClient` / `FreezingSoundHandlerServer` | Shivering and cold-related sounds |
+| `HungerSoundHandler` | Stomach growling sounds |
+| `InjurySoundHandler` | Pain and injury vocalizations |
+| `ItemSoundHandler` | Item interaction sounds (picking up, dropping, equip) |
+| `PlayerSoundManager` | Central player sound management |
+| `ThirstSoundHandler` | Dehydration-related sounds |
 
 ## Integration with Other Systems
 

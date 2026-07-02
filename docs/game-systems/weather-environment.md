@@ -51,10 +51,11 @@ Rain is the most gameplay-impactful weather component, affecting multiple system
 | **Water collection** | Rain fills containers placed outside (rain barrels, pots) |
 
 ```c
+// Weather provides Rain as an object (NOT float intensity)
 class Weather {
-    float GetRainIntensity();       // 0.0 — 1.0
-    float GetRainAccumulation();    // Accumulated rain amount (mm)
-    bool IsRaining();
+    proto native Rain GetRain();        // Returns Rain object
+    // Rain state is read through the Rain object,
+    // NOT via GetRainIntensity() / GetRainAccumulation() / IsRaining()
 };
 ```
 
@@ -70,8 +71,9 @@ Fog creates atmosphere and drastically alters gameplay:
 
 ```c
 class Weather {
-    float GetFogDensity();          // 0.0 — 1.0
-    float GetFogHeight();           // Fog ceiling height in meters
+    proto native Fog GetFog();          // Returns Fog object
+    // Fog state is read through the Fog object,
+    // NOT via GetFogDensity() / GetFogHeight()
 };
 ```
 
@@ -88,8 +90,10 @@ Wind is a multi-dimensional parameter affecting several systems:
 
 ```c
 class Weather {
-    float GetWindSpeed();           // Wind speed in m/s
-    vector GetWindDirection();      // Wind direction vector
+    proto native float GetWindSpeed();              // Wind speed in m/s
+    proto native vector GetWind();                  // Wind as vector
+    proto native WindDirection GetWindDirection();  // Returns WindDirection (angle radians)
+    proto native WindMagnitude GetWindMagnitude();  // Returns WindMagnitude object
 };
 ```
 
@@ -106,7 +110,7 @@ Clouds act as a thermal regulator and visual indicator:
 
 ```c
 class Weather {
-    float GetOvercast();            // 0.0 (clear) — 1.0 (full overcast)
+    proto native Overcast GetOvercast();  // Returns Overcast object (NOT float)
 };
 ```
 
@@ -115,11 +119,16 @@ class Weather {
 Player temperature is affected by multiple interacting environmental factors:
 
 ```c
-const float PLAYER_TEMPERATURE_HOT = 42.0;
-const float PLAYER_TEMPERATURE_NORMAL = 36.5;
-const float PLAYER_TEMPERATURE_COLD = 35.0;
-const float PLAYER_TEMPERATURE_FREEZING = 30.0;
+// From PlayerConstants — verified values
+class PlayerConstants {
+    static const float NORMAL_TEMPERATURE_L = 36.0;
+    static const float NORMAL_TEMPERATURE_H = 36.5;
+    static const float HIGH_TEMPERATURE_L = 38.5;
+    static const float HIGH_TEMPERATURE_H = 39.0;
+};
 ```
+
+> **Correction:** The previous version used fabricated names (`PLAYER_TEMPERATURE_HOT = 42.0`, `PLAYER_TEMPERATURE_COLD = 35.0`, `PLAYER_TEMPERATURE_FREEZING = 30.0`). The real constants use `NORMAL_TEMPERATURE_*` and `HIGH_TEMPERATURE_*` prefixes.
 
 ### Factors Affecting Body Temperature
 
@@ -139,7 +148,7 @@ flowchart LR
 
 | Factor | Effect | Source |
 |--------|--------|--------|
-| **Ambient temperature** | Baseline from world data | `Weather.GetTemperature()` |
+| **Ambient temperature** | Baseline from world data | `WorldData.GetTemperature()` |
 | **Wind chill** | Multiplier based on wind speed × (ambient - body temp) | `Weather.GetWindSpeed()` |
 | **Wetness** | Accelerates heat loss proportional to wetness level | Player modifier |
 | **Clothing insulation** | Reduces heat loss; each item has insulation value | DZ config per item |
@@ -149,28 +158,45 @@ flowchart LR
 
 ## World Data (`worlddata.c`, ~15,900 lines)
 
-The `WorldData` class manages the world simulation state:
+The `WorldData` class manages the world simulation state. **Verified methods:**
 
 ```c
 class WorldData {
-    // Time management
-    float GetTimeOfDay();           // Current time (0.0 — 24.0)
-    float GetDate();                // Current date
-    
-    // World queries
-    float GetSeaLevel();            // Sea level for water simulation
-    bool IsNight();                 // Check if night time
-    float GetLighting();            // Current lighting level (0.0 — 1.0)
-    
-    // Biome queries
-    int GetBiome(vector position);  // Get biome at position
-    float GetTreeCover(vector pos); // Tree cover density (0.0 — 1.0)
+    // Time
+    int GetDaytime();                          // Current daytime value
+    float GetApproxSunriseTime(float monthday); // Approximate sunrise
+    float GetApproxSunsetTime(float monthday);  // Approximate sunset
+
+    // Temperature
+    float GetBaseEnvTemperature();             // Base environment temperature
+    float GetBaseEnvTemperatureAtObject(notnull Object object);
+    float GetBaseEnvTemperatureAtPosition(vector pos);
+    float GetBaseEnvTemperatureExact(int month, int day, int hour, int minute);
+    float GetTemperature(Object object,
+        EEnvironmentTemperatureComponent properties = EEnvironmentTemperatureComponent.BASE);
+
+    // Weather integration
+    void UpdateWeatherEffects(Weather weather, float timeslice);
+    float ComputeSnowflakeScale(Weather weather);
+    bool WeatherOnBeforeChange(EWeatherPhenomenon type, float actual,
+        float change, float time);
+
+    // Environment
+    int GetPollution();
+    float GetWindCoef();
+    float GetDayTemperature();
+    float GetNightTemperature();
+    float GetAgentSpawnChance(eAgents agent);
+
+    // ... (73 total members)
 };
 ```
 
+> **Correction:** There are NO `GetTimeOfDay()`, `GetDate()`, `GetSeaLevel()`, `IsNight()`, `GetLighting()`, `GetBiome()`, or `GetTreeCover()` methods on `WorldData`. These were all fabricated in the previous version. Date/time is accessed via `GetGame().GetWorld().GetDate(...)` (engine API).
+
 ### Biome System
 
-The biome system determines environmental properties per location:
+> **[speculative]** The biome system and its properties have not been independently verified against source. `WorldData` has NO `GetBiome()` or `GetTreeCover()` methods. The following is retained from the original page as a gameplay observation only:
 
 | Biome | Characteristics |
 |-------|----------------|
@@ -188,25 +214,28 @@ Biomes affect gameplay through:
 - Animal/AI spawn probabilities
 - Ground surface types for footstep audio
 
-## Weather Transitions
+## Weather Control
 
-Weather changes smoothly over time with configurable transition durations:
+Weather can be modified at runtime via `Weather` methods. **Verified setters:**
 
 ```c
 class Weather {
-    void SetRainIntensity(float target, float transitionTime);
-    void SetFogDensity(float target, float transitionTime);
-    void SetOvercast(float target, float transitionTime);
-    void SetWindParams(float speed, vector direction, float transitionTime);
+    proto native void SetStorm(float density, float threshold, float timeOut);
+    proto native void SetWind(vector wind);
+    proto native void SetWindSpeed(float speed);
+    proto native void SetWindMaximumSpeed(float maxSpeed);
+    proto native void SetWindFunctionParams(float fnMin, float fnMax, float fnSpeed);
+    proto native void SetRainThresholds(float tMin, float tMax, float tTime);
+    proto native void SetSnowfallThresholds(float tMin, float tMax, float tTime);
+    proto native void SetSnowflakeScale(float scale);
+    proto native void SetDynVolFogDistanceDensity(float value, float time = 0);
+    proto native void SetDynVolFogHeightDensity(float value, float time = 0);
+    proto native void SetDynVolFogHeightBias(float value, float time = 0);
+    proto native void SuppressLightningSimulation(bool state);
 };
 ```
 
-Transitions are typically triggered by:
-- **Overworld weather patterns**: Large-scale simulated weather systems moving across the map
-- **Time of day**: Fog often forms at dawn/morning; temperature drops at night
-- **Region**: Different biomes have different base weather patterns
-- **Script events**: Mission-triggered weather changes (dynamic events, contamination zones)
-- **Season**: Date-based seasonal variation affects temperature ranges and precipitation probability
+> **Correction:** There are NO `SetRainIntensity()`, `SetFogDensity()`, `SetOvercast()`, or `SetWindParams()` methods. These were fabricated in the previous version. Weather transitions are controlled through threshold-based methods and dynamic volumetric fog parameters.
 
 ## Effects on Gameplay
 

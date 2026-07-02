@@ -26,7 +26,7 @@ Layer 3 is the **heart of DayZ's game logic**. It contains the DayZ-specific imp
 | File | Lines | Purpose |
 |------|-------|---------|
 | `dayzgame.c` | ~3,900 | `DayZGame` singleton, game state machine, session management |
-| `game.c` | `CGame CreateGame()` — Game factory entry point |
+| `game.c` | `CGame` — Game singleton base class (global game access functions) |
 | `gameplay.c` | ~1,500 | Serialization, RPC, world objects, UI widgets |
 | `xboxdemogame.c` | Xbox demo mode globals (player class, weather, time of day) |
 | `modinfo.c` | `ModInfo` — Mod metadata query API (name, author, version, logo) |
@@ -109,7 +109,7 @@ Layer 3 is the **heart of DayZ's game logic**. It contains the DayZ-specific imp
 | File | Class |
 |------|-------|
 | `pawn.c` | `Pawn` — Animated character with physics |
-| `man.c` | `Man` / `Person` — Humanoid base |
+| `man.c` | `Man` — Humanoid base (direct child of `EntityAI`). Also contains `Person → Pawn` (separate branch, unused) |
 | `dayzcreature.c` | `DayZCreature` — Creature base |
 | `dayzcreatureai.c` | `DayZCreatureAI` — AI-driven creature |
 | `dayzanimal.c` | `DayZAnimal` — Wildlife |
@@ -203,7 +203,7 @@ The `enums/` directory contains **29 enum definition files** that define the gam
 
 | File | Purpose |
 |------|---------|
-| `centraleconomy.c` | Central economy system (server-authoritative loot distribution) |
+| `centraleconomy.c` | Central economy system (`CEApi`, `CEItemProfile`, `EconomyMapStrings`, etc.) — server-authoritative loot distribution |
 
 #### Client Systems (`client/`)
 
@@ -667,7 +667,7 @@ The `enums/` directory contains **29 enum definition files** that define the gam
 
 ### DayZGame (`dayzgame.c`)
 
-The singleton game instance, extending `Game` (from `2_gamelib`). Manages:
+The singleton game instance, extending `CGame` (from `3_game/global/game.c`). Manages:
 
 - **Game states**: `DayZGameState` enum — MAIN_MENU, LOGIN, PLAYING, etc.
 - **Load states**: `DayZLoadState` enum — loading phase progression
@@ -748,6 +748,6 @@ Comprehensive weather simulation:
 
 Layer 3 depends on:
 - **Layer 1** (`1_core/`): Constants, Param types, proto native functions (enmath, enphysics, etc.)
-- **Layer 2** (`2_gamelib/`): `Game` base class, input manager, menu manager, ScriptCallQueue
+- **Layer 2** (`2_gamelib/`): `Game` placeholder class, input manager, menu manager, ScriptCallQueue
 
 Higher layers (4_world, 5_mission) depend on Layer 3.

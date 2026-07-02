@@ -49,8 +49,8 @@ Object → EntityAI → ItemBase
    │     ├── Fence                              basebuildingbase/fence.c
    │     ├── Watchtower                         basebuildingbase/watchtower.c
    │     ├── ShelterSite                        basebuildingbase/sheltersite.c
-   │     ├── Totem                              basebuildingbase/totem.c
-   │     └── StaticFlagpole                     basebuildingbase/staticflagpole.c
+│     ├── TerritoryFlag                      basebuildingbase/totem.c
+│     └── StaticFlagpole                     basebuildingbase/staticflagpole.c  (extends TerritoryFlag)
    ├── KitBase                                  kitbase.c  (IsBasebuildingKit() = true)
    │     ├── FenceKit                           fencekit.c
    │     ├── WatchtowerKit                      watchtowerkit.c
@@ -400,7 +400,7 @@ entities/itembase/
     ├── fence.c                   Fence (walls, gate, barbed wire, camonet, lock)
     ├── watchtower.c              Watchtower (3 floors × 3 walls)
     ├── sheltersite.c             ShelterSite
-    ├── totem.c
+    ├── totem.c                  TerritoryFlag
     └── staticflagpole.c
 
 classes/useractionscomponent/actions/

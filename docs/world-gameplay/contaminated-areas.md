@@ -6,10 +6,14 @@ Contaminated areas are zones in the world where hazardous conditions (typically 
 
 ```
 Contaminated Area System
-├── Contaminated Area Class (classes/contaminatedarea/)
-│   ├── Zone definition
-│   ├── Contamination effects
-│   └── Zone lifecycle
+├── ContaminatedArea_Base (base class)
+│   └── Shared zone properties and logic
+│
+├── ContaminatedArea_Static (static zones)
+│   └── Fixed-location contamination zones
+│
+├── ContaminatedArea_Dynamic (dynamic zones)
+│   └── Event-spawned contamination zones
 │
 ├── Transmission Agents (classes/transmissionagents/)
 │   └── How contamination spreads/affects players
@@ -20,28 +24,26 @@ Contaminated Area System
 
 ## Contaminated Area Definition
 
+Contaminated areas use a class hierarchy:
+
 ```c
-class ContaminatedArea {
-    // Area boundaries
-    vector m_Center;               // Center of the zone
-    float m_Radius;                // Radius of contamination
-    float m_InnerRadius;           // Safe inner radius (if any)
-    
-    // Contamination properties
-    string m_ContaminationType;    // "Gas", "Radiation", etc.
-    float m_ContaminationLevel;    // 0.0 — 1.0 intensity
-    
-    // Visual effects
-    string m_ParticleEffect;       // Visible gas particles
-    string m_SoundEffect;          // Ambient zone sound
-    string m_ScreenEffect;         // Screen overlay effect
-    
-    // Lifecycle
-    float m_ActiveTime;            // How long the zone persists
-    float m_ExpandTime;            // Time to reach full size
-    float m_ContractTime;          // Time to shrink/disappear
+// Base class for all contaminated areas
+class ContaminatedArea_Base {
+    // Shared zone properties...
+};
+
+// Static (fixed-location) contaminated areas
+class ContaminatedArea_Static : ContaminatedArea_Base {
+    // ... fixed zone configuration ...
+};
+
+// Dynamic (event-spawned) contaminated areas
+class ContaminatedArea_Dynamic : ContaminatedArea_Base {
+    // ... dynamic zone lifecycle ...
 };
 ```
+
+> **Note:** The `ContaminatedArea` class (without suffix) with fields like `m_Center`, `m_Radius`, `m_ContaminationType`, `m_ContaminationLevel`, `m_ParticleEffect`, `m_SoundEffect`, `m_ScreenEffect`, `m_ActiveTime`, `m_ExpandTime`, `m_ContractTime` is **not verified**. The real classes are `ContaminatedArea_Base`, `ContaminatedArea_Static`, and `ContaminatedArea_Dynamic`.
 
 ## Gas Contamination
 
@@ -49,18 +51,7 @@ The primary contaminated area type in DayZ (found at certain dynamic events):
 
 ### Effect on Players
 
-```c
-class ContaminatedZoneEffect {
-    // Effects per second based on exposure level
-    float m_HealthDamage;           // HP loss per second
-    float m_ShockDamage;            // Shock increase per second
-    float m_DamageToClothing;       // Clothing degradation
-    
-    // Protection
-    bool m_RequiresFullProtection;  // Full NBC gear needed
-    float m_ProtectionThreshold;    // Minimum protection level
-};
-```
+> **Note:** The `ContaminatedZoneEffect` class with `m_HealthDamage`, `m_ShockDamage`, `m_DamageToClothing`, `m_RequiresFullProtection`, `m_ProtectionThreshold` is **not verified** in the actual source. Player effects from contamination are likely handled by the transmission agent and symptom systems rather than a standalone effect class.
 
 ### Protection Requirements
 
@@ -76,19 +67,7 @@ Each piece provides a protection level; all pieces are needed for full protectio
 
 ## Visual Indicators
 
-```c
-class ContaminatedAreaVisuals {
-    // Visual effects
-    Effect m_GasParticles;          // Floating gas particles
-    Effect m_GroundFog;             // Ground-level gas
-    LightSource m_AreaLighting;     // Zone lighting
-    
-    // Screen effects when inside
-    string m_ScreenOverlay;         // Green tint when unprotected
-    float m_ScreenBlur;             // Blur level
-    float m_HearingMuffle;          // Muffled sound
-};
-```
+> **Note:** The `ContaminatedAreaVisuals` class with `m_GasParticles`, `m_GroundFog`, `m_AreaLighting`, `m_ScreenOverlay`, `m_ScreenBlur`, `m_HearingMuffle` is **not verified** in the actual source. Visual indicators are more likely integrated directly into the contaminated area classes and the effect system.
 
 ## Zone Lifecycle
 

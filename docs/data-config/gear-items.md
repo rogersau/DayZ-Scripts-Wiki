@@ -18,7 +18,7 @@ The `DZ/gear/` directory defines all usable and carryable items in the game, org
 | Medical | `gear/medical/` | ~2,990 lines | 35+ | `Inventory_Base`, `Edible_Base` |
 | Navigation | `gear/navigation/` | ~610 lines | 5+ | `ItemMap`, `ItemCompass`, `ItemGPS` + `CfgLocationTypes` |
 | Optics | `gear/optics/` | ~340 lines | 3 | `ItemOptics` |
-| Radio | `gear/radio/` | ~480 lines | 4 | `Transmitter_Base`, `Inventory_Base` |
+| Radio | `gear/radio/` | ~480 lines | 4 | `TransmitterBase`, `ItemRadio` |
 | Tools | `gear/tools/` | ~6,315 lines | 60+ | `Inventory_Base`, `Switchable_Base` |
 | Traps | `gear/traps/` | ~840 lines | 6 | `Trap_Base` + `CfgAmmo` |
 

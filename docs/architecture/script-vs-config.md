@@ -41,8 +41,8 @@ class CfgPatches {
 };
 
 class CfgVehicles {
-    class Inventory_Base;
-    class BandageDressing: Inventory_Base {
+    class ItemBase;
+    class BandageDressing: ItemBase {
         scope = 2;
         displayName = "Bandage";
         descriptionShort = "A sterile bandage for treating wounds";
@@ -61,10 +61,12 @@ Scripts access config properties at runtime through the config system:
 
 ```c
 // Example: Reading config properties in script
-float weight = GetGame().GetConfigFloat(id, "weight");
-string model = GetGame().GetConfigString(id, "model");
-int slotCount = GetGame().GetConfigInt(id, "inventorySlotCount");
+float weight = ConfigGetFloat(id, "weight");
+string model;
+ConfigGetText(id, "model", model);
+int slotCount = ConfigGetInt(id, "inventorySlotCount");
 ```
+> **Note:** Config functions are standalone (`ConfigGetFloat`, `ConfigGetText`, etc.) — they are **not** called as `GetGame().GetConfigFloat(...)`.
 
 ## Scripts (`scripts/`)
 

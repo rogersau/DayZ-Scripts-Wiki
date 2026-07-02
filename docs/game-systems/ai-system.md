@@ -1,18 +1,16 @@
 # AI System
 
-The AI system controls non-player entities including zombies (infected) and wildlife (animals). It manages agent behavior, group coordination, sensory processing, and world-level AI population management.
+> **⚠️ Important:** This page has been corrected to remove fabricated class names, method signatures, enum values, and behavioral details that were invented by a previous author. Only verified facts from the actual script source are presented. Unverified behavioral descriptions are clearly marked as **[speculative]**.
+
+The AI system controls non-player entities including zombies (infected) and wildlife (animals). It manages agent behavior, group coordination, and world-level AI management.
 
 ## Architecture
 
 ```mermaid
 flowchart TD
     subgraph CoreAI["Core AI Framework (3_game/ai/)"]
-        AGENT[AIAgent<br/>aiagent.c]
-        GROUP[AIGroup<br/>aigroup.c]
-        GROUP_BEH[AIGroupBehaviour<br/>aigroupbehaviour.c]
         WORLD[AIWorld<br/>aiworld.c]
-        BEH[AIBehaviour<br/>aibehaviour.c]
-        SYS[systems/ai/<br/>Additional behaviors]
+        GROUP[AIGroup]
     end
     
     subgraph Entities["AI Entities (3_game/entities/)"]
@@ -21,326 +19,168 @@ flowchart TD
         DCA[DayZCreatureAI<br/>dayzcreatureai.c]
         DI[DayZInfected<br/>dayzinfected.c]
         DA[DayZAnimal<br/>dayzanimal.c]
-        PAWN[Pawn<br/>pawn.c]
     end
     
     subgraph Config["Config Data (DZ/)"]
         AI_CFG[DZ/AI/config.cpp]
-        ANIM_CFG[DZ/animals/config.cpp]
         ZOMBIES[DZ/characters/zombies/]
     end
     
     CoreAI --> Entities
     Entities --> Config
-    GROUP --> AGENT
-    WORLD --> AGENT
+    WORLD --> GROUP
 ```
 
 ## Entity Hierarchy
 
-```mermaid
-flowchart TD
-    EntityAI[EntityAI<br/>- Damage zones<br/>- Inventory slots<br/>- AI awareness]
-    EntityAI --> DayZCreature[DayZCreature<br/>- Creature base]
-    DayZCreature --> DayZCreatureAI[DayZCreatureAI<br/>- AI-driven creature<br/>- DayZCreatureAIType<br/>- DayZCreatureAIInputController]
-    DayZCreatureAI --> DayZInfected[DayZInfected<br/>- Zombie NPC<br/>- DayZInfectedType<br/>- DayZInfectedInputController]
-    DayZCreatureAI --> DayZAnimal[DayZAnimal<br/>- Wildlife NPC<br/>- DayZAnimalType<br/>- DayZAnimalInputController]
-    EntityAI --> Pawn[Pawn<br/>- Animated character<br/>- Humans, Transports]
+```
+EntityAI
+ └── DayZCreature
+      └── DayZCreatureAI
+           ├── DayZInfected   (zombie NPC)
+           └── DayZAnimal     (wildlife NPC)
 ```
 
-## AI Agent
+All AI entities inherit from `EntityAI`, with `DayZCreatureAI` providing the common AI-driven creature base. The player entity (`DayZPlayer`) is a separate branch via `Human → Man → EntityAI` — see [Player System](./player-system).
 
-Individual AI entities are managed by `AIAgent`:
+> **[speculative]** The AI entity hierarchy (`DayZCreature → DayZCreatureAI → DayZInfected/DayZAnimal`) is the standard chain. `DayZCreatureAI` likely provides a shared AI input controller and behavior selection, while the leaf classes add type-specific sensory and combat logic.
 
-```c
-class AIAgent {
-    // Current behavior state
-    AIBehaviorState m_State;
-    // Target information
-    EntityAI m_Target;
-    vector m_TargetPosition;
-    // Awareness
-    float m_Awareness;        // 0.0 — 1.0 detection level
-    float m_ThreatLevel;      // Perceived threat (0.0 — 1.0)
-};
-```
+## AIWorld (`3_game/ai/aiworld.c`)
 
-### Behavior States
-
-```c
-enum AIBehaviorState {
-    IDLE,           // Standing around, no target, random animations
-    PATROL,         // Following patrol path or wandering
-    INVESTIGATE,    // Investigating a stimulus (sound, visual anomaly)
-    COMBAT,         // Engaged with target (chase / attack)
-    FLEE,           // Running from threat (animals)
-    ALERT,          // Alert but no direct target (searching)
-};
-```
-
-```mermaid
-stateDiagram-v2
-    [*] --> IDLE
-    IDLE --> PATROL: Timer / schedule
-    IDLE --> ALERT: Distant stimulus
-    IDLE --> INVESTIGATE: Nearby stimulus
-    
-    PATROL --> IDLE: Patrol complete
-    PATROL --> INVESTIGATE: Detected anomaly
-    PATROL --> COMBAT: Target sighted
-    
-    INVESTIGATE --> ALERT: Lost interest
-    INVESTIGATE --> COMBAT: Target confirmed
-    INVESTIGATE --> PATROL: False alarm
-    
-    ALERT --> IDLE: No stimuli
-    ALERT --> COMBAT: Target acquired
-    ALERT --> INVESTIGATE: Partial detection
-    
-    COMBAT --> FLEE: Outmatched (animals)
-    COMBAT --> IDLE: Target killed/lost
-    COMBAT --> PATROL: Return to area
-    
-    FLEE --> IDLE: Safe distance reached
-    FLEE --> PATROL: Return to home range
-```
-
-### Awareness System
-
-Awareness is a continuous value (0.0–1.0) that represents how aware an AI is of a potential threat:
-
-```c
-class AIAgent {
-    // Awareness modifiers
-    float m_DetectionSpeed;       // How fast awareness increases
-    float m_DetectionDropoff;     // How fast awareness decays
-    
-    float m_SightRange;           // Max sight distance
-    float m_HearingRange;         // Max hearing distance  
-    float m_SmellRange;           // Max smell distance (infected only)
-};
-```
-
-- **Increases**: When stimuli are sustained (continuous sound, line of sight)
-- **Decreases**: When stimuli stop (target out of sight, sound ends)
-- **Thresholds**: Low awareness = alert; Medium = investigate; High = combat
-
-### Pathfinding
-
-AI entities navigate the world through the engine's pathfinding system, which integrates with:
-
-- **NavMesh**: Engine-level navigation mesh defines walkable areas
-- **Dynamic obstacles**: Doors, vehicles, and construction can affect pathfinding
-- **AI World queries**: `AIWorld.FindNearestAgent()` and `IsPositionSafe()` for spatial awareness
-- **Patrol paths**: Config-defined waypoints for patrol behavior
-
-## AI Group
-
-Groups coordinate multiple AI agents for tactical behavior:
-
-```c
-class AIGroup {
-    // Group members
-    ref array<AIAgent> m_Members;
-    // Group behavior
-    AIGroupBehaviour m_Behaviour;
-    // Group tactics
-    int m_FormationType;
-    vector m_GroupCenter;
-};
-```
-
-### Group Behaviors
-
-```c
-class AIGroupBehaviour {
-    void OnCombat(AIAgent caller, EntityAI target);
-    void OnMemberKilled(AIAgent victim);
-    void OnInvestigate(AIAgent caller, vector position);
-    void OnAlert(AIAgent caller);
-    
-    // Tactical coordination
-    void FlankTarget();        // Surround from sides
-    void SurroundTarget();     // Full encirclement
-    void Retreat();            // Group withdrawal
-};
-```
-
-Group behaviors enable coordinated actions:
-- **Infected hordes**: Surround and close in on the player from multiple angles
-- **Animal packs**: Wolves circle and attack from different directions
-- **Flanking**: Members spread out to approach from different vectors
-
-## Infected (Zombies)
-
-`DayZInfected` manages zombie NPC behavior — the most common AI entity in DayZ.
-
-### Sensory System
-
-```c
-class DayZInfectedInputController {
-    // Detection ranges (config-defined per infected type)
-    float m_SightRange;           // Visual detection distance
-    float m_HearingRange;         // Audio detection distance
-    float m_SmellRange;           // Olfactory detection (blood, fresh corpses)
-    
-    // Detection modifiers
-    float m_DetectionSpeed;       // How fast detection accumulates
-    float m_DetectionDropoff;     // How fast it decays
-    
-    // Current state
-    float m_DetectionLevel;       // 0.0 — 1.0
-    EntityAI m_SuspectedTarget;
-};
-```
-
-### Infected Behavior States
-
-| State | Behavior |
-|-------|----------|
-| **Idle** | Standing still, random animations (looking around, scratching), ambient sounds |
-| **Wander** | Random movement within spawn area, no active target |
-| **Alert** | Head turns toward stimulus, detection begins accumulating |
-| **Investigate** | Move toward last known stimulus position |
-| **Chase** | Pursuing detected target at full speed |
-| **Combat** | In melee range, attacking the target |
-| **Search** | Looking for lost target at last known position |
-| **Return** | Going back to spawn area after losing target |
-
-### Types (`DayZInfectedType`)
-
-Different infected types have config-defined properties:
-
-| Type | Speed | Toughness | Detection | Damage |
-|------|-------|-----------|-----------|--------|
-| **Walker** | Slow walk | Medium | Low sight, high hearing | Low |
-| **Runner** | Fast sprint | Low | High sight, medium hearing | Medium |
-| **Military** | Jog | High (armor) | All ranges high | High |
-| **Bloated** | Slow | Very high | Low (smell focused) | Very high |
-| **Child** | Run | Low | Medium sight, low hearing | Low |
-
-Properties are defined in `DZ/AI/config.cpp` and `DZ/characters/zombies/`.
-
-## Animals
-
-`DayZAnimal` manages wildlife behavior:
-
-```c
-class DayZAnimalInputController {
-    // Movement
-    void SetWanderTarget();
-    void SetFleeTarget(vector awayFrom);
-    
-    // State
-    EAnimalState m_AnimalState;
-};
-
-enum EAnimalState {
-    IDLE,       // Resting, grazing
-    WANDER,     // Random movement within home range
-    FLEE,       // Running from threat (primary response)
-    ATTACK,     // Rare aggression (bears, wolves)
-    EATING,     // Consuming food
-    DRINKING    // At water source
-};
-```
-
-### Animal Behaviors
-
-| Behavior | Description |
-|----------|-------------|
-| **Flee** | Primary threat response — runs away from danger, speed varies by animal |
-| **Wander** | Random movement within a config-defined home range center |
-| **Grazing** | Eating/drinking animations at suitable locations |
-| **Attack** | Rare — bears defend cubs/territory, wolves hunt in packs |
-| **Flock/herd** | Group coordination for social animals (deer, cattle) |
-| **Circadian** | Activity patterns based on time of day (nocturnal vs diurnal) |
-
-### Animal Types
-
-| Animal | Behavior | Threat Response |
-|--------|----------|-----------------|
-| **Deer** | Graze/wander in herds, seasonal migration | Flee at long distance |
-| **Rabbit** | Small home range, fast | Flee at close distance |
-| **Cow/Pig** | Domestic, slow movement | Minimal flee response |
-| **Wolf** | Pack hunter, territorial | Investigate → Surround → Attack |
-| **Bear** | Solitary, large territory | Avoid → Warn → Charge |
-| **Chicken** | Small birds, flock | Flee immediately |
-
-## AI World Management
+`AIWorld` is the world-level AI manager (extends `Managed`). Its **verified** public API:
 
 ```c
 class AIWorld {
-    // World-level AI management
-    void RegisterAgent(AIAgent agent);
-    void UnregisterAgent(AIAgent agent);
+    // Group management
+    proto native AIGroup CreateGroup(string templateName);
+    proto native AIGroup CreateDefaultGroup();
+    proto native void DeleteGroup(notnull AIGroup group);
     
-    // World queries
-    AIAgent FindNearestAgent(vector position, float radius);
-    bool IsPositionSafe(vector position);
-    float GetAmbientThreat(vector position);
+    // Navigation
+    proto native bool FindPath(vector from, vector to, PGFilter pgFilter,
+                                out TVectorArray waypoints);
+    proto native bool RaycastNavMesh(vector from, vector to, PGFilter pgFilter,
+                                      out vector hitPos, out vector hitNormal);
+    proto native bool SampleNavmeshPosition(vector position, float maxDistance,
+                                             PGFilter pgFilter, out vector sampledPosition);
 };
 ```
 
-Responsibilities:
-- Agent lifecycle (spawn/despawn management)
-- Population density control per area
-- Ambient threat level queries for game logic
-- Cleanup of destroyed/distant agents
+**What AIWorld does NOT have** (these were fabricated in earlier versions of this page):
+- ❌ `RegisterAgent` / `UnregisterAgent`
+- ❌ `FindNearestAgent`
+- ❌ `IsPositionSafe`
+- ❌ `GetAmbientThreat`
+
+> **[speculative]** `AIWorld` is the central manager for AI lifecycle. It creates/destroys `AIGroup` instances and provides NavMesh queries for pathfinding. Agent registration and spatial queries are likely handled elsewhere (possibly engine-level or via the group system).
+
+## AI Groups
+
+Groups coordinate multiple AI entities. The `AIGroup` class is returned by `AIWorld.CreateGroup()` and `AIWorld.CreateDefaultGroup()`.
+
+> **[speculative]** The `AIGroup` class likely manages:
+> - A collection of member AI entities
+> - Group-level behavior selection (idle, patrol, combat)
+> - Tactical coordination (flanking, surrounding)
+> - Spawn/despawn and population density control
+>
+> The exact `AIGroup` and `AIGroupBehaviour` member signatures have **not been verified** — the class APIs listed in earlier versions of this page (`m_Members`, `m_FormationType`, `OnCombat`, `FlankTarget`, etc.) were fabricated and have been removed.
+
+## Animation Commands (Human)
+
+AI entities (and players) use `Human` animation commands for state-driven behavior. These are **classes**, not enum values:
+
+| Class | Purpose | Created By |
+|-------|---------|------------|
+| `HumanCommandMove` | Locomotion (walk, run, sprint, crouch, prone) | `Human.StartCommand_Move()` |
+| `HumanCommandMelee` | Melee attacks (light) | `Human.StartCommand_Melee(EntityAI pTarget)` |
+| `HumanCommandMelee2` | Power melee attacks (heavy) | `Human.StartCommand_Melee2(EntityAI pTarget, int pHitType, float pComboValue, vector hitPos)` |
+| `HumanCommandFall` | Falling | `Human.StartCommand_Fall(float pYVelocity)` |
+| `HumanCommandDeath` | Death animation | *(called on death)* |
+| `HumanCommandUnconscious` | Unconscious state | *(called on knockout)* |
+| `HumanCommandLadder` | Ladder climbing | `Human.StartCommand_Ladder(Building pBuilding, int pLadderIndex)` |
+| `HumanCommandSwim` | Swimming | `Human.StartCommand_Swim()` |
+
+> **Important:** These are **NOT** an `enum HumanCommand`. They are individual script classes. The earlier version of this page incorrectly defined them as enum values.
+
+> **[speculative]** AI behavior states (idle, patrol, investigate, combat, flee) are likely implemented by switching between these animation commands and applying AI-specific logic on top — e.g., a zombie in "chase" uses `HumanCommandMove` with sprint speed toward the target, transitioning to `HumanCommandMelee`/`HumanCommandMelee2` when in range.
+
+## Infected (Zombies)
+
+`DayZInfected` is the zombie NPC class, extending `DayZCreatureAI`.
+
+> **[speculative]** Infected behavior likely follows a detection → investigate → chase → combat → search → return loop:
+> 1. **Idle/Wander**: Standing or random movement within spawn area
+> 2. **Alert**: Stimulus detected (sound, sight, smell) — begins accumulating detection
+> 3. **Investigate**: Move toward last known stimulus position
+> 4. **Chase**: Target confirmed — pursue at full speed
+> 5. **Combat**: In melee range — attack via `HumanCommandMelee`/`HumanCommandMelee2`
+> 6. **Search**: Target lost — search last known position
+> 7. **Return**: Timeout — return to spawn area
+
+> **[speculative]** Detection is likely based on:
+> - **Sight**: Line-of-sight checks with config-defined range
+> - **Hearing**: Sound events (gunshots, footsteps, voice) with distance-based falloff
+> - **Smell**: Blood, fresh corpses (infected-specific)
+>
+> Config data in `DZ/AI/config.cpp` and `DZ/characters/zombies/` likely defines per-type values for detection ranges, movement speeds, health, and damage.
+
+**Fabricated content removed:**
+- ❌ `DayZInfectedInputController.m_SightRange`, `m_HearingRange`, `m_SmellRange`, `m_DetectionLevel`, `m_SuspectedTarget` — these members do not exist in the verified API
+- ❌ `enum AIBehaviorState` — no such enum exists
+- ❌ `AIAgent` with `m_Awareness`, `m_ThreatLevel`, `m_DetectionSpeed`, etc. — fabricated class
+
+## Animals
+
+`DayZAnimal` is the wildlife NPC class, extending `DayZCreatureAI`.
+
+> **[speculative]** Animal behavior varies by species:
+> - **Flee**: Primary threat response for most animals (deer, rabbits, chickens)
+> - **Wander/Graze**: Random movement within a home range
+> - **Attack**: Rare — wolves (pack hunters), bears (territorial defense)
+> - **Circadian patterns**: Activity varies by time of day (nocturnal vs diurnal)
+
+**Fabricated content removed:**
+- ❌ `DayZAnimalInputController.SetWanderTarget()`, `SetFleeTarget()` — these methods do not exist
+- ❌ `enum EAnimalState { IDLE, WANDER, FLEE, ATTACK, EATING, DRINKING }` — no such enum exists
+
+> **[speculative]** Animal input likely uses the same `HumanInputController` polling API as players (see [Player System](./player-system)), with AI logic setting movement direction/speed rather than reading player input.
 
 ## AI Config Data
 
 AI entity properties are defined in config files:
 
-```cpp
-// DZ/AI/config.cpp (infected behavior defaults)
-class CfgAI {
-    class Infected_Base {
-        sightRange = 100.0;
-        hearingRange = 150.0;
-        smellRange = 50.0;
-        detectionSpeed = 0.1;
-        detectionDropoff = 0.05;
-        moveSpeedWalk = 2.0;
-        moveSpeedRun = 6.0;
-        health = 200;
-    };
-    
-    class Infected_Runner : Infected_Base {
-        sightRange = 150.0;
-        moveSpeedRun = 9.0;
-        health = 100;
-    };
-};
-```
+> **[speculative]** Config files in `DZ/AI/config.cpp` and `DZ/characters/zombies/` likely define:
+> - Detection ranges (sight, hearing, smell) per infected type
+> - Movement speeds per behavior state
+> - Health and damage values
+> - Behavior parameters (aggression, persistence, home range)
+> - Spawn rules (time of day, weather, population caps)
 
-Config properties include:
-- Detection ranges (sight, hearing, smell) per type
-- Movement speeds (walk, run, sprint) per state
-- Health and damage values
-- Behavior parameters (aggression, fear, curiosity, persistence)
-- Spawn rules (time of day, weather, population caps)
-- Home range size and return behavior
+The exact config class names and property names have **not been verified** — the `CfgAI` example in the previous version was fabricated.
 
-## Combat Flow (Infected)
+## Combat Flow (Infected) — Speculative
+
+> **[speculative]** The following is a likely combat flow based on observable gameplay behavior:
 
 ```mermaid
 sequenceDiagram
     participant Player
-    participant Sensory as Infected Sensory
-    participant Agent as AIAgent
-    participant Combat as Combat System
+    participant Sensory as Infected Detection
+    participant Agent as AI Logic
+    participant Combat as DamageSystem
     
-    Player->>Sensory: Makes sound / is visible / is bleeding
-    Sensory->>Agent: Detection level increases
-    Agent->>Agent: Threshold reached → ALERT
+    Player->>Sensory: Sound / visibility / bleeding
+    Sensory->>Agent: Detection threshold reached
+    Agent->>Agent: Switch to ALERT state
     
-    Note over Agent: Line of sight established?
+    Note over Agent: Line of sight check?
     
-    Agent->>Agent: INVESTIGATE → move to last known position
-    Agent->>Agent: Target sighted → CHASE
+    Agent->>Agent: INVESTIGATE → move to stimulus
+    Agent->>Agent: Target confirmed → CHASE
     
-    Agent->>Combat: In melee range → COMBAT (attack)
+    Agent->>Agent: In range → StartCommand_Melee(target)
+    Agent->>Combat: CloseCombatDamage()
     Combat->>Player: Damage applied
     
     Note over Agent: Player escapes?
@@ -351,11 +191,11 @@ sequenceDiagram
 
 ## Integration with Other Systems
 
-- **Entity hierarchy**: AI entities share the `Pawn` base with players — see [Entity Hierarchy](/architecture/entity-hierarchy)
-- **Damage system**: AI entities take damage, bleed, and die — see [Damage & Combat](./damage-combat)
-- **Sound system**: AI hearing detection uses sound events generated by players/actions — see [Sound System](./sound-system)
-- **Animation system**: AI behavior state drives animation selection — see [Animation System](./animation-system)
+- **Entity hierarchy**: `DayZPlayer` and AI entities share `EntityAI` base — see [Entity Hierarchy](/architecture/entity-hierarchy)
+- **Damage system**: AI entities receive damage via `DamageSystem.CloseCombatDamage()` and `DamageSystem.ExplosionDamage()` — see [Damage & Combat](./damage-combat) and [Damage System (Native Pipeline)](./damage-system)
+- **Animation commands**: AI behavior drives animation via `HumanCommand*` classes — see [Animation System](./animation-system)
+- **Sound system**: AI hearing detection likely uses sound events — see [Sound System](./sound-system)
 - **Effects system**: Death effects, blood particles on hit — see [Effect System](./effect-system)
-- **Weather system**: Weather affects AI detection ranges (fog reduces sight, rain masks sound) — see [Weather & Environment](./weather-environment)
-- **Network**: AI state synchronization in multiplayer (position, health, behavior state) — see [Networking & RPC](./networking)
+- **Weather**: Fog reduces sight range, rain masks sound **[speculative]** — see [Weather & Environment](./weather-environment)
+- **Network**: AI state synchronization (position, health) — see [Networking & RPC](./networking)
 - **Data Config**: AI type definitions — see [Data Config: Characters](/data-config/characters)

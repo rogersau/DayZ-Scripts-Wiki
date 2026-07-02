@@ -25,22 +25,11 @@ Emote System
 
 ```c
 class EmoteManager {
-    // Play an emote
-    void PlayEmote(int emoteId);
-    void PlayEmoteByName(string emoteName);
-    
-    // Stop current emote
-    void StopEmote();
-    
-    // Query
-    bool IsPlayingEmote();
-    int GetCurrentEmote();
-    float GetEmoteProgress();
-    
-    // Available emotes
-    array<int> GetAvailableEmotes();
+    // Emote manager methods...
 };
 ```
+
+> **Note:** Methods like `PlayEmote`, `PlayEmoteByName`, `StopEmote`, `IsPlayingEmote`, `GetCurrentEmote`, `GetEmoteProgress`, `GetAvailableEmotes` are **not verified** in the actual source. The `EmoteManager` class may have a different API — consult the source in `classes/emotemanager.c` for the authoritative interface.
 
 ## Emote Classes
 
@@ -48,22 +37,16 @@ Emotes are defined as classes with animation and audio data:
 
 ```c
 class EmoteBase {
-    string m_DisplayName;        // "Wave", "Dance", etc.
-    string m_AnimationName;      // Animation to play
-    string m_SoundName;          // Optional accompanying sound
-    float m_Duration;            // Emote duration in seconds
-    bool m_IsLooping;            // Loops until cancelled
-    float m_Cooldown;            // Seconds before can use again
+    // Verified API
+    int GetID();                          // Emote identifier
+    string GetInputActionName();          // Input action binding name
+    int GetStanceMaskAdditive();          // Stance mask for additive blending
     
-    // Animation settings
-    bool m_OverrideMovement;    // Blocks movement during emote
-    bool m_OverrideWeapon;      // Lowers weapon during emote
-    bool m_SyncInMultiplayer;   // Visible to other players
-    
-    void OnStart();
-    void OnEnd();
+    // ... other members ...
 };
 ```
+
+> **Note:** Fields like `m_DisplayName`, `m_AnimationName`, `m_Duration`, `m_Cooldown`, `m_OverrideMovement` are **not verified** in the actual source. Only `GetID()`, `GetInputActionName()`, and `GetStanceMaskAdditive()` are confirmed.
 
 ### Available Emotes
 
@@ -82,21 +65,19 @@ class EmoteBase {
 
 ## Emote Execution
 
+Emotes are constructed and registered at initialization time:
+
 ```c
 class EmoteConstructor {
-    static EmoteBase CreateEmote(int type) {
-        switch (type) {
-            case EMOTE_WAVE:
-                return new EmoteWave();
-            case EMOTE_DANCE:
-                return new EmoteDance();
-            case EMOTE_POINT:
-                return new EmotePoint();
-            // ...
-        }
-    }
+    // Constructs all emote definitions
+    void ConstructEmotes();
+    
+    // Registers emotes with the emote manager
+    void RegisterEmotes();
 };
 ```
+
+> **Note:** The `CreateEmote()` method with a switch on `EMOTE_WAVE`, `EMOTE_DANCE`, etc. is **not verified**. The real constructor uses `ConstructEmotes()` and `RegisterEmotes()` to build and register emote instances.
 
 ## Gestures Menu
 

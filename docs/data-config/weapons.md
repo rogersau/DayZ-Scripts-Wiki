@@ -490,7 +490,7 @@ Each weapon has a unique recoil pattern that defines horizontal and vertical kic
 The M4A1 (`P:/DZ/weapons/firearms/m4/config.cpp`) demonstrates a complete weapon definition:
 
 ```cpp
-class M4A1_Base: Rifle_Base
+class M4A1_Base: RifleBoltLock_Base
 {
     weight = 2276;                           // 2.28 kg
     repairableWithKits[] = {1};
@@ -537,7 +537,7 @@ Recoil profiles define:
 Not all weapons accept all attachments. Each weapon's `attachments[]` array lists compatible slots:
 
 ```cpp
-class AKM: Rifle_Base
+class AKM: RifleBoltFree_Base
 {
     attachments[] = {
         "WeaponSuppressor",      // AK Suppressor

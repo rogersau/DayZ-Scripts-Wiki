@@ -2,13 +2,13 @@
 
 **Directory**: `/p/scripts/2_gamelib/`
 
-Layer 2 provides a **game-engine-agnostic reusable framework**. It defines the `Game` base class that `DayZGame` inherits from, along with input abstraction, menu/dialog management, deferred call execution, declarative settings, and basic script-managed entities. No DayZ-specific concepts exist at this layer.
+Layer 2 provides a **game-engine-agnostic reusable framework**. It defines the empty `Game` placeholder class (at this layer, it has zero members — all real game logic lives in `CGame`/`DayZGame` in Layer 3), along with input abstraction, menu/dialog management, deferred call execution, declarative settings, and basic script-managed entities. No DayZ-specific concepts exist at this layer.
 
 ## Files
 
 | File | Contents |
 |------|----------|
-| `gamelib.c` | `Game` base class with lifecycle hooks, world management, singleton accessor |
+| `gamelib.c` | `Game` placeholder (zero members — real game logic in Layer 3 `CGame`/`DayZGame`) |
 | `inputmanager.c` | `ActionManager` and `InputManager` for input action abstraction |
 | `menumanager.c` | `MenuManager` for dialog and menu management |
 | `tools.c` | `ScriptCallQueue` and `ScriptInvoker` utility classes |
@@ -24,27 +24,11 @@ Layer 2 provides a **game-engine-agnostic reusable framework**. It defines the `
 
 ## Key Details
 
-### Game Base Class (`gamelib.c`)
+### Game Class (`gamelib.c`)
 
-The `Game` class (defined in a `#ifdef GAME_TEMPLATE` block) provides the fundamental game lifecycle:
+The `Game` class (defined in a `#ifdef GAME_TEMPLATE` block) is an **empty placeholder** at this layer — it has no script-defined members. The actual game singleton and lifecycle are implemented in Layer 3 by `CGame` and its subclass `DayZGame` (`3_game/global/game.c` and `3_game/dayzgame.c`).
 
-**Lifecycle hooks**:
-```c
-class Game {
-    void OnEvent(EventType type, Param params);  // Event handling
-    void OnAfterInit();                            // Post-initialization
-    void OnUpdate(float delta);                    // Per-frame update
-    void OnGameStart();                            // Game session start
-    void OnGameEnd();                              // Game session end
-};
-```
-
-**World management**:
-- `SetWorldFile(string file)` / `GetWorldFile()` — World file path management
-- Entity instantiation helpers
-
-**Global singleton**:
-- `g_Game` / `GetGame()` — Global accessor for the game instance (used throughout all layers)
+> **Important**: `g_Game` / `GetGame()` are **engine-provided global accessor functions**, not members of the `Game` class. They return the current `DayZGame` instance and are available from all layers.
 
 ### Input Manager (`inputmanager.c`)
 

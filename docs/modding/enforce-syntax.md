@@ -18,7 +18,7 @@ Enforce Script is the object-oriented scripting language powering the Enfusion e
 | **Modding support** | `modded` keyword for non-destructive class injection |
 | **Templates** | Generic types similar to C++ templates |
 | **Null safety** | Weak references auto-zeroed when using `Managed` |
-| **Threading** | `thread` keyword for concurrent execution |
+| **Threading** | `thread` keyword for concurrent execution ⚠️ **unverified** — no usage found in DayZ source |
 
 ## Relation to Other Wiki Pages
 
@@ -193,7 +193,7 @@ void Method()
 |-----------|---------|
 | Length | `vector.Distance(vector)` — static method |
 | Normalize | `vector.Normalized()` |
-| Dot product | `vector * vector` (multiply component-wise) |
+| Dot product | `vector * vector` (multiply component-wise) ⚠️ **unverified** — may not be a dot product |
 | Cross product | `vector % vector` (cross product operator) |
 | ToString | `vector.ToString()` — returns `"x y z"` |
 
@@ -1053,9 +1053,11 @@ modded class VanillaClass
 
 ---
 
-## 15. Threading
+## 15. Threading ⚠️ Unverified
 
-The `thread` keyword runs a function on a new thread:
+> **Warning:** The `thread` keyword has **no confirmed usage** in the DayZ Enforce Script source. It may not be available or may behave differently than documented here. This section is retained for reference but should be treated as unverified.
+
+The `thread` keyword supposedly runs a function on a new thread:
 
 ```c
 void ExpensiveOperation()
@@ -1136,11 +1138,12 @@ This is critical for DayZ modding to separate server-only and client-only code:
 ```c
 #ifdef SERVER
 // This block only compiles on the server
-void SavePlayerData()
+void SavePlayerData(PlayerBase player)
 {
-    HiveRequest req = new HiveRequest();
-    req.Write(GetGame().GetPlayer().GetIdentity().GetPlainName());
-    req.Write(GetGame().GetTime());
+    // Server-side persistence logic
+    string playerId = player.GetIdentity().GetPlainName();
+    float gameTime = GetGame().GetTime();
+    // ... save logic
 }
 #endif
 
@@ -1148,6 +1151,8 @@ void SavePlayerData()
 // This block compiles on client AND Workbench (without -server flag)
 void ShowClientUI()
 {
+    // Client-side UI setup
+    // Note: GetUIManager() is on DayZGame (3_game), not the base Game class
     GetGame().GetUIManager().ShowHUD(true);
 }
 #endif
@@ -1180,7 +1185,9 @@ void LegacyFeature() { }
     // Workbench-only debug helpers
     void DebugSpawnAnyItem(string type)
     {
-        EntityAI item = EntityAI.Cast(GetGame().SpawnEntity(type, "0 0 0"));
+        EntityAI item = EntityAI.Cast(
+            GetGame().CreateObjectEx(type, "0 0 0", ECE_PLACE_ON_SURFACE)
+        );
         Print("[DEBUG] Spawned: " + type);
     }
 #endif
@@ -1316,7 +1323,9 @@ void TypeNameExample()
 // typename as function parameter
 void SpawnByTypeName(typename type, vector position)
 {
-    EntityAI entity = EntityAI.Cast(GetGame().SpawnEntity(type, position));
+    EntityAI entity = EntityAI.Cast(
+        GetGame().CreateObjectEx(type, position, ECE_PLACE_ON_SURFACE)
+    );
     if (entity)
     {
         Print("Spawned: " + type);
@@ -1692,33 +1701,32 @@ Config paths use space-separated segments:
 ```c
 void ReadConfigExamples()
 {
-    Game game = GetGame();
+    // Basic types — these are standalone functions, NOT methods on GetGame()
 
-    // Basic types
-    float weight = game.GetConfigFloat("CfgVehicles M4A1 weight");
-    int maxHealth = game.GetConfigInt("CfgVehicles M4A1 health");
-    string displayName = game.GetConfigString("CfgVehicles M4A1 displayName");
+    // Float values
+    float weight = ConfigGetFloat("CfgVehicles M4A1 weight");
 
-    // Config arrays (e.g., itemSize[])
-    string itemSize = game.GetConfigText("CfgVehicles BandageDressing itemSize");
+    // String values (uses out parameter)
+    string displayName;
+    ConfigGetText("CfgVehicles M4A1 displayName", displayName);
+
+    // String values (e.g. itemSize[])
+    string itemSize;
+    ConfigGetText("CfgVehicles BandageDressing itemSize", itemSize);
     // Returns something like "{1,1}"
 
-    // Check if a config entry exists
-    bool exists = game.ConfigIsExisting("CfgWeapons MyMod_CustomRifle");
-    if (exists)
-    {
-        // Safe to read
-    }
-
     // Get all child classes under a config path
-    autoptr TStringArray weapons = new TStringArray();
-    game.ConfigGetChildNames("CfgWeapons", weapons);
-    foreach (string weapon : weapons)
+    int count = ConfigGetChildrenCount("CfgWeapons");
+    for (int i = 0; i < count; i++)
     {
+        string weapon;
+        ConfigGetChildName("CfgWeapons", i, weapon);
         Print(weapon);   // Prints all weapon class names
     }
 }
 ```
+
+> **Important:** Config functions are **standalone** — `ConfigGetFloat(path)`, `ConfigGetText(path, out value)`, `ConfigGetChildrenCount(path)`, `ConfigGetChildName(path, index, out name)`. They are **not** called as `GetGame().GetConfigFloat(...)` or similar.
 
 ### 21.3 Config Access Patterns
 
@@ -1726,28 +1734,28 @@ void ReadConfigExamples()
 // Safe read with fallback
 float GetModValue(string path, float defaultValue)
 {
-    if (GetGame().ConfigIsExisting(path))
-    {
-        return GetGame().GetConfigFloat(path);
-    }
-    return defaultValue;
+    float val = ConfigGetFloat(path);
+    if (val == 0)  // 0 is the default return when key is missing
+        return defaultValue;
+    return val;
 }
 
 // Read config for any entity type
 string GetEntityDisplayName(EntityAI entity)
 {
-    return GetGame().GetConfigString(
-        "CfgVehicles " + entity.GetType() + " displayName"
-    );
+    string name;
+    ConfigGetText("CfgVehicles " + entity.GetType() + " displayName", name);
+    return name;
 }
 
 // Iterate config hierarchy
 void ListConfigHierarchy(string basePath)
 {
-    autoptr TStringArray children = new TStringArray();
-    GetGame().ConfigGetChildNames(basePath, children);
-    foreach (string child : children)
+    int count = ConfigGetChildrenCount(basePath);
+    for (int i = 0; i < count; i++)
     {
+        string child;
+        ConfigGetChildName(basePath, i, child);
         Print(basePath + " > " + child);
     }
 }
@@ -1774,13 +1782,13 @@ void CallQueueExamples()
     GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY)
         .Call(this, "MyCallback");
 
-    // Execute after a delay (in seconds)
+    // Execute after a delay (in milliseconds — int, NOT float)
     GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY)
-        .CallLater(this, "MyCallback", 5.0, false);     // once after 5s
+        .CallLater(this, "MyCallback", 5000, false);     // once after 5000 ms
 
     // Execute repeatedly
     GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY)
-        .CallLater(this, "MyRepeatingCallback", 1.0, true);  // every 1s
+        .CallLater(this, "MyRepeatingCallback", 1000, true);  // every 1000 ms
 
     // Remove a pending call
     GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY)
@@ -1809,17 +1817,27 @@ void MyRepeatingCallback()
 
 > The gameplay category is the one to use for almost all mod code. It runs once per frame as part of the main update loop.
 
-### 22.3 Direct `CallLater` on Objects
+### 22.3 CallLater API Reference
 
-Many DayZ base classes (like `EntityAI`, `MissionBase`) have a built-in `CallLater` method:
+The correct API signatures are:
+
+```c
+// Func-based (preferred): delay is int milliseconds, repeat is bool
+CallLater(func fn, int delayMs, bool repeat);
+
+// String-based for dynamic function names:
+CallLaterByName(Object obj, string functionName, int delayMs, ...);
+```
+
+Example usage:
 
 ```c
 class MyItem : InventoryItem
 {
     void OnItemUsed()
     {
-        // Built-in CallLater on EntityAI-based objects
-        CallLater(this.CheckExpiration, 60.0, false);
+        // CallLater with func reference — delay in ms
+        CallLater(this.CheckExpiration, 60000, false);  // 60,000 ms = 60 seconds
     }
 
     void CheckExpiration()
@@ -1840,7 +1858,7 @@ class MyTimerExample
     {
         m_Ticks = 0;
         GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY)
-            .CallLater(this, "OnTick", 0.5, true);
+            .CallLater(this, "OnTick", 500, true);   // 500 ms interval
     }
 
     void OnTick()
@@ -1873,13 +1891,10 @@ The most common pattern in DayZ — accessing global singleton instances:
 
 ```c
 // Access the game instance (most common singleton)
-Game game = GetGame();
+DayZGame game = GetGame();
 
 // Access the player
 DayZPlayer player = DayZPlayer.Cast(GetGame().GetPlayer());
-
-// Access the UI manager
-UIManager ui = GetGame().GetUIManager();
 
 // Access the input manager
 InputManager input = GetGame().GetInputManager();
@@ -1923,9 +1938,9 @@ EntityAI SpawnItemAtPlayer(string itemType)
         return null;
     }
 
-    // Spawn by config class name — works for any item defined in config
+    // Spawn by config class name using CreateObjectEx
     EntityAI item = EntityAI.Cast(
-        GetGame().SpawnEntity(itemType, player.GetPosition() + "0 2 0")
+        GetGame().CreateObjectEx(itemType, player.GetPosition() + "0 2 0", ECE_PLACE_ON_SURFACE)
     );
 
     if (item)
@@ -2019,16 +2034,14 @@ void InspectPlayerComponents()
         }
     }
 
-    // Get health component
-    HumanEntityAI human = HumanEntityAI.Cast(player);
-    if (human)
-    {
-        float health = human.GetHealth("GlobalHealth", "Health");
-        float blood = human.GetHealth("GlobalHealth", "Blood");
-        Print("HP: " + health + ", Blood: " + blood);
-    }
+    // Access health stats
+    float health = player.GetHealth("GlobalHealth", "Health");
+    float blood = player.GetHealth("GlobalHealth", "Blood");
+    Print("HP: " + health + ", Blood: " + blood);
 }
 ```
+
+> **Note:** There is no `HumanEntityAI` class in the DayZ source. `DayZPlayer` provides health access directly.
 
 ### 23.6 Mod Initialization Pattern
 
@@ -2047,9 +2060,9 @@ modded class MissionServer
             this, ERPCs.RPC_MYMOD_EVENT, "OnMyModEvent"
         );
 
-        // Start periodic update
+        // Start periodic update (1000 ms = 1 second)
         GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY)
-            .CallLater(this, "MyModUpdate", 1.0, true);
+            .CallLater(this, "MyModUpdate", 1000, true);
 
         Print("MyMod initialized on server");
     }
@@ -2226,8 +2239,8 @@ if (true)
 
 // PITFALL 4: Server-only code on client
 #ifdef SERVER
-// Hive operations — safe
-HiveRequest req = new HiveRequest();
+// Server persistence logic — safe
+SaveWorldData();
 #endif
 ```
 
@@ -2255,7 +2268,7 @@ HiveRequest req = new HiveRequest();
 | `super` | Reference | Base class instance |
 | `null` | Literal | Null pointer value |
 | `return` | Control | Exit function, optionally with value |
-| `thread` | Execution | Run function on a new thread |
+| `thread` | Execution | Run function on a new thread ⚠️ **unverified** |
 | `auto` | Type | Compile-time type inference |
 | `typedef` | Type | Type alias |
 | `typename` | Type | Runtime type identifier |
@@ -2295,20 +2308,20 @@ HiveRequest req = new HiveRequest();
 
 | Expression | Returns | Layer |
 |-----------|---------|-------|
-| `GetGame()` | `Game` / `DayZGame` instance | 2_gamelib |
-| `GetGame().GetPlayer()` | `IEntity` (cast to `DayZPlayer`) | 3_game |
-| `GetGame().GetUIManager()` | `UIManager` | 2_gamelib |
-| `GetGame().GetInputManager()` | `InputManager` | 2_gamelib |
+| `GetGame()` | `DayZGame` instance | 2_gamelib |
+| `GetGame().GetPlayer()` | `DayZPlayer` | 3_game |
+| `GetGame().GetInputManager()` | `InputManager` | 3_game |
 | `GetGame().GetCallQueue(category)` | `CallQueue` | 2_gamelib |
 | `GetGame().GetWorldEntity()` | `World` | 3_game |
-| `GetGame().GetConfigFloat(path)` | `float` | 2_gamelib |
-| `GetGame().GetConfigInt(path)` | `int` | 2_gamelib |
-| `GetGame().GetConfigString(path)` | `string` | 2_gamelib |
-| `GetGame().ConfigIsExisting(path)` | `bool` | 2_gamelib |
-| `GetGame().ConfigGetChildNames(path, out)` | `void` | 2_gamelib |
-| `GetGame().SpawnEntity(type, pos)` | `IEntity` | 3_game |
+| `ConfigGetFloat(path)` | `float` | Standalone function |
+| `ConfigGetText(path, out value)` | `bool` (value via out param) | Standalone function |
+| `ConfigGetChildrenCount(path)` | `int` | Standalone function |
+| `ConfigGetChildName(path, index, out name)` | `bool` (name via out param) | Standalone function |
+| `GetGame().CreateObjectEx(type, pos, flags)` | `IEntity` | 3_game |
 | `GetGame().RPCRegisterServer(obj, rpc, fn)` | `void` | 2_gamelib |
 | `GetGame().RPCRegisterClient(obj, rpc, fn)` | `void` | 2_gamelib |
+
+> **Important:** Config functions (`ConfigGetFloat`, `ConfigGetText`, etc.) are **standalone** — not called on `GetGame()`. The `GetGame().GetConfigFloat(...)` pattern commonly seen in outdated documentation is **incorrect**.
 
 ---
 

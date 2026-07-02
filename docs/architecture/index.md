@@ -33,10 +33,10 @@ flowchart LR
 | Layer | Directory | Purpose |
 |-------|-----------|---------|
 | **Layer 1** | `1_core/` | Language-level primitives — constants, preprocessor defines, the `Param` serialization system, Workbench editor API, and all native engine function prototypes (proto bindings) |
-| **Layer 2** | `2_gamelib/` | Game-agnostic framework — `Game` base class, input action manager, menu/dialog system, deferred call queue, declarative settings framework, and a unit test framework |
+| **Layer 2** | `2_gamelib/` | Game-agnostic framework — empty `Game` placeholder, input action manager, menu/dialog system, deferred call queue, declarative settings framework, and a unit test framework |
 | **Layer 3** | `3_game/` | DayZ-specific game logic — `DayZGame`, `DayZPlayer`, the entity hierarchy (`Human`, `DayZCreature`, `Transport`), damage system, effect/particle system, weather, AI, vehicle simulation, and networking |
 | **Layer 4** | `4_world/` | World simulation — all gameplay classes (weapons, inventory, crafting, cooking, player stats, stamina, emotes), organized as class files in `classes/`, update-driven systems, and a plugin architecture |
-| **Layer 5** | `5_mission/` | Top of the stack — mission factory entry point (`CreateMission`), mission lifecycle classes, and the entire user interface (HUD, menus, script console, settings screens) |
+| **Layer 5** | `5_mission/` | Top of the stack — mission lifecycle classes and the entire user interface (HUD, menus, script console, settings screens) |
 
 ## Data vs. Logic
 
@@ -77,8 +77,9 @@ IEntity (engine-level)
             │         │         ├── DayZAnimal
             │         │         └── DayZInfected (zombies)
             │         ├── Pawn (animated characters)
-            │         │    ├── Person → Man → Human → DayZPlayer
-            │         │    └── Transport → Car / Boat / Helicopter
+            │         │    └── Person
+            │         ├── Man → Human → DayZPlayer
+            │         ├── Transport → Car / Boat / Helicopter
             │         ├── Building
             │         ├── InventoryItem
             │         └── ScriptedEntity
@@ -90,7 +91,7 @@ See the [Entity Hierarchy page](./entity-hierarchy) for a detailed breakdown.
 ## Key Architectural Principles
 
 1. **Layered dependencies**: Code in a higher layer can reference anything in lower layers. Layer 5 can use Layer 1 primitives; Layer 1 cannot reference Layer 5.
-2. **Singleton game instance**: `g_Game` / `GetGame()` (defined in `2_gamelib`) provides global access to the `DayZGame` instance throughout all layers.
+2. **Singleton game instance**: `g_Game` / `GetGame()` are engine-provided global accessors for the `DayZGame` instance throughout all layers. They are not members of the empty `Game` class in `2_gamelib`.
 3. **Component-based entities**: Entities aggregate behaviors via components and an FSM-driven inventory system.
 4. **Event-driven communication**: The `ScriptInvoker` pattern and RPC system enable decoupled communication between systems.
 5. **Config-driven objects**: Nearly every gameplay object is defined in `config.cpp` and instantiated at runtime — scripts rarely hardcode object properties.

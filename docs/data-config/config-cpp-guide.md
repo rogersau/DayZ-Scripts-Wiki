@@ -6,6 +6,8 @@ This page serves as a reference for the `config.cpp` file format used throughout
 
 Config files use a C-like syntax with classes, inheritance, and properties. They are parsed at game startup and define **all objects in the game world**.
 
+> **⚠️ Important**: The `lake-dayz_check_config` tool validates config **syntax** (brackets, semicolons, property types) but does **not** verify that parent classes exist. Always verify parent class names against the actual game source using `lake-dayz_class_info` or by checking the official `DZ/` config files before assuming a class hierarchy is correct.
+
 ## Config Class Hierarchy
 
 ```

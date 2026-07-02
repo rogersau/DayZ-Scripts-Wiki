@@ -34,7 +34,7 @@ This guide focuses on the **script and config** side — the files found at `P:\
 | [Enforce Script Syntax](./enforce-syntax) | Complete language reference — types, keywords, OOP, memory management |
 | [Safe Modding Patterns](./safe-patterns) | Best practices for compatible, maintainable mods |
 | [Writing Custom Actions](./action-recipes) | Cookbook of concrete action patterns (`ActionAttach`, `ActionDrink`, `FirearmActionAttachMagazine`, `ActionWorldCraft`) — which base class to pick and how to specialize it |
-| [Real Mod Examples](./real-mod-examples) | DMOverrides scaffold and NamalskBlizzard built mod |
+| [Real Mod Examples](./real-mod-examples) | Mod scaffold patterns and built mod examples |
 
 ## Source of Truth: `P:\`
 
@@ -42,6 +42,6 @@ All documentation in this section references the **actual game and mod files** a
 
 - **Game scripts**: `P:/scripts/` (the 5-layer architecture)
 - **Game config data**: `P:/DZ/` (all items, weapons, characters, structures)
-- **Real mod examples**: `P:/NBH_NamalskSurvival/`, `P:/NBH_NamalskIsland/`, `P:/NBH_Mod/`
+- **Real mod examples**: See [Real Mod Examples](./real-mod-examples) for generic mod patterns (scaffolds, small mods, terrain mods)
 
 These real-world files serve as the authoritative reference for structure, patterns, and best practices.

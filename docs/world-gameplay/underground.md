@@ -30,59 +30,51 @@ class UndergroundHandlerClient {
     bool m_IsUnderground;              // Currently underground?
     string m_CurrentUndergroundArea;   // Which area
     
-    // Transition
-    void OnEnterUnderground(string areaId, vector entrancePos);
-    void OnExitUnderground(string areaId, vector exitPos);
+    // Trigger detection
+    void OnTriggerEnter(Trigger trigger);
+    void OnTriggerLeave(Trigger trigger);
     
-    // Loading
-    void RequestLoadUndergroundArea(string areaId);
-    void RequestUnloadUndergroundArea(string areaId);
+    // Visual/audio processing
+    void ProcessEyeAcco(float delta);
+    void ProcessLighting(float delta);
+    void ProcessSound(float delta);
     
-    // Queries
-    bool IsUndergroundAtPosition(vector position);
-    string GetUndergroundAreaAtPosition(vector position);
+    // Per-frame update
+    void Tick(float delta);
 };
 ```
+
+> **Note:** Methods like `OnEnterUnderground`, `OnExitUnderground`, `RequestLoadUndergroundArea`, `IsUndergroundAtPosition`, `GetUndergroundAreaAtPosition` are **not verified** in the actual source. Use `OnTriggerEnter`/`OnTriggerLeave` for transition detection.
 
 ## Bunker System
 
-Bunkers are a specific type of underground area with multiple rooms:
+Bunkers are a specific type of underground area. The `UndergroundBunkerHandlerClient` class handles bunker-specific logic:
 
 ```c
 class UndergroundBunkerHandlerClient {
-    // Bunker state
-    BunkerRoom m_CurrentRoom;
-    int m_BunkerLevel;              // Sub-level (0 = top)
-    
-    // Room connection
-    bool CanEnterRoom(BunkerRoom room);
-    void EnterRoom(BunkerRoom room);
-    
-    // Navigation
-    vector GetRoomEntrance(BunkerRoom room);
-    vector GetRoomExit(BunkerRoom room);
+    // Door animation state
+    bool m_IsDoorOpening;
+    float m_AnimPhasePrev;
 };
 ```
+
+> **Note:** This class has only the two members shown above in the verified source. Concepts like `BunkerRoom`, `CanEnterRoom()`, `EnterRoom()`, `GetRoomEntrance()`, `GetRoomExit()` are **not verified** and should be treated as speculative.
 
 ## Area Loading
 
-Underground areas are dynamically loaded to manage performance:
+Underground areas are dynamically loaded to manage performance. The `UndergroundAreaLoader` handles trigger carrier spawning:
 
 ```c
 class UndergroundAreaLoader {
-    // Load/unload area
-    void LoadArea(string areaId);
-    void UnloadArea(string areaId);
+    // Trigger carrier management
+    void SpawnAllTriggerCarriers();
+    void SpawnTriggerCarrier(/* ... */);
     
-    // Streaming
-    bool IsAreaLoaded(string areaId);
-    float GetAreaLoadProgress(string areaId);
-    
-    // Content
-    void SpawnAreaObjects(string areaId);
-    void DespawnAreaObjects(string areaId);
+    // ... other loading methods ...
 };
 ```
+
+> **Note:** Methods like `LoadArea()`, `UnloadArea()`, `SpawnAreaObjects()`, `DespawnAreaObjects()`, `IsAreaLoaded()`, `GetAreaLoadProgress()` are **not verified** in the actual source. The loader's primary verified role is trigger carrier spawning.
 
 ## Transition Flow
 

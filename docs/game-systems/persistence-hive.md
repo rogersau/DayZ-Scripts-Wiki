@@ -41,26 +41,21 @@ flowchart TD
 
 ## Hive Protocol
 
-The hive uses a synchronous request/response protocol:
+The hive provides an interface for saving and loading persistent game state:
 
 ```c
 class Hive {
-    // Send a request to the hive backend
-    bool Request(int requestType, Param params);
+    // Initialize hive connection
+    void InitOnline();
+    void InitOffline();
     
-    // Check for and read response
-    bool GetResponse(out Param response);
+    // Character operations
+    void CharacterSave(PlayerIdentity identity, ParamsReadContext ctx);
+    void CharacterKill(PlayerIdentity identity);
+    void CharacterExit(PlayerIdentity identity);
     
-    // Common request types
-    const int REQUEST_LOGIN = 0;
-    const int REQUEST_LOGOUT = 1;
-    const int REQUEST_SAVE_PLAYER = 2;
-    const int REQUEST_LOAD_PLAYER = 3;
-    const int REQUEST_SAVE_WORLD = 4;
-    const int REQUEST_LOAD_WORLD = 5;
-    const int REQUEST_SAVE_VEHICLE = 6;
-    const int REQUEST_LOAD_VEHICLE = 7;
-    const int REQUEST_DELETE_OBJECT = 8;
+    // Updater
+    void CallUpdater();
 };
 ```
 
@@ -72,7 +67,7 @@ sequenceDiagram
     participant Hive as Hive Layer
     participant Backend as Backend (File/HTTP)
     
-    Server->>Hive: Hive.Request(SAVE_PLAYER, params)
+    Server->>Hive: CharacterSave(identity, ctx)
     Hive->>Hive: Serialize player state
     Hive->>Backend: Write data
     
@@ -83,7 +78,7 @@ sequenceDiagram
     end
     
     Backend-->>Hive: Success/Error response
-    Hive-->>Server: GetResponse() → result
+    Hive-->>Server: Result
     Server->>Server: Handle error or confirm
 ```
 
@@ -91,52 +86,23 @@ sequenceDiagram
 
 ### Player Persistence
 
-When a player connects or disconnects, their full state is saved/loaded:
+When a player connects or disconnects, their full state is saved/loaded via the hive. Player data includes:
+- World ID and position (coordinates)
+- Health, blood, energy, water, temperature
+- Inventory (all items, quantities, conditions)
+- Equipment (worn items with attachments)
+- Skills and soft skills
+- Quick bar configuration
+- Modifier states (diseases, injuries)
 
 ```c
-class DayZPlayer {
-    void Save() {
-        // Serialize and persist:
-        // - World ID and position (coordinates)
-        // - Health, blood, energy, water, temperature
-        // - Inventory (all items, quantities, conditions)
-        // - Equipment (worn items with attachments)
-        // - Skills and soft skills
-        // - Quick bar configuration
-        // - Modifier states (diseases, injuries)
-    }
-    
-    void Load() {
-        // Deserialize and restore:
-        // - Position (spawn at saved location)
-        // - Vitals (health, blood, hunger, thirst)
-        // - Inventory (all items restored)
-        // - Equipment (worn items restored)
-        // - Skills (persistent progression)
-    }
-};
-```
-
-```c
-// Example: Saving player data
-void SavePlayer(DayZPlayer player, Hive hive) {
-    // Build parameter set
-    Param param = new Param();
-    param.WriteString(player.GetIdentity().GetSteamId());
-    param.WriteVector(player.GetPosition());
-    param.WriteFloat(player.GetHealth());
-    param.WriteFloat(player.GetBlood());
-    param.WriteFloat(player.GetEnergy());
-    param.WriteFloat(player.GetWater());
-    // ... inventory serialization ...
-    
+// Example: Saving player data via hive
+void SavePlayer(PlayerBase player, Hive hive) {
+    ParamsWriteContext ctx;
+    // Serialize player state into context
+    player.OnStoreSave(ctx);
     // Send to hive
-    if (hive.Request(Hive.REQUEST_SAVE_PLAYER, param)) {
-        Param response;
-        if (hive.GetResponse(response)) {
-            // Verify save succeeded
-        }
-    }
+    hive.CharacterSave(player.GetIdentity(), ctx);
 }
 ```
 
@@ -170,38 +136,28 @@ class WorldData {
 
 ### Persistent Object Interface
 
-Objects that should persist implement the `PersistentObject` interface:
+Objects that should persist implement save/load via `OnStoreSave` and `OnStoreLoad`, which are defined on `EntityAI` and `Man`:
 
 ```c
-class PersistentObject {
-    // Serialization methods
-    void OnStoreSave(ParamsSerializer serializer);
-    void OnStoreLoad(ParamsSerializer serializer);
-    
-    // Lifecycle
-    bool IsPersistent();           // Should this object persist?
-    int GetPersistentID();         // Unique persistent identifier
-};
+// These methods exist on EntityAI / Man — override them for custom persistence
+void OnStoreSave(ParamsWriteContext ctx);
+void OnStoreLoad(ParamsReadContext ctx);
 ```
 
 To make a custom object persist:
 
 ```c
-class MyCustomContainer : EntityAI, PersistentObject {
-    override void OnStoreSave(ParamsSerializer serializer) {
+class MyCustomContainer : EntityAI {
+    override void OnStoreSave(ParamsWriteContext ctx) {
         // Save custom state
-        serializer.WriteInt(m_MyCustomValue);
-        serializer.WriteString(m_MyCustomString);
+        ctx.Write(m_MyCustomValue);
+        ctx.Write(m_MyCustomString);
     }
     
-    override void OnStoreLoad(ParamsSerializer serializer) {
+    override void OnStoreLoad(ParamsReadContext ctx) {
         // Restore custom state
-        m_MyCustomValue = serializer.ReadInt();
-        m_MyCustomString = serializer.ReadString();
-    }
-    
-    override bool IsPersistent() {
-        return true;  // This object survives server restarts
+        m_MyCustomValue = ctx.ReadInt();
+        m_MyCustomString = ctx.ReadString();
     }
 };
 ```
@@ -224,13 +180,13 @@ class MyCustomContainer : EntityAI, PersistentObject {
 flowchart TD
     subgraph SavePath["Save Path"]
         TRIGGER[Save Trigger] --> SERIALIZE[Serialize State]
-        SERIALIZE --> HIVE_REQ[Hive.Request()]
+        SERIALIZE --> HIVE_REQ[Hive.CharacterSave()]
         HIVE_REQ --> BACKEND[Backend Storage]
     end
     
     subgraph LoadPath["Load Path"]
         START[Server Start] --> LOAD_TRIGGER[Load Event]
-        LOAD_TRIGGER --> LOAD_REQ[Hive Request Load]
+        LOAD_TRIGGER --> LOAD_REQ[Hive Load]
         LOAD_REQ --> BACKEND2[Backend Query]
         BACKEND2 --> DESERIALIZE[Deserialize State]
         DESERIALIZE --> APPLY[Apply to Game World]
@@ -272,41 +228,14 @@ Disadvantages: Not scalable to server networks, no centralized data.
 
 ### Remote (HTTP Database)
 
-For production server networks with a centralized database:
-
-```c
-class HTTPHive : Hive {
-    string m_APIEndpoint;       // Database API URL
-    string m_APIToken;          // Authentication token
-    
-    bool SendRequest(string endpoint, string data);
-    string GetResponse();
-};
-```
+For production server networks with a centralized database, the backend communicates via HTTP to a remote database API. Configuration includes the API endpoint URL and authentication token.
 
 Advantages: Shared persistence across server network, scalable, backup support.
 Disadvantages: Requires external infrastructure, network latency, potential for data loss on connection failure.
 
 ### Error Handling
 
-```c
-class RobustHive : Hive {
-    void SaveWithRetry(int requestType, Param params, int maxRetries = 3) {
-        for (int i = 0; i < maxRetries; i++) {
-            if (Request(requestType, params)) {
-                Param response;
-                if (GetResponse(response)) {
-                    return;  // Success
-                }
-            }
-            // Wait before retry
-            Sleep(1000);
-        }
-        // Log failure after max retries
-        Error("Hive save failed after " + maxRetries + " attempts");
-    }
-};
-```
+Error handling for hive operations typically involves retry logic with exponential backoff, logging failures for investigation.
 
 ## Integration with Other Systems
 

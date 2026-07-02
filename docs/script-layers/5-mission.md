@@ -8,7 +8,6 @@ Layer 5 is the **top of the script stack**. It provides the mission entry point 
 
 | File | Purpose |
 |------|---------|
-| `somemission.c` | Mission factory — `CreateMission(string path)` entry point |
 | `dayzintroscene.c` | Intro cutscene (shared) |
 | `dayzintroscenepc.c` | PC-specific intro cutscene |
 | `dayzintroscenexbox.c` | Xbox-specific intro cutscene |
@@ -381,42 +380,25 @@ The entire UI layer — **70+ files** covering all player-facing screens.
 | `carhud.c` | Car HUD display |
 | `vehiclehudbase.c` | Vehicle HUD base class |
 
-## Mission Factory (`somemission.c`)
+## Mission Classes
 
-The entry point for the entire game mode system:
+The mission system uses a class hierarchy with `MissionBase` as the root game-mode class (`5_mission/mission/missionbase.c`):
 
-```c
-Mission CreateMission(string path)
-{
-    if (!g_Game.IsMultiplayer() && !g_Game.IsServer())
-    {
-        // Single player — use main menu
-        return new MissionMainMenu();
-    }
-    
-    if (g_Game.IsServer() && g_Game.IsMultiplayer())
-    {
-        // Dedicated server
-        return new MissionServer();
-    }
-    
-    // Check for "NoCutscene" or "intro" in path
-    if (path.Contains("NoCutscene"))
-        return new MissionGameplay();
-    
-    if (path.Contains("intro"))
-        return new MissionMainMenu();
-    
-    // Default: full mission
-    return new MissionGameplay();
-}
+```
+Mission (engine base)
+  └── MissionBaseWorld
+       └── MissionBase
+            ├── MissionGameplay  — Full in-game session
+            ├── MissionMainMenu  — Main menu with intro cutscene
+            ├── MissionServer    — Headless dedicated server
+            └── MissionDummy     — Fallback/edge-case mission
 ```
 
-This factory function decides which mission class to instantiate:
-- **MissionServer**: Headless server (no rendering, no UI)
-- **MissionMainMenu**: Main menu with optional cutscene
-- **MissionGameplay**: Full in-game mission
-- **MissionDummy**: Fallback for edge cases
+**Key points**:
+- No `CreateMission` factory function exists — the engine instantiates the appropriate mission class directly.
+- `MissionServer` is designed for dedicated servers (no rendering, no UI).
+- `MissionGameplay` is the full in-game mission.
+- `MissionMainMenu` handles the main menu and optional intro cutscene.
 
 ## How Layers 1-5 Fit Together
 
@@ -424,7 +406,7 @@ A file in `5_mission/gui/inventorymenu.c` can reference:
 - `4_world/classes/playerstats/` for player stat data
 - `3_game/dayzplayer.c` for the player entity
 - `3_game/systems/inventory/` for inventory logic
-- `2_gamelib/gamelib.c` to access `GetGame()`
+- `3_game/global/game.c` to access `GetGame()`
 - `1_core/param.c` for Param serialization
 - `1_core/proto/enwidgets.c` for native widget functions
 

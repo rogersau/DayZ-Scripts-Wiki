@@ -11,10 +11,13 @@ Stamina System
 │   ├── Consumption calculation
 │   └── Regeneration
 │
-├── Stamina Modifier Data (classes/staminamodifierdata.c)
-│   └── Per-activity stamina costs
+├── Stamina Modifier Data (classes/smdata*.c)
+│   ├── SMDataBase — base modifier class
+│   ├── SMDataExponential — exponential modifier
+│   ├── SMDataHoldBreath — hold-breath modifier
+│   └── Other SMData variants
 │
-└── Stamina Sound Handler (classes/staminasoundhandler.c)
+└── Stamina Sound Handler (classes/staminasoundhandlerbase/client/server.c)
     └── Heavy breathing sounds at low stamina
 ```
 
@@ -26,50 +29,36 @@ class StaminaHandler {
     float m_MaxStamina;           // Maximum stamina capacity
     float m_StaminaRegenRate;     // Regeneration per second
     
-    // Modify stamina
-    void ConsumeStamina(float amount);
-    void RegenerateStamina(float delta);
+    // Core stamina access
+    float GetStamina();                     // Current stamina value
+    float GetStaminaNormalized();           // 0.0 — 1.0
+    void SetStamina(float value);           // Set stamina to exact value
     
-    // State queries
-    float GetStaminaPercentage(); // 0.0 — 1.0
-    bool IsExhausted();           // Stamina at/near zero
-    bool IsRecovering();          // Stamina regenerating
+    // Checks
+    bool HasEnoughStaminaFor(float amount); // Enough stamina for action
     
     // Modifiers
-    float GetCarryLoadModifier(); // Based on carried weight
+    float GetTotalWeight(EntityAI item);    // Weight with item context
 };
 ```
 
+> **Note:** Methods like `ConsumeStamina`, `RegenerateStamina`, `GetStaminaPercentage`, `IsExhausted`, `IsRecovering`, `GetCarryLoadModifier`, `IsSprinting()`, `IsJumping()`, `IsMeleeAttacking()` are **not verified** in the actual source. Use `GetStamina()`, `GetStaminaNormalized()`, `SetStamina()`, and `HasEnoughStaminaFor()` instead.
+
 ## Stamina Costs
 
-Different activities consume stamina at different rates:
+Stamina costs for activities are not defined as simple named constants in the verified source. Instead, costs are likely calculated per-activity using the `SMData*` modifier classes which define cost curves and modifiers.
 
-```c
-// Base stamina costs (modified by carry weight, soft skills, etc.)
-const float STAMINA_COST_SPRINT = 15.0;     // Per second
-const float STAMINA_COST_JUMP = 10.0;       // Per jump
-const float STAMINA_COST_MELEE_HEAVY = 8.0; // Per heavy attack
-const float STAMINA_COST_MELEE_LIGHT = 3.0; // Per light attack
-const float STAMINA_COST_CLIMB = 12.0;      // Per climb action
-```
+> **Note:** Named constants like `STAMINA_COST_SPRINT`, `STAMINA_COST_JUMP`, `STAMINA_COST_MELEE_HEAVY`, etc. are **not verified** in the actual source and should not be referenced.
 
 ## Factors Affecting Stamina
 
 ### Carry Weight
 
-Carried weight significantly affects stamina:
+Carried weight significantly affects stamina. The `GetTotalWeight(EntityAI item)` method on `StaminaHandler` calculates weight with an item context:
 
 ```c
-class StaminaHandler {
-    float GetWeightModifier() {
-        float totalWeight = GetPlayer().GetInventory().GetTotalWeight();
-        // Above a threshold, stamina costs increase
-        if (totalWeight > 20) { // 20kg threshold
-            return 1.0 + (totalWeight - 20) * 0.05;
-        }
-        return 1.0;
-    }
-};
+// GetTotalWeight takes an EntityAI parameter for context
+float weight = staminaHandler.GetTotalWeight(player);
 ```
 
 ### Soft Skills
@@ -86,30 +75,13 @@ Higher skills reduce stamina consumption:
 
 ## Stamina Regeneration
 
-Stamina regenerates when the player is not performing stamina-consuming actions:
+Stamina regenerates when the player is not performing stamina-consuming actions. The regeneration rate is affected by health, energy, and carry weight.
 
-```c
-class StaminaHandler {
-    void UpdateRegeneration(float delta) {
-        if (!IsSprinting() && !IsJumping() && !IsMeleeAttacking()) {
-            // Regen rate depends on:
-            // - Base regen rate
-            // - Health percentage
-            // - Energy level
-            // - Carry weight
-            float regen = m_StaminaRegenRate * delta;
-            if (GetPlayer().GetHealth() < 0.5) {
-                regen *= 0.5; // Half regen at low health
-            }
-            m_Stamina = Math.Min(m_Stamina + regen, m_MaxStamina);
-        }
-    }
-};
-```
+> **Note:** The exact regeneration formula and conditions (e.g., checking `IsSprinting()`, `IsJumping()`, `IsMeleeAttacking()`) are **not verified** in the actual source. Consult `staminahandler.c` for the authoritative implementation.
 
 ## Sound Feedback
 
-At low stamina, the `StaminaSoundHandler` plays heavy breathing sounds, warning the player they need to rest.
+At low stamina, the `StaminaSoundHandlerBase`/`StaminaSoundHandlerClient`/`StaminaSoundHandlerServer` classes play heavy breathing sounds, warning the player they need to rest.
 
 ## UI Display
 

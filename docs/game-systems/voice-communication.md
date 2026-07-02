@@ -79,51 +79,17 @@ flowchart TD
 
 ## VONManager API
 
-The core voice system interface (`3_game/vonmanager.c`):
-
-```c
-class VONManager {
-    // --- Transmission Control ---
-    void StartTransmitting();                    // Push-to-talk start
-    void StopTransmitting();                     // Push-to-talk stop
-    bool IsTransmitting();                       // Currently sending voice
-    bool IsVoiceDetected();                      // VAD detected speech
-
-    // --- Channel & Frequency ---
-    void SetRadioFrequency(float frequency);     // Tune radio (e.g., 87.5–108.0 MHz)
-    float GetRadioFrequency();
-    bool IsRadioTransmitting();                  // Voice going over radio
-
-    // --- Voice Effects ---
-    void SetVoiceEffect(VoiceEffectType effect); // See enum below
-    VoiceEffectType GetVoiceEffect();
-
-    // --- Volume & Spatial ---
-    float GetVoiceVolume();                      // Current output volume (0–1)
-    void SetVoiceCone(float angle, float radius); // Proximity chat shape
-
-    // --- Radio Equipment ---
-    bool HasRadio();                             // Has functional radio equipment
-    bool HasMegaphone();                         // Has megaphone in hands
-    bool IsVehicleIntercom();                    // In vehicle intercom mode
-};
-```
+The core voice system interface (`3_game/vonmanager.c`). `VONManager` is a thin static wrapper; the real work happens in `VONManagerBase`. Core functionality includes start/stop transmission, radio frequency tuning, and voice effect management.
 
 ### Voice Channels
-
-```c
-enum VoiceChannel {
-    PROXIMITY,    // Local — heard by nearby players
-    RADIO,        // Radio — frequency-based, unlimited range
-    MEGAPHONE     // Amplified — vehicle PA or megaphone item
-};
-```
 
 | Channel | Base Range | Audio Quality | Spatial Audio | Frequency |
 |---------|-----------|---------------|---------------|-----------|
 | PROXIMITY | ~50m (configurable) | High (full Opus) | Yes (3D positioned) | N/A |
 | RADIO | Unlimited (by frequency) | Reduced (8–16 kbps, band-limited) | No (mono, direct) | 87.5–108.0 MHz |
 | MEGAPHONE | ~200m | Amplified, clipped | Yes (3D positioned) | N/A |
+
+Voice channel routing is handled internally by `VONManagerBase`; there is no exposed `VoiceChannel` enum in script.
 
 ### Voice Effects
 
@@ -269,8 +235,8 @@ Defined in `DZ/gear/radio/`:
 |------|-------|-------------|-----------|-------|
 | `PersonalRadio` | 5 km | Battery9V | User-tunable | Handheld; consumes battery while transmitting |
 | `BaseRadio` | Global (server) | Mains electricity | Fixed | World-spawned; cannot be carried |
-| `Radio` | Global | Battery9V | User-tunable | Full-size; higher battery drain |
-| `Megaphone` | 100 m (amplified) | Battery9V | N/A | Amplifies proximity voice; not frequency-based |
+| `ItemRadio` | Global | Battery9V | User-tunable | Full-size; higher battery drain |
+| `ItemMegaphone` | 100 m (amplified) | Battery9V | N/A | Amplifies proximity voice; not frequency-based |
 
 Radio behaviour:
 
@@ -305,26 +271,12 @@ The megaphone uses the **PROXIMITY** channel but with boosted parameters:
 
 ### Vehicle Intercom / PA System
 
-Vehicles can optionally integrate with the VON system:
-
-- **Vehicle PA (Public Address)**: Driver/passenger can broadcast voice externally at ~200m range, similar to megaphone
-- **Vehicle Intercom**: Allows crew inside a vehicle to communicate without external broadcast (reduced range, no spatial audio for internal listeners)
-- Not all vehicles have PA/intercom systems; it is defined per vehicle in config
+Vehicles can optionally integrate with the VON system for internal crew communication and external public address. This is configured per vehicle via the engine config tree (`cfgVehicles`), not through script-exposed booleans.
 
 | Vehicle Feature | Channel | Range | Internal/External | Audio Quality |
 |----------------|---------|-------|-------------------|---------------|
 | Vehicle PA | MEGAPHONE | ~200m | External | Distorted, amplified |
 | Vehicle Intercom | PROXIMITY (internal) | ~15m (vehicle interior) | Internal only | Normal, but with vehicle cabin EQ |
-
-```cpp
-// Vehicle config integration (conceptual)
-class CivilianSedan: Car {
-    hasIntercom = 1;           // Crew can talk internally
-    hasPA = 1;                 // Has external PA system
-    intercomRange = 15;        // Internal chat range
-    paRange = 200;             // External PA range
-};
-```
 
 ## Voice Occlusion & Spatial Audio
 
@@ -372,8 +324,8 @@ float CalculateVoiceAudibility(PlayerIdentity speaker, PlayerIdentity listener) 
     float dist = vector.Distance(speaker.GetPosition(), listener.GetPosition());
     volume *= GetRolloffFactor(dist, 0.0, PROXIMITY_RANGE);
 
-    // 2. Occlusion from obstacles
-    float occlusion = SoundOcclusion.GetOcclusion(
+    // 2. Occlusion from obstacles (engine-level raycast)
+    float occlusion = GetOcclusionFactor(
         speaker.GetBonePosition("head"),    // Source: speaker's head
         listener.GetBonePosition("ear")      // Listener: ear position
     );
@@ -381,7 +333,7 @@ float CalculateVoiceAudibility(PlayerIdentity speaker, PlayerIdentity listener) 
 
     // 3. Material absorption
     string material = GetSurfaceMaterial(listener.GetPosition());
-    volume *= SoundOcclusion.GetMaterialAbsorption(material);
+    volume *= GetMaterialAbsorptionFactor(material);
 
     // 4. Weather modifier
     volume *= GetWeatherVoiceModifier(windSpeed, rainIntensity);
@@ -459,26 +411,20 @@ DZ/sounds/Characters/
 | Hook / Override | Location | Purpose |
 |-----------------|----------|---------|
 | `VONManager` class | `3_game/vonmanager.c` | Override voice behaviour |
-| `VONManager.SetVoiceEffect()` | `3_game/vonmanager.c` | Force custom voice FX |
-| `PlayerVoiceState` (mod-only) | Custom | Track per-player voice modifiers |
-| `SoundOcclusion.GetOcclusion()` | `3_game/vonmanager.c` | Custom occlusion logic |
+| `VONManagerBase` class | `3_game/vonmanager.c` | Core VON logic |
 | `CfgSoundShaders` / `CfgSoundSets` | `DZ/sounds/hpp/` | Custom voice sound definitions |
 | Radio items | `DZ/gear/radio/` | Custom radio equipment |
 | Vehicle intercom/PA | Vehicle config | Per-vehicle voice features |
-| `VoiceChannel` enum | `3_game/vonmanager.c` | Custom voice channels (mod-added) |
-| `VoiceEffectType` enum | `3_game/vonmanager.c` | Custom voice effects |
 | Server config `voiceSpectatorListen` | Server config | Toggle spectator voice |
 
 ### Common Mod Scenarios
 
 | Scenario | Approach |
 |----------|----------|
-| **Add a new radio item** | Extend `Transmitter_Base` in `DZ/gear/radio/` config |
-| **Custom voice channel (e.g., "Squad")** | Extend `VoiceChannel` enum; add routing in `VONManager` |
-| **Modify proximity range** | Change `PROXIMITY_RANGE` constant or override `GetVoiceVolume()` |
-| **Add vehicle intercom to a mod vehicle** | Set `hasIntercom = 1` in vehicle `CfgVehicles` class |
-| **Per-player voice muting (admin)** | Call `VONManager.StopTransmitting()` from admin tools |
-| **Radio encryption/scrambling** | Override `VoiceEffectType` per frequency |
+| **Add a new radio item** | Extend `TransmitterBase` in `DZ/gear/radio/` config |
+| **Modify proximity range** | Override in `VONManagerBase` |
+| **Add vehicle intercom to a mod vehicle** | Configure via engine `cfgVehicles` tree |
+| **Per-player voice muting (admin)** | Call transmission control from admin tools |
 | **Death voice / last words** | Trigger a one-shot voice packet on `HumanCommandDeath` before VON disconnect |
 
 ## Related Systems

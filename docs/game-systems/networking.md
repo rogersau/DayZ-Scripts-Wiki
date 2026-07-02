@@ -7,11 +7,9 @@ The networking system handles multiplayer synchronization, remote procedure call
 ```mermaid
 flowchart TD
     subgraph RPC["ScriptRPC System (3_game/gameplay.c)"]
-        SEND[Send / SendToServer / SendToClient]
+        SEND[Send — Object target, int rpc_type, bool guaranteed, PlayerIdentity recipient=NULL]
         RECV[OnReceive]
         SER[Write / Read Serialization]
-        REG[RegisterRPC / FindRPC]
-        DEST[RPCDestination<br/>SERVER / CLIENT / ALL_CLIENTS / ALL_EXCEPT_SOURCE]
     end
     
     subgraph Input["Client Input"]
@@ -19,7 +17,7 @@ flowchart TD
     end
     
     subgraph Identity["Player Identity"]
-        PID[PlayerIdentity<br/>ID, Name, SteamID, IP, Ping]
+        PID[PlayerIdentity<br/>ID, Name, Ping]
     end
     
     subgraph Voice["Voice Communication<br/>(see Voice Communication)]
@@ -50,10 +48,8 @@ ScriptRPC is the primary mechanism for script-level network communication:
 
 ```c
 class ScriptRPC {
-    // Send RPC
-    void Send(Param params, bool reliable);
-    void SendToServer(Param params, bool reliable);
-    void SendToClient(int playerId, Param params, bool reliable);
+    // Send an RPC
+    void Send(Object target, int rpc_type, bool guaranteed, PlayerIdentity recipient = NULL);
     
     // Receive RPC
     void OnReceive(Param params, int sourcePlayerId);
@@ -61,21 +57,6 @@ class ScriptRPC {
     // Serialization
     void Write(ParamSerializer serializer);
     void Read(ParamSerializer serializer);
-    
-    // Registration
-    static int RegisterRPC(string name);
-    static ScriptRPC FindRPC(int rpcId);
-};
-```
-
-### RPC Types
-
-```c
-enum RPCDestination {
-    SERVER,             // Client → Server
-    CLIENT,             // Server → Single client
-    ALL_CLIENTS,        // Server → All clients
-    ALL_EXCEPT_SOURCE,  // Server → All except sender
 };
 ```
 
@@ -89,13 +70,13 @@ sequenceDiagram
     participant DB as Database
     
     Client->>Client: Local action (e.g., drop item)
-    Client->>Network: ScriptRPC.SendToServer(params)
+    Client->>Network: ScriptRPC.Send(target, rpc_type, guaranteed)
     Network->>Server: [Network transmission]
     Server->>Server: OnReceive(params, sourcePlayerId)
     Server->>Server: Process and validate
     Server->>DB: Persist state (if needed)
-    Server->>Network: ScriptRPC.SendToClient(respondent, params)
-    Server->>Network: ScriptRPC.SendToAllExcept(source, params)
+    Server->>Network: ScriptRPC.Send(respondent, rpc_type, guaranteed)
+    Server->>Network: ScriptRPC.Send(null, rpc_type, guaranteed)
     Network->>Client: [Network transmission]
     Client->>Client: OnReceive(params)
     Client->>Client: Update local game state
@@ -103,21 +84,9 @@ sequenceDiagram
 
 ## RPC Best Practices
 
-### Registration
+### RPC Types
 
-Register RPCs at game init to avoid runtime lookups:
-
-```c
-class MyGame {
-    int m_RPC_PlayerAction;
-    int m_RPC_InventoryChange;
-    
-    void InitRPCs() {
-        m_RPC_PlayerAction = ScriptRPC.RegisterRPC("PlayerAction");
-        m_RPC_InventoryChange = ScriptRPC.RegisterRPC("InventoryChange");
-    }
-};
-```
+RPCs are identified by an `rpc_type` integer ID. Send to server by calling `Send` without a `recipient` parameter; send to a specific client by passing the `PlayerIdentity` as recipient.
 
 ### Validation (Server-Side)
 
@@ -137,9 +106,7 @@ class MyRPC : ScriptRPC {
         // 3. Check cooldown / rate limiting
         if (!CheckCooldown(sourcePlayerId)) return;
         
-        // 4. Verify player owns the entity they're manipulating
-        EntityAI entity = GetEntity(params);
-        if (entity && entity.GetOwner() != sourcePlayerId) return;
+        // 4. Verify the player is authorized for this action
         
         // 5. Process valid request
         ProcessAction(sourcePlayerId, position.param1);
@@ -179,13 +146,13 @@ class PackedPlayerState {
 
 ```c
 class SafeRPC : ScriptRPC {
-    override void SendToServer(Param params, bool reliable) {
-        if (!IsClient()) return;  // Only clients send to server
-        super.SendToServer(params, reliable);
+    override void Send(Object target, int rpc_type, bool guaranteed, PlayerIdentity recipient = NULL) {
+        if (!GetGame().IsServer() && recipient) return;  // Client shouldn't target specific recipients
+        super.Send(target, rpc_type, guaranteed, recipient);
     }
     
     override void OnReceive(Param params, int sourcePlayerId) {
-        if (!IsServer()) return;  // Only server processes receives
+        if (!GetGame().IsServer()) return;  // Only server processes receives
         super.OnReceive(params, sourcePlayerId);
     }
 };
@@ -197,16 +164,8 @@ Handles client input serialization over the network:
 
 ```c
 class ScriptInputUserData {
-    // Input serialization (client-side)
-    void WriteInput(int actionId, float value);
-    void WriteInputVector(int actionId, vector value);
-    
-    // Input reading (server-side)
-    float ReadInput(int actionId);
-    vector ReadInputVector(int actionId);
-    
-    // Send input to server
-    void SendToServer();
+    // Input data is serialized automatically by the engine
+    // The server reads inputs to validate and process player actions
 };
 ```
 
@@ -218,11 +177,13 @@ Players are identified by `PlayerIdentity`:
 
 ```c
 class PlayerIdentity {
-    int GetPlayerId();              // Unique player ID (session-local)
+    string GetId();                 // Player ID string
+    string GetPlainId();            // Plain/numeric player ID
     string GetName();               // Player display name
-    string GetSteamId();            // Steam 64-bit ID (persistent)
-    string GetIPAddress();          // IP address (for admin tools)
-    int GetPing();                  // Current ping in ms
+    int GetPingAct();               // Current/actual ping in ms
+    int GetPingAvg();               // Average ping in ms
+    int GetPingMin();               // Minimum ping in ms
+    int GetPingMax();               // Maximum ping in ms
 };
 ```
 
@@ -242,16 +203,8 @@ Entity state is synchronized through multiple mechanisms:
 
 ### Ownership
 
-```c
-class EntityAI {
-    bool IsOwnedByClient();         // Is this entity owned by local client?
-    int GetOwner();                 // Owner player ID
-    void SetOwner(int playerId);    // Transfer ownership
-};
-```
-
-Ownership determines:
-- **Authority**: Owner has authoritative control over the entity
+Entity ownership is managed at the engine level and determines:
+- **Authority**: Which client has authoritative control over an entity
 - **Replication priority**: Owned entities get higher update priority
 - **Input processing**: Owner input is applied to controlled entities
 

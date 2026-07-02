@@ -6,7 +6,7 @@ The animation system manages character animations, animation events, and the ani
 
 ```mermaid
 flowchart TD
-    subgraph Commands["Animation Commands (3_game/anim/)"]
+    subgraph Commands["Animation Commands (3_game/human.c)"]
         MOVE[HumanCommandMove<br/>Locomotion]
         MELEE[HumanCommandMelee<br/>Melee Attacks]
         MELEE2[HumanCommandMelee2<br/>Power Melee]
@@ -16,13 +16,12 @@ flowchart TD
     end
     
     subgraph Physics["Animation Physics"]
-        PHYS[AnimPhysAgent<br/>Physical blending]
+        PHYS[AnimPhysMove<br/>Physical blending]
         RAGDOLL[Ragdoll Physics<br/>Engine-level]
     end
     
-    subgraph Events["Animation Events (3_game/)"]
-        EVENTS[DayZAnimationEvent<br/>dayzanimevents.c]
-        MAPS[DayZAnimEventMap<br/>dayzanimeventmaps.c]
+    subgraph Events["Animation Events (1_core)"]
+        EVENTS[AnimEvent<br/>Animation event base]
     end
     
     subgraph Interface["State Machine"]
@@ -87,17 +86,17 @@ The animation state machine that selects animations based on gameplay state:
 
 ```c
 class HumanAnimInterface {
-    // State management
-    void SetAnimationPhase(string phase, float value);
-    float GetAnimationPhase(string phase);
+    // Command binding
+    void BindCommand(HumanCommandBase command);
     
-    // Override control — force specific animations
-    void OverrideAnimation(string animSet);
-    void ClearOverrides();
+    // Variable binding — float, int, bool parameters
+    void BindVariableFloat(string varName, float value);
+    void BindVariableInt(string varName, int value);
+    void BindVariableBool(string varName, bool value);
     
-    // Event handling
-    void OnAnimationEvent(string eventName);
-    void AddAnimationEventHandler(string eventName, ScriptInvoker handler);
+    // Tag and event binding
+    void BindTag(string tagName, bool value);
+    void BindEvent(string eventName);
 };
 ```
 
@@ -141,8 +140,8 @@ Blend trees interpolate between animation poses based on parameter values, provi
 Events are triggered at specific frames within animation sequences:
 
 ```c
-// In 3_game/dayzanimevents.c
-class DayZAnimationEvent {
+// AnimEvent exists in 1_core/proto/animevent.c
+class AnimEvent {
     int m_EventType;
     float m_Time;               // Time in animation when event fires (seconds)
     string m_Parameter;         // Event parameter (e.g., sound name, effect name)
@@ -183,16 +182,9 @@ sequenceDiagram
     Script->>Script: Apply damage / spawn effect
 ```
 
-### Event Maps
+### Animation Event Configuration
 
-`DayZAnimEventMap` connects config-defined events to script handlers:
-
-```c
-class DayZAnimEventMap {
-    void AddEvent(string animName, DayZAnimationEvent event);
-    DayZAnimationEvent GetEvent(string animName, int index);
-};
-```
+Animation events are defined in the animation config data, connecting frame-timed triggers to gameplay callbacks.
 
 ## Animation Command Flow
 
@@ -218,7 +210,7 @@ When death or unconsciousness occurs, the character transitions to ragdoll physi
 4. Ragdoll interacts with world geometry (slopes, obstacles)
 5. After a timeout, ragdoll may blend back to a final resting pose
 
-The `AnimPhysAgent` (in `3_game/anim/animphysagent.c`) handles the physical animation layer, including:
+The `AnimPhysMove` (in `3_game/animphysmove.c`) handles the physical animation layer, including:
 - Physical interaction with world objects
 - Blending between keyframe animation and physics
 - Constraint solving for joint limits
